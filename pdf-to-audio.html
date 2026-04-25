@@ -119,11 +119,14 @@
           <div class="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Narration voice</p>
-                <p class="mt-1 text-sm text-slate-600">Choose from the top live voices currently available in CodeVoice.</p>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Language and voice</p>
+                <p class="mt-1 text-sm text-slate-600">Choose the PDF text language first, then pick one of the top live CodeVoice voices for that language.</p>
               </div>
               <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
             </div>
+            <select id="languageSelect" class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+              <option>Loading languages...</option>
+            </select>
             <select id="voiceSelect" class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
               <option>Loading voices...</option>
             </select>
@@ -312,6 +315,7 @@
     const clearBtn = document.getElementById("clearBtn");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
     const fileName = document.getElementById("fileName");
+    const languageSelect = document.getElementById("languageSelect");
     const voiceSelect = document.getElementById("voiceSelect");
     const voiceStatus = document.getElementById("voiceStatus");
     const voiceDescription = document.getElementById("voiceDescription");
@@ -328,6 +332,7 @@
     let currentFile = null;
     let currentResult = null;
     let availableVoices = [];
+    let filteredVoices = [];
 
     function escapeHtml(value) {
       return String(value)
@@ -364,14 +369,42 @@
       debugLog(file ? `Selected file: ${file.name}` : "Cleared selected file", file ? { size: file.size, type: file.type } : undefined);
     }
 
+    function getVoiceLanguageKey(voice) {
+      return (voice.language || voice.language_name || "unknown").trim().toLowerCase();
+    }
+
+    function getVoiceLanguageLabel(voice) {
+      return (voice.language_name || voice.language || "Unknown").trim();
+    }
+
+    function getAvailableLanguages(voices) {
+      const languageMap = new Map();
+      voices.forEach((voice) => {
+        const key = getVoiceLanguageKey(voice);
+        if (!languageMap.has(key)) {
+          languageMap.set(key, {
+            key,
+            label: getVoiceLanguageLabel(voice),
+            count: 0
+          });
+        }
+        languageMap.get(key).count += 1;
+      });
+      return Array.from(languageMap.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function getSelectedLanguageKey() {
+      return languageSelect.value;
+    }
+
     function getSelectedVoice() {
-      return availableVoices.find((voice) => voice.id === voiceSelect.value) || null;
+      return filteredVoices.find((voice) => voice.id === voiceSelect.value) || null;
     }
 
     function renderSelectedVoiceMeta() {
       const voice = getSelectedVoice();
       if (!voice) {
-        voiceDescription.textContent = "Fetching available voices...";
+        voiceDescription.textContent = "Choose a language to see matching voices.";
         return;
       }
       const parts = [
@@ -379,13 +412,41 @@
         voice.gender || "unknown",
         voice.quality || "unknown quality"
       ].filter(Boolean);
-      voiceDescription.textContent = `${parts.join(" • ")}${voice.description ? ` • ${voice.description}` : ""}`;
+      voiceDescription.textContent = `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
     }
 
-    function renderVoiceOptions(payload) {
+    function renderFilteredVoices(preferredVoiceId = "") {
+      const selectedLanguage = getSelectedLanguageKey();
+      filteredVoices = availableVoices
+        .filter((voice) => getVoiceLanguageKey(voice) === selectedLanguage)
+        .slice(0, 5);
+
+      if (!filteredVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "No voices";
+        voiceDescription.textContent = "No voice models are currently available for this language.";
+        return;
+      }
+
+      voiceSelect.innerHTML = filteredVoices.map((voice) => {
+        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
+        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+      }).join("");
+
+      const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
+      voiceSelect.value = preferredVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} in this language`;
+      renderSelectedVoiceMeta();
+    }
+
+    function renderLanguageOptions(payload) {
       availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
 
       if (!availableVoices.length) {
+        languageSelect.innerHTML = '<option value="">No languages available</option>';
+        languageSelect.disabled = true;
         voiceSelect.innerHTML = '<option value="">No voices available</option>';
         voiceSelect.disabled = true;
         voiceStatus.textContent = "Voices unavailable";
@@ -393,23 +454,23 @@
         return;
       }
 
-      voiceSelect.innerHTML = availableVoices.map((voice) => {
-        const meta = [voice.language_name || voice.language, voice.quality].filter(Boolean).join(" • ");
-        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
-      }).join("");
+      const languages = getAvailableLanguages(availableVoices);
+      languageSelect.innerHTML = languages.map((language) => (
+        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)} (${language.count})</option>`
+      )).join("");
 
       const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
-      voiceSelect.value = defaultVoice.id;
-      voiceSelect.disabled = false;
-      voiceStatus.textContent = `${availableVoices.length} voice${availableVoices.length === 1 ? "" : "s"} ready`;
-      renderSelectedVoiceMeta();
+      languageSelect.value = getVoiceLanguageKey(defaultVoice);
+      languageSelect.disabled = false;
+      renderFilteredVoices(defaultVoice.id);
       debugLog("Loaded voice options", payload);
     }
 
     async function loadVoices() {
+      languageSelect.disabled = true;
       voiceSelect.disabled = true;
       voiceStatus.textContent = "Loading voices...";
-      voiceDescription.textContent = "Fetching available voices...";
+      voiceDescription.textContent = "Fetching available languages and voices...";
 
       try {
         const response = await fetch("/api/voices");
@@ -417,9 +478,11 @@
         if (!response.ok) {
           throw new Error(data.detail || "Unable to load voices.");
         }
-        renderVoiceOptions(data);
+        renderLanguageOptions(data);
       } catch (error) {
         debugLog("Voice loading failed", error);
+        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
+        languageSelect.disabled = true;
         voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
         voiceSelect.disabled = true;
         voiceStatus.textContent = "Voice error";
@@ -520,6 +583,10 @@
       }
 
       const formData = new FormData();
+      if (!languageSelect.value) {
+        setError("Please wait for the language list to load, then choose a language.");
+        return;
+      }
       if (!voiceSelect.value) {
         setError("Please wait for the voice list to load, then choose a voice.");
         return;
@@ -534,6 +601,7 @@
       debugLog("Uploading PDF to /convert-pdf", {
         fileName: currentFile.name,
         size: currentFile.size,
+        language: languageSelect.options[languageSelect.selectedIndex]?.text || languageSelect.value,
         voice: voiceSelect.value
       });
 
@@ -623,6 +691,10 @@
     });
 
     clearBtn.addEventListener("click", () => resetToolState(true));
+    languageSelect.addEventListener("change", () => {
+      renderFilteredVoices();
+      setError("");
+    });
     voiceSelect.addEventListener("change", renderSelectedVoiceMeta);
 
     clearHistoryBtn.addEventListener("click", () => {

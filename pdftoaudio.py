@@ -517,7 +517,7 @@ async def list_tts_voices() -> VoicesResponse:
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             voices = await fetch_available_tts_voices(client)
-        return VoicesResponse(voices=voices[:6], default_voice=get_default_voice(voices))
+        return VoicesResponse(voices=voices, default_voice=get_default_voice(voices))
     except Exception as exc:
         logger.warning("Unable to load live CodeVoice voices (%s). Falling back to configured default.", exc)
         fallback = get_fallback_voice_option()
