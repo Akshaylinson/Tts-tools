@@ -9,7 +9,7 @@ from typing import List, Optional, Tuple
 import fitz
 import httpx
 import pytesseract
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
@@ -27,9 +27,9 @@ from settings import (
     TTS_API_KEY,
     TTS_BASE_URL,
     TTS_CHUNK_CHARS,
+    TTS_DEFAULT_VOICE,
     TTS_POLL_ATTEMPTS,
     TTS_POLL_SECONDS,
-    TTS_VOICE,
     validate_runtime_settings,
 )
 
@@ -57,6 +57,32 @@ class ConvertResponse(BaseModel):
     extracted_characters: int
     chunks_processed: int
     filename: str
+    voice: str
+
+
+class VoiceOption(BaseModel):
+    id: str
+    label: str
+    language: str
+    language_name: str
+    gender: str
+    description: str
+    quality: str
+    rating: int
+    downloads: int
+
+
+class VoicesResponse(BaseModel):
+    voices: List[VoiceOption]
+    default_voice: str
+
+
+QUALITY_PRIORITY = {
+    "ultra": 4,
+    "high": 3,
+    "medium": 2,
+    "low": 1,
+}
 
 
 def read_html_file(name: str) -> str:
@@ -101,6 +127,84 @@ def make_log_preview(text: str, limit: int = 120) -> str:
     if len(compact) <= limit:
         return compact
     return compact[:limit].rstrip() + "..."
+
+
+def normalize_voice_value(value: str) -> str:
+    return re.sub(r"\s+", " ", (value or "").strip())
+
+
+def build_voice_option(voice: dict) -> VoiceOption:
+    voice_name = normalize_voice_value(str(voice.get("name") or voice.get("id") or ""))
+    return VoiceOption(
+        id=voice_name,
+        label=voice_name,
+        language=str(voice.get("language") or "").strip(),
+        language_name=str(voice.get("language_name") or "Unknown").strip(),
+        gender=str(voice.get("gender") or "unknown").strip(),
+        description=str(voice.get("description") or f"Voice: {voice_name}").strip(),
+        quality=str(voice.get("quality") or "unknown").strip(),
+        rating=int(voice.get("rating") or 0),
+        downloads=int(voice.get("downloads") or 0),
+    )
+
+
+def sort_voice_options(voices: List[VoiceOption]) -> List[VoiceOption]:
+    return sorted(
+        voices,
+        key=lambda voice: (
+            -voice.rating,
+            -QUALITY_PRIORITY.get(voice.quality.lower(), 0),
+            -voice.downloads,
+            voice.label.lower(),
+        ),
+    )
+
+
+async def fetch_available_tts_voices(client: httpx.AsyncClient) -> List[VoiceOption]:
+    validate_runtime_settings()
+    headers = {}
+    if TTS_API_KEY:
+        headers["X-API-Key"] = TTS_API_KEY
+
+    response = await client.get(f"{TTS_BASE_URL}/v1/voices", headers=headers)
+    response.raise_for_status()
+    payload = response.json()
+    voices_payload = payload.get("voices")
+    if not isinstance(voices_payload, list):
+        raise RuntimeError("The TTS voices endpoint returned an invalid payload.")
+
+    voices = [
+        build_voice_option(voice)
+        for voice in voices_payload
+        if normalize_voice_value(str(voice.get("name") or voice.get("id") or ""))
+    ]
+    if not voices:
+        raise RuntimeError("No TTS voices are currently available.")
+    return sort_voice_options(voices)
+
+
+def get_default_voice(voices: List[VoiceOption]) -> str:
+    configured = normalize_voice_value(TTS_DEFAULT_VOICE)
+    if configured:
+        for voice in voices:
+            if voice.label.lower() == configured.lower() or voice.id.lower() == configured.lower():
+                return voice.id
+    return voices[0].id if voices else configured
+
+
+def get_fallback_voice_option() -> VoiceOption:
+    fallback_voice = normalize_voice_value(TTS_DEFAULT_VOICE) or "ryan"
+    return VoiceOption(
+        id=fallback_voice,
+        label=fallback_voice,
+        language="",
+        language_name="Unknown",
+        gender="unknown",
+        description="Fallback voice configured in the adsense tool.",
+        quality="unknown",
+        rating=0,
+        downloads=0,
+    )
 
 
 def extract_text_from_pdf_bytes(file_bytes: bytes, request_id: str) -> str:
@@ -267,7 +371,7 @@ def chunk_text_for_tts(text: str) -> List[str]:
     return chunks
 
 
-async def create_tts_job(client: httpx.AsyncClient, text: str) -> str:
+async def create_tts_job(client: httpx.AsyncClient, text: str, voice: str) -> str:
     validate_runtime_settings()
     headers = {"Content-Type": "application/json"}
     if TTS_API_KEY:
@@ -276,7 +380,7 @@ async def create_tts_job(client: httpx.AsyncClient, text: str) -> str:
     response = await client.post(
         f"{TTS_BASE_URL}/v1/tts",
         headers=headers,
-        json={"text": text, "voice": TTS_VOICE},
+        json={"text": text, "voice": voice},
     )
     response.raise_for_status()
     payload = response.json()
@@ -327,7 +431,7 @@ async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str, request_id:
     raise RuntimeError("The TTS request timed out before audio was ready.")
 
 
-async def convert_text_to_audio(clean_text: str, source_name: str, request_id: str) -> str:
+async def convert_text_to_audio(clean_text: str, source_name: str, request_id: str, voice: str) -> str:
     chunks = chunk_text_for_tts(clean_text)
     if not chunks:
         raise HTTPException(status_code=422, detail="The cleaned PDF text was empty after processing.")
@@ -346,7 +450,7 @@ async def convert_text_to_audio(clean_text: str, source_name: str, request_id: s
                 len(chunk),
                 make_log_preview(chunk),
             )
-            job_id = await create_tts_job(client, chunk)
+            job_id = await create_tts_job(client, chunk, voice)
             logger.info("[%s] TTS job created for chunk %s: job_id=%s", request_id, chunk_index, job_id)
             audio_bytes, audio_format = await wait_for_tts_audio(client, job_id, request_id, chunk_index)
             segment = AudioSegment.from_file(io.BytesIO(audio_bytes), format="wav" if audio_format == "wav" else "mp3")
@@ -408,8 +512,20 @@ async def health() -> dict:
     return {"status": "ok"}
 
 
+@app.get("/api/voices", response_model=VoicesResponse)
+async def list_tts_voices() -> VoicesResponse:
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            voices = await fetch_available_tts_voices(client)
+        return VoicesResponse(voices=voices[:6], default_voice=get_default_voice(voices))
+    except Exception as exc:
+        logger.warning("Unable to load live CodeVoice voices (%s). Falling back to configured default.", exc)
+        fallback = get_fallback_voice_option()
+        return VoicesResponse(voices=[fallback], default_voice=fallback.id)
+
+
 @app.post("/convert-pdf", response_model=ConvertResponse)
-async def convert_pdf(request: Request, file: UploadFile = File(...)) -> ConvertResponse:
+async def convert_pdf(request: Request, voice: Optional[str] = Form(None), file: UploadFile = File(...)) -> ConvertResponse:
     request_id = uuid.uuid4().hex[:8]
     if not file.filename:
         raise HTTPException(status_code=400, detail="Please choose a PDF file before converting.")
@@ -418,6 +534,9 @@ async def convert_pdf(request: Request, file: UploadFile = File(...)) -> Convert
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a .pdf file.")
 
     logger.info("[%s] Received PDF upload: %s", request_id, file.filename)
+    requested_voice = normalize_voice_value(voice or TTS_DEFAULT_VOICE)
+    if not requested_voice:
+        raise HTTPException(status_code=400, detail="Please select a voice before converting.")
     file_bytes = await file.read()
     if not file_bytes:
         raise HTTPException(status_code=400, detail="The uploaded file is empty.")
@@ -427,11 +546,28 @@ async def convert_pdf(request: Request, file: UploadFile = File(...)) -> Convert
     logger.info("[%s] Uploaded PDF size: %s bytes", request_id, len(file_bytes))
 
     try:
+        try:
+            async with httpx.AsyncClient(timeout=30) as client:
+                available_voices = await fetch_available_tts_voices(client)
+            matching_voice = next(
+                (item for item in available_voices if item.id.lower() == requested_voice.lower() or item.label.lower() == requested_voice.lower()),
+                None,
+            )
+            if not matching_voice:
+                raise HTTPException(status_code=400, detail="The selected voice is not currently available.")
+            selected_voice = matching_voice.id
+        except HTTPException:
+            raise
+        except Exception as exc:
+            logger.warning("[%s] Voice validation lookup failed (%s). Using requested voice directly.", request_id, exc)
+            selected_voice = requested_voice
+        logger.info("[%s] Using TTS voice: %s", request_id, selected_voice)
+
         extracted_text = await asyncio.to_thread(extract_text_from_pdf_bytes, file_bytes, request_id)
         logger.info("[%s] Extracted total text length: %s chars", request_id, len(extracted_text))
         cleaned_text = await clean_text_with_internal_ai(extracted_text, request_id)
         logger.info("[%s] Cleaned text length: %s chars", request_id, len(cleaned_text))
-        output_name = await convert_text_to_audio(cleaned_text, file.filename, request_id)
+        output_name = await convert_text_to_audio(cleaned_text, file.filename, request_id, selected_voice)
         output_url = str(request.base_url).rstrip("/") + f"/outputs/{output_name}"
         logger.info("[%s] Conversion complete. Audio available at %s", request_id, output_url)
     except HTTPException:
@@ -457,6 +593,7 @@ async def convert_pdf(request: Request, file: UploadFile = File(...)) -> Convert
         extracted_characters=len(cleaned_text),
         chunks_processed=len(chunk_text_for_tts(cleaned_text)),
         filename=output_name,
+        voice=selected_voice,
     )
 
 

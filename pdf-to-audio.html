@@ -116,6 +116,19 @@
             </div>
             <button id="convertBtn" type="button" class="inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-ink transition hover:bg-amber-400">Convert to Audio</button>
           </div>
+          <div class="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Narration voice</p>
+                <p class="mt-1 text-sm text-slate-600">Choose from the top live voices currently available in CodeVoice.</p>
+              </div>
+              <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
+            </div>
+            <select id="voiceSelect" class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+              <option>Loading voices...</option>
+            </select>
+            <p id="voiceDescription" class="mt-3 text-sm text-slate-500">Fetching available voices...</p>
+          </div>
           <p id="errorMessage" class="mt-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></p>
           <div id="progressWrap" class="mt-4 hidden">
             <div class="flex items-center justify-between text-sm text-slate-600">
@@ -299,6 +312,9 @@
     const clearBtn = document.getElementById("clearBtn");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
     const fileName = document.getElementById("fileName");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const voiceDescription = document.getElementById("voiceDescription");
     const errorMessage = document.getElementById("errorMessage");
     const progressWrap = document.getElementById("progressWrap");
     const progressLabel = document.getElementById("progressLabel");
@@ -311,6 +327,16 @@
     const HISTORY_KEY = "pdfAudioHistory";
     let currentFile = null;
     let currentResult = null;
+    let availableVoices = [];
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
 
     function debugLog(message, details) {
       if (details === undefined) {
@@ -336,6 +362,69 @@
       fileName.textContent = file ? file.name : "No file selected";
       setError("");
       debugLog(file ? `Selected file: ${file.name}` : "Cleared selected file", file ? { size: file.size, type: file.type } : undefined);
+    }
+
+    function getSelectedVoice() {
+      return availableVoices.find((voice) => voice.id === voiceSelect.value) || null;
+    }
+
+    function renderSelectedVoiceMeta() {
+      const voice = getSelectedVoice();
+      if (!voice) {
+        voiceDescription.textContent = "Fetching available voices...";
+        return;
+      }
+      const parts = [
+        voice.language_name || voice.language || "Unknown language",
+        voice.gender || "unknown",
+        voice.quality || "unknown quality"
+      ].filter(Boolean);
+      voiceDescription.textContent = `${parts.join(" • ")}${voice.description ? ` • ${voice.description}` : ""}`;
+    }
+
+    function renderVoiceOptions(payload) {
+      availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
+
+      if (!availableVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voices unavailable";
+        voiceDescription.textContent = "CodeVoice did not return any usable voices.";
+        return;
+      }
+
+      voiceSelect.innerHTML = availableVoices.map((voice) => {
+        const meta = [voice.language_name || voice.language, voice.quality].filter(Boolean).join(" • ");
+        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+      }).join("");
+
+      const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
+      voiceSelect.value = defaultVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${availableVoices.length} voice${availableVoices.length === 1 ? "" : "s"} ready`;
+      renderSelectedVoiceMeta();
+      debugLog("Loaded voice options", payload);
+    }
+
+    async function loadVoices() {
+      voiceSelect.disabled = true;
+      voiceStatus.textContent = "Loading voices...";
+      voiceDescription.textContent = "Fetching available voices...";
+
+      try {
+        const response = await fetch("/api/voices");
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to load voices.");
+        }
+        renderVoiceOptions(data);
+      } catch (error) {
+        debugLog("Voice loading failed", error);
+        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voice error";
+        voiceDescription.textContent = error.message || "Unable to load voices right now.";
+      }
     }
 
     function getHistory() {
@@ -372,7 +461,7 @@
         card.innerHTML = `
           <div>
             <p class="font-semibold text-ink">${item.fileName}</p>
-            <p class="text-sm text-slate-500">${item.createdAt}</p>
+            <p class="text-sm text-slate-500">${item.createdAt}${item.voice ? ` • ${item.voice}` : ""}</p>
           </div>
           <div class="flex gap-3">
             <button type="button" class="replay-btn rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Replay</button>
@@ -431,15 +520,21 @@
       }
 
       const formData = new FormData();
+      if (!voiceSelect.value) {
+        setError("Please wait for the voice list to load, then choose a voice.");
+        return;
+      }
       formData.append("file", currentFile);
+      formData.append("voice", voiceSelect.value);
 
       setError("");
-      setProgress(true, "Uploading PDF...", "24%");
+      setProgress(true, `Uploading PDF for ${voiceSelect.value}...`, "24%");
       convertBtn.disabled = true;
       convertBtn.classList.add("opacity-60", "cursor-not-allowed");
       debugLog("Uploading PDF to /convert-pdf", {
         fileName: currentFile.name,
-        size: currentFile.size
+        size: currentFile.size,
+        voice: voiceSelect.value
       });
 
       const stagedProgress = [
@@ -473,14 +568,15 @@
         audioPlayer.src = data.audio_url;
         downloadBtn.href = data.audio_url;
         downloadBtn.classList.remove("pointer-events-none", "text-slate-400");
-        successMeta.textContent = `Ready. ${data.extracted_characters.toLocaleString()} characters processed across ${data.chunks_processed} audio chunk(s).`;
+        successMeta.textContent = `Ready in ${data.voice}. ${data.extracted_characters.toLocaleString()} characters processed across ${data.chunks_processed} audio chunk(s).`;
         setProgress(true, "Conversion complete", "100%");
         debugLog("Audio source attached to player", { audioUrl: data.audio_url });
 
         addToHistory({
           fileName: currentFile.name,
           audioUrl: data.audio_url,
-          createdAt: new Date().toLocaleString()
+          createdAt: new Date().toLocaleString(),
+          voice: data.voice
         });
       } catch (error) {
         debugLog("Conversion failed", error);
@@ -519,13 +615,15 @@
       addToHistory({
         fileName: currentFile.name,
         audioUrl: currentResult.audio_url,
-        createdAt: new Date().toLocaleString()
+        createdAt: new Date().toLocaleString(),
+        voice: currentResult.voice
       });
       debugLog("Saved conversion to local history", currentResult);
       successMeta.textContent = "Saved to local history on this device.";
     });
 
     clearBtn.addEventListener("click", () => resetToolState(true));
+    voiceSelect.addEventListener("change", renderSelectedVoiceMeta);
 
     clearHistoryBtn.addEventListener("click", () => {
       localStorage.removeItem(HISTORY_KEY);
@@ -576,6 +674,7 @@
     });
 
     renderHistory();
+    loadVoices();
   </script>
 </body>
 </html>
