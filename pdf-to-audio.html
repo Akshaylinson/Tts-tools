@@ -312,6 +312,14 @@
     let currentFile = null;
     let currentResult = null;
 
+    function debugLog(message, details) {
+      if (details === undefined) {
+        console.log(`[pdf-audio] ${message}`);
+        return;
+      }
+      console.log(`[pdf-audio] ${message}`, details);
+    }
+
     function setError(message = "") {
       errorMessage.textContent = message;
       errorMessage.classList.toggle("hidden", !message);
@@ -327,6 +335,7 @@
       currentFile = file;
       fileName.textContent = file ? file.name : "No file selected";
       setError("");
+      debugLog(file ? `Selected file: ${file.name}` : "Cleared selected file", file ? { size: file.size, type: file.type } : undefined);
     }
 
     function getHistory() {
@@ -372,6 +381,7 @@
         `;
         card.querySelector(".replay-btn").addEventListener("click", () => {
           audioPlayer.src = item.audioUrl;
+          debugLog("Loaded audio from history", item);
           audioPlayer.play();
           successMeta.textContent = `Loaded from history: ${item.fileName}`;
         });
@@ -427,6 +437,10 @@
       setProgress(true, "Uploading PDF...", "24%");
       convertBtn.disabled = true;
       convertBtn.classList.add("opacity-60", "cursor-not-allowed");
+      debugLog("Uploading PDF to /convert-pdf", {
+        fileName: currentFile.name,
+        size: currentFile.size
+      });
 
       const stagedProgress = [
         ["Extracting text from your PDF...", "46%"],
@@ -447,6 +461,7 @@
           method: "POST",
           body: formData
         });
+        debugLog("Received response from /convert-pdf", { status: response.status, ok: response.ok });
 
         const data = await response.json();
         if (!response.ok) {
@@ -454,11 +469,13 @@
         }
 
         currentResult = data;
+        debugLog("Conversion response payload", data);
         audioPlayer.src = data.audio_url;
         downloadBtn.href = data.audio_url;
         downloadBtn.classList.remove("pointer-events-none", "text-slate-400");
         successMeta.textContent = `Ready. ${data.extracted_characters.toLocaleString()} characters processed across ${data.chunks_processed} audio chunk(s).`;
         setProgress(true, "Conversion complete", "100%");
+        debugLog("Audio source attached to player", { audioUrl: data.audio_url });
 
         addToHistory({
           fileName: currentFile.name,
@@ -466,6 +483,7 @@
           createdAt: new Date().toLocaleString()
         });
       } catch (error) {
+        debugLog("Conversion failed", error);
         setError(error.message || "Something went wrong while converting the PDF.");
         setProgress(false);
       } finally {
@@ -489,6 +507,7 @@
         setError("Convert a PDF first to play audio.");
         return;
       }
+      debugLog("Play button clicked", { src: audioPlayer.src });
       audioPlayer.play();
     });
 
@@ -502,6 +521,7 @@
         audioUrl: currentResult.audio_url,
         createdAt: new Date().toLocaleString()
       });
+      debugLog("Saved conversion to local history", currentResult);
       successMeta.textContent = "Saved to local history on this device.";
     });
 
@@ -509,6 +529,7 @@
 
     clearHistoryBtn.addEventListener("click", () => {
       localStorage.removeItem(HISTORY_KEY);
+      debugLog("Cleared local conversion history");
       renderHistory();
     });
 
@@ -530,6 +551,28 @@
       const file = event.dataTransfer.files[0];
       resetToolState(false);
       setSelectedFile(file || null);
+    });
+
+    audioPlayer.addEventListener("loadedmetadata", () => {
+      debugLog("Audio metadata loaded", {
+        src: audioPlayer.currentSrc || audioPlayer.src,
+        duration: audioPlayer.duration
+      });
+    });
+
+    audioPlayer.addEventListener("canplay", () => {
+      debugLog("Audio player can start playback", { src: audioPlayer.currentSrc || audioPlayer.src });
+    });
+
+    audioPlayer.addEventListener("play", () => {
+      debugLog("Audio playback started", { currentTime: audioPlayer.currentTime });
+    });
+
+    audioPlayer.addEventListener("error", () => {
+      debugLog("Audio player error", audioPlayer.error ? {
+        code: audioPlayer.error.code,
+        message: audioPlayer.error.message
+      } : "Unknown audio error");
     });
 
     renderHistory();

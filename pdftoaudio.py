@@ -1,5 +1,6 @@
 import asyncio
 import io
+import logging
 import re
 import uuid
 from pathlib import Path
@@ -35,6 +36,12 @@ from settings import (
 
 OUTPUTS_DIR = APP_DIR / "outputs"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s [pdf-audio] %(message)s",
+)
+logger = logging.getLogger("pdf-audio")
 
 
 app = FastAPI(
@@ -89,7 +96,14 @@ def local_cleanup_text(text: str) -> str:
     return cleaned.strip()
 
 
-def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
+def make_log_preview(text: str, limit: int = 120) -> str:
+    compact = re.sub(r"\s+", " ", text).strip()
+    if len(compact) <= limit:
+        return compact
+    return compact[:limit].rstrip() + "..."
+
+
+def extract_text_from_pdf_bytes(file_bytes: bytes, request_id: str) -> str:
     try:
         document = fitz.open(stream=file_bytes, filetype="pdf")
     except Exception as exc:
@@ -99,10 +113,18 @@ def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
     ocr_pages: List[str] = []
 
     try:
+        logger.info("[%s] Opened PDF with %s page(s)", request_id, document.page_count)
         for page in document:
+            page_number = page.number + 1
             page_text = page.get_text("text").strip()
             if page_text:
                 extracted_pages.append(page_text)
+                logger.info(
+                    "[%s] Extracted text from page %s (%s chars)",
+                    request_id,
+                    page_number,
+                    len(page_text),
+                )
                 continue
 
             pix = page.get_pixmap(matrix=fitz.Matrix(2, 2), alpha=False)
@@ -110,6 +132,14 @@ def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
             ocr_text = pytesseract.image_to_string(image).strip()
             if ocr_text:
                 ocr_pages.append(ocr_text)
+                logger.info(
+                    "[%s] OCR extracted text from page %s (%s chars)",
+                    request_id,
+                    page_number,
+                    len(ocr_text),
+                )
+            else:
+                logger.info("[%s] No readable text found on page %s", request_id, page_number)
     finally:
         document.close()
 
@@ -119,15 +149,23 @@ def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
             status_code=422,
             detail="We couldn't extract readable text from this PDF. Try a clearer PDF or enable OCR on the source file.",
         )
+    logger.info(
+        "[%s] Combined extracted text: %s chars from %s direct page(s) and %s OCR page(s)",
+        request_id,
+        len(text),
+        len(extracted_pages),
+        len(ocr_pages),
+    )
     return text
 
 
-async def clean_text_with_internal_ai(text: str) -> str:
+async def clean_text_with_internal_ai(text: str, request_id: str) -> str:
     trimmed = text[:MAX_TEXT_CHARS].strip()
     if not trimmed:
         raise HTTPException(status_code=422, detail="The PDF did not contain enough readable text to convert.")
 
     if not (CLEANER_API_URL and CLEANER_API_KEY):
+        logger.info("[%s] Cleaner API not configured, using local cleanup", request_id)
         return local_cleanup_text(trimmed)
 
     prompt = (
@@ -151,10 +189,19 @@ async def clean_text_with_internal_ai(text: str) -> str:
 
     try:
         async with httpx.AsyncClient(timeout=120) as client:
+            logger.info(
+                "[%s] Sending cleaned-text request to %s with %s trimmed chars. Preview: \"%s\"",
+                request_id,
+                CLEANER_API_URL,
+                len(trimmed),
+                make_log_preview(trimmed),
+            )
             response = await client.post(CLEANER_API_URL, headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
-    except Exception:
+            logger.info("[%s] Cleaner API responded with status %s", request_id, response.status_code)
+    except Exception as exc:
+        logger.warning("[%s] Cleaner API failed (%s). Falling back to local cleanup", request_id, exc)
         return local_cleanup_text(trimmed)
 
     content = (
@@ -163,7 +210,12 @@ async def clean_text_with_internal_ai(text: str) -> str:
         .get("content", "")
     )
     cleaned = strip_code_fences(content)
-    return cleaned or local_cleanup_text(trimmed)
+    if cleaned:
+        logger.info("[%s] Cleaner API returned %s cleaned chars", request_id, len(cleaned))
+        return cleaned
+
+    logger.info("[%s] Cleaner API returned empty text, using local cleanup fallback", request_id)
+    return local_cleanup_text(trimmed)
 
 
 def chunk_text_for_tts(text: str) -> List[str]:
@@ -234,22 +286,39 @@ async def create_tts_job(client: httpx.AsyncClient, text: str) -> str:
     return job_id
 
 
-async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str) -> Tuple[bytes, str]:
+async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str, request_id: str, chunk_index: int) -> Tuple[bytes, str]:
     headers = {}
     if TTS_API_KEY:
         headers["X-API-Key"] = TTS_API_KEY
 
-    for _ in range(TTS_POLL_ATTEMPTS):
+    for attempt in range(1, TTS_POLL_ATTEMPTS + 1):
         await asyncio.sleep(TTS_POLL_SECONDS)
         status_response = await client.get(f"{TTS_BASE_URL}/tts/status/{job_id}", headers=headers)
         status_response.raise_for_status()
         status_payload = status_response.json()
         status = status_payload.get("status")
+        logger.info(
+            "[%s] Chunk %s poll %s/%s for job %s returned status=%s",
+            request_id,
+            chunk_index,
+            attempt,
+            TTS_POLL_ATTEMPTS,
+            job_id,
+            status,
+        )
 
         if status == "completed":
             audio_format = str(status_payload.get("audio_format") or "MP3").lower()
             audio_response = await client.get(f"{TTS_BASE_URL}/v1/audio/{job_id}", headers=headers)
             audio_response.raise_for_status()
+            logger.info(
+                "[%s] Chunk %s audio downloaded for job %s (%s bytes, format=%s)",
+                request_id,
+                chunk_index,
+                job_id,
+                len(audio_response.content),
+                audio_format,
+            )
             return audio_response.content, audio_format
 
         if status == "failed":
@@ -258,24 +327,44 @@ async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str) -> Tuple[by
     raise RuntimeError("The TTS request timed out before audio was ready.")
 
 
-async def convert_text_to_audio(clean_text: str, source_name: str) -> str:
+async def convert_text_to_audio(clean_text: str, source_name: str, request_id: str) -> str:
     chunks = chunk_text_for_tts(clean_text)
     if not chunks:
         raise HTTPException(status_code=422, detail="The cleaned PDF text was empty after processing.")
 
     merged_audio: Optional[AudioSegment] = None
+    logger.info("[%s] Split cleaned text into %s chunk(s) for TTS", request_id, len(chunks))
 
     async with httpx.AsyncClient(timeout=180) as client:
-        for chunk in chunks:
+        for chunk_index, chunk in enumerate(chunks, start=1):
+            logger.info(
+                "[%s] Sending chunk %s/%s to TTS API %s/v1/tts (%s chars). Preview: \"%s\"",
+                request_id,
+                chunk_index,
+                len(chunks),
+                TTS_BASE_URL,
+                len(chunk),
+                make_log_preview(chunk),
+            )
             job_id = await create_tts_job(client, chunk)
-            audio_bytes, audio_format = await wait_for_tts_audio(client, job_id)
+            logger.info("[%s] TTS job created for chunk %s: job_id=%s", request_id, chunk_index, job_id)
+            audio_bytes, audio_format = await wait_for_tts_audio(client, job_id, request_id, chunk_index)
             segment = AudioSegment.from_file(io.BytesIO(audio_bytes), format="wav" if audio_format == "wav" else "mp3")
             merged_audio = segment if merged_audio is None else merged_audio + segment
+            logger.info(
+                "[%s] Appended chunk %s/%s audio segment (%s ms)",
+                request_id,
+                chunk_index,
+                len(chunks),
+                len(segment),
+            )
 
     stem = re.sub(r"[^a-zA-Z0-9_-]+", "-", Path(source_name).stem).strip("-").lower() or "pdf-audio"
     output_name = f"{stem}-{uuid.uuid4().hex[:10]}.mp3"
     output_path = OUTPUTS_DIR / output_name
+    logger.info("[%s] Exporting merged audio to %s", request_id, output_path)
     merged_audio.export(output_path, format="mp3", bitrate="128k")
+    logger.info("[%s] Finished MP3 export: %s", request_id, output_name)
     return output_name
 
 
@@ -321,26 +410,33 @@ async def health() -> dict:
 
 @app.post("/convert-pdf", response_model=ConvertResponse)
 async def convert_pdf(request: Request, file: UploadFile = File(...)) -> ConvertResponse:
+    request_id = uuid.uuid4().hex[:8]
     if not file.filename:
         raise HTTPException(status_code=400, detail="Please choose a PDF file before converting.")
 
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a .pdf file.")
 
+    logger.info("[%s] Received PDF upload: %s", request_id, file.filename)
     file_bytes = await file.read()
     if not file_bytes:
         raise HTTPException(status_code=400, detail="The uploaded file is empty.")
 
     if len(file_bytes) > MAX_FILE_SIZE:
         raise HTTPException(status_code=400, detail="File is too large. The maximum supported size is 10MB.")
+    logger.info("[%s] Uploaded PDF size: %s bytes", request_id, len(file_bytes))
 
-    extracted_text = await asyncio.to_thread(extract_text_from_pdf_bytes, file_bytes)
-    cleaned_text = await clean_text_with_internal_ai(extracted_text)
-    output_name = await convert_text_to_audio(cleaned_text, file.filename)
+    extracted_text = await asyncio.to_thread(extract_text_from_pdf_bytes, file_bytes, request_id)
+    logger.info("[%s] Extracted total text length: %s chars", request_id, len(extracted_text))
+    cleaned_text = await clean_text_with_internal_ai(extracted_text, request_id)
+    logger.info("[%s] Cleaned text length: %s chars", request_id, len(cleaned_text))
+    output_name = await convert_text_to_audio(cleaned_text, file.filename, request_id)
+    output_url = str(request.base_url).rstrip("/") + f"/outputs/{output_name}"
+    logger.info("[%s] Conversion complete. Audio available at %s", request_id, output_url)
 
     return ConvertResponse(
         status="success",
-        audio_url=str(request.base_url).rstrip("/") + f"/outputs/{output_name}",
+        audio_url=output_url,
         extracted_characters=len(cleaned_text),
         chunks_processed=len(chunk_text_for_tts(cleaned_text)),
         filename=output_name,
@@ -353,6 +449,7 @@ async def download_output(filename: str) -> FileResponse:
     file_path = OUTPUTS_DIR / safe_name
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Audio file not found.")
+    logger.info("Serving audio download: %s", safe_name)
     return FileResponse(file_path, media_type="audio/mpeg", filename=safe_name)
 
 
