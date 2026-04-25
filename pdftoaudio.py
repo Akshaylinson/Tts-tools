@@ -426,13 +426,30 @@ async def convert_pdf(request: Request, file: UploadFile = File(...)) -> Convert
         raise HTTPException(status_code=400, detail="File is too large. The maximum supported size is 10MB.")
     logger.info("[%s] Uploaded PDF size: %s bytes", request_id, len(file_bytes))
 
-    extracted_text = await asyncio.to_thread(extract_text_from_pdf_bytes, file_bytes, request_id)
-    logger.info("[%s] Extracted total text length: %s chars", request_id, len(extracted_text))
-    cleaned_text = await clean_text_with_internal_ai(extracted_text, request_id)
-    logger.info("[%s] Cleaned text length: %s chars", request_id, len(cleaned_text))
-    output_name = await convert_text_to_audio(cleaned_text, file.filename, request_id)
-    output_url = str(request.base_url).rstrip("/") + f"/outputs/{output_name}"
-    logger.info("[%s] Conversion complete. Audio available at %s", request_id, output_url)
+    try:
+        extracted_text = await asyncio.to_thread(extract_text_from_pdf_bytes, file_bytes, request_id)
+        logger.info("[%s] Extracted total text length: %s chars", request_id, len(extracted_text))
+        cleaned_text = await clean_text_with_internal_ai(extracted_text, request_id)
+        logger.info("[%s] Cleaned text length: %s chars", request_id, len(cleaned_text))
+        output_name = await convert_text_to_audio(cleaned_text, file.filename, request_id)
+        output_url = str(request.base_url).rstrip("/") + f"/outputs/{output_name}"
+        logger.info("[%s] Conversion complete. Audio available at %s", request_id, output_url)
+    except HTTPException:
+        raise
+    except RuntimeError as exc:
+        logger.exception("[%s] Conversion failed during TTS processing", request_id)
+        detail = str(exc)
+        status_code = 504 if "timed out" in detail.lower() else 502
+        raise HTTPException(status_code=status_code, detail=detail) from exc
+    except httpx.HTTPError as exc:
+        logger.exception("[%s] Conversion failed while calling an upstream HTTP service", request_id)
+        raise HTTPException(
+            status_code=502,
+            detail="Failed to reach the configured text cleanup or TTS service.",
+        ) from exc
+    except Exception as exc:
+        logger.exception("[%s] Unexpected conversion error", request_id)
+        raise HTTPException(status_code=500, detail="Unexpected server error during PDF conversion.") from exc
 
     return ConvertResponse(
         status="success",
