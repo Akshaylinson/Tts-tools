@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  adsense-tools:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      PDF_AUDIO_APP_HOST: ${PDF_AUDIO_APP_HOST:-0.0.0.0}
+      PDF_AUDIO_APP_PORT: ${PDF_AUDIO_APP_PORT:-8010}
+      PDF_AUDIO_TTS_BASE_URL: ${PDF_AUDIO_TTS_BASE_URL:-https://voices.codelessai.in}
+      PDF_AUDIO_TTS_API_KEY: ${PDF_AUDIO_TTS_API_KEY:-}
+      PDF_AUDIO_TTS_VOICE: ${PDF_AUDIO_TTS_VOICE:-Ryan}
+      PDF_AUDIO_CLEANER_API_URL: ${PDF_AUDIO_CLEANER_API_URL:-}
+      PDF_AUDIO_CLEANER_API_KEY: ${PDF_AUDIO_CLEANER_API_KEY:-}
+      PDF_AUDIO_CLEANER_MODEL: ${PDF_AUDIO_CLEANER_MODEL:-gpt-4o-mini}
+      PDF_AUDIO_MAX_FILE_SIZE: ${PDF_AUDIO_MAX_FILE_SIZE:-10485760}
+      PDF_AUDIO_MAX_TEXT_CHARS: ${PDF_AUDIO_MAX_TEXT_CHARS:-18000}
+      PDF_AUDIO_TTS_CHUNK_CHARS: ${PDF_AUDIO_TTS_CHUNK_CHARS:-1800}
+      PDF_AUDIO_TTS_POLL_SECONDS: ${PDF_AUDIO_TTS_POLL_SECONDS:-15}
+      PDF_AUDIO_TTS_POLL_ATTEMPTS: ${PDF_AUDIO_TTS_POLL_ATTEMPTS:-200}
+    ports:
+      - "${PDF_AUDIO_APP_PORT:-8010}:8010"
+    volumes:
+      - ./outputs:/app/outputs
+    restart: unless-stopped
