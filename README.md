@@ -1,70 +1,58 @@
 # Adsense Tools Page
 
-Standalone FastAPI + Tailwind app with a landing page and a PDF-to-audio tool.
+This project is now organized for multiple tools.
 
-## What it does
+## Structure
 
-- Serves the landing page at `/`
-- Serves the PDF-to-audio page at `/pdf-to-audio`
-- Accepts PDF uploads at `POST /convert-pdf`
-- Extracts text with PyMuPDF
-- Falls back to OCR with Tesseract for image-heavy pages
-- Optionally cleans extracted text with a configured AI endpoint
-- Calls the live CodeVoice TTS API and merges chunked audio output
-- Stores generated audio in `outputs/`
-
-## Environment
-
-Copy `.env.example` to `.env` in this folder and set the values you want.
-
-Recommended defaults:
-
-```env
-PDF_AUDIO_APP_HOST=0.0.0.0
-PDF_AUDIO_APP_PORT=8010
-
-PDF_AUDIO_TTS_BASE_URL=https://voices.codelessai.in
-PDF_AUDIO_TTS_API_KEY=your_internal_codevoice_key
-PDF_AUDIO_TTS_VOICE=Ryan
-
-PDF_AUDIO_CLEANER_API_URL=
-PDF_AUDIO_CLEANER_API_KEY=
-PDF_AUDIO_CLEANER_MODEL=gpt-4o-mini
-
-PDF_AUDIO_MAX_FILE_SIZE=10485760
-PDF_AUDIO_MAX_TEXT_CHARS=18000
-PDF_AUDIO_TTS_CHUNK_CHARS=1800
-PDF_AUDIO_TTS_POLL_SECONDS=15
-PDF_AUDIO_TTS_POLL_ATTEMPTS=200
+```text
+Adsense Tools Page/
+|-- app.py
+|-- docker-compose.yml
+|-- index.html
+|-- about.html
+|-- privacy-policy.html
+|-- terms.html
+|-- tools/
+|   `-- pdf_to_audio/
+|       |-- .env
+|       |-- .env.example
+|       |-- Dockerfile
+|       |-- pdf-to-audio.html
+|       |-- pdftoaudio.py
+|       |-- requirements.txt
+|       |-- settings.py
+|       `-- outputs/
 ```
 
-This app can run completely standalone when `PDF_AUDIO_TTS_BASE_URL` points to the live CodeVoice API. It does not need local `nginx`, `backend`, `worker`, or `redis` containers in that mode.
+## How It Works
+
+- `app.py` is the shared root app for common pages.
+- `tools/pdf_to_audio/` contains all PDF-to-audio-specific code, config, HTML, Docker build files, and outputs.
+- The root `docker-compose.yml` builds the whole site using the PDF tool Dockerfile and serves the shared app entrypoint.
 
 ## Run Locally
 
 ```bash
 cd "Adsense Tools Page"
-pip install -r requirements.txt
-uvicorn pdftoaudio:app --host 0.0.0.0 --port 8010 --reload
+pip install -r tools/pdf_to_audio/requirements.txt
+uvicorn app:app --host 0.0.0.0 --port 8010 --reload
 ```
 
-Open `http://127.0.0.1:8010/pdf-to-audio`.
+Open `http://127.0.0.1:8010/`.
 
 ## Run With Docker
-
-Use the compose file inside this folder, not the parent project compose:
 
 ```bash
 cd "Adsense Tools Page"
 docker compose up --build
 ```
 
-Open `http://127.0.0.1:8010/pdf-to-audio`.
+The compose file reads PDF tool settings from `tools/pdf_to_audio/.env`.
 
-If you instead run the parent `../docker-compose.yml`, Docker may also start unrelated CodeVoice services because that compose file defines the larger stack.
+## Adding More Tools
 
-## Notes
+Follow the same pattern:
 
-- `pytesseract` requires Tesseract OCR to be installed on the host when running without Docker.
-- `pydub` requires FFmpeg to be available for audio merging.
-- Runtime settings are loaded through `settings.py`.
+- create a folder inside `tools/`
+- keep that tool's Python, HTML, env, requirements, Docker assets, and outputs inside its own folder
+- mount or register the tool from `app.py`
