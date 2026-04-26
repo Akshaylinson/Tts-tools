@@ -31,6 +31,15 @@ Adsense Tools Page/
 |       |-- requirements.txt
 |       |-- settings.py
 |       `-- outputs/
+|   `-- story_narration_generator/
+|       |-- .env
+|       |-- .env.example
+|       |-- Dockerfile
+|       |-- story-narration-generator.html
+|       |-- storynarration.py
+|       |-- requirements.txt
+|       |-- settings.py
+|       `-- outputs/
 ```
 
 ## How It Works
@@ -38,6 +47,7 @@ Adsense Tools Page/
 - `app.py` is the shared root app for common pages.
 - `tools/pdf_to_audio/` contains all PDF-to-audio-specific code, config, HTML, Docker build files, and outputs.
 - `tools/Text-to-audio/` contains all text-to-audio-specific code, config, HTML, Docker build files, and outputs.
+- `tools/story_narration_generator/` contains the AI story narration generator page, Grok prompt logic, TTS integration, HTML, Docker assets, and outputs.
 - The root `docker-compose.yml` builds the whole site using the PDF tool Dockerfile and serves the shared app entrypoint.
 
 ## Run Locally
@@ -46,6 +56,7 @@ Adsense Tools Page/
 cd "Adsense Tools Page"
 pip install -r tools/pdf_to_audio/requirements.txt
 pip install -r tools/Text-to-audio/requirements.txt
+pip install -r tools/story_narration_generator/requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 8010 --reload
 ```
 
@@ -58,7 +69,11 @@ cd "Adsense Tools Page"
 docker compose up --build
 ```
 
-The compose file currently reads PDF tool settings from `tools/pdf_to_audio/.env`, while the text-to-audio tool loads its own settings from `tools/Text-to-audio/.env`.
+The compose file currently reads runtime settings from:
+
+- `tools/pdf_to_audio/.env`
+- `tools/Text-to-audio/.env`
+- `tools/story_narration_generator/.env`
 
 ## Adding More Tools
 

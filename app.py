@@ -28,6 +28,7 @@ def load_tool_app(package_dir: Path, module_name: str):
 
 
 text_to_audio_app = load_tool_app(APP_DIR / "tools" / "Text-to-audio", "text_to_audio_tool")
+story_narration_app = load_tool_app(APP_DIR / "tools" / "story_narration_generator", "story_narration_tool")
 
 
 def read_html_file(name: str) -> str:
@@ -75,3 +76,4 @@ async def health() -> dict:
 
 app.mount("/pdf-to-audio", pdf_to_audio_app)
 app.mount("/text-to-audio", text_to_audio_app)
+app.mount("/story-narration-generator", story_narration_app)

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Story Narration Generator - Free Online Tool</title>
+  <meta name="description" content="Turn your ideas into narrated stories with our AI story generator. Create and listen to stories instantly online.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#10261f">
+  <link rel="canonical" href="/story-narration-generator">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#10261f",
+            mist: "#f6f4eb",
+            brand: "#166534",
+            branddeep: "#0f3d2e",
+            moss: "#d8e8cb",
+            accent: "#f59e0b"
+          },
+          boxShadow: {
+            card: "0 20px 55px rgba(16, 38, 31, 0.08)"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-mist text-slate-900 antialiased">
+  <header class="border-b border-white/10 bg-ink text-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <a href="/" class="text-lg font-semibold tracking-tight">Adsense Tools</a>
+      <nav class="flex items-center gap-4 text-sm text-slate-300">
+        <a href="#tool" class="hover:text-white">Tool</a>
+        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#faq" class="hover:text-white">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-[radial-gradient(circle_at_top_right,_rgba(245,158,11,0.18),_transparent_28%),radial-gradient(circle_at_top_left,_rgba(34,197,94,0.2),_transparent_34%),linear-gradient(135deg,_#10261f,_#166534_58%,_#3f6212)] text-white">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <p class="inline-flex rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm text-emerald-100">AI story generator with voice</p>
+        <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Turn Any Idea into a Narrated Story</h1>
+        <p class="mt-5 max-w-2xl text-lg text-emerald-50">Generate engaging stories and listen instantly. Start from a rough concept, shape it into a structured script, and create downloadable narration in the same flow.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#tool" class="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-ink transition hover:bg-emerald-50">Create Story</a>
+          <span class="inline-flex rounded-full border border-white/20 px-4 py-3 text-sm text-emerald-100">No signup required</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="tool" class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Core tool</p>
+              <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Build your story and narration</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Enter an idea, choose the story style, and generate a clean narration script before turning it into MP3 audio.</p>
+            </div>
+            <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
+          </div>
+
+          <form id="storyForm" class="mt-8 space-y-5">
+            <div>
+              <label for="ideaInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Enter your idea</label>
+              <textarea id="ideaInput" rows="6" maxlength="1200" required class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-brand focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="Example: A shy child finds a lantern that tells stories about courage and helps her speak up during a school talent show."></textarea>
+              <p class="mt-2 text-sm text-slate-500">Keep it rough. The tool will turn it into a title, intro, main story, ending, and moral.</p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div>
+                <label for="storyTypeSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Story Type</label>
+                <select id="storyTypeSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100">
+                  <option value="kids">Kids</option>
+                  <option value="horror">Horror</option>
+                  <option value="motivational">Motivational</option>
+                  <option value="general" selected>General</option>
+                </select>
+              </div>
+              <div>
+                <label for="durationSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Duration</label>
+                <select id="durationSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100">
+                  <option value="1 min">1 min</option>
+                  <option value="3 min" selected>3 min</option>
+                  <option value="5 min">5 min</option>
+                </select>
+              </div>
+              <div>
+                <label for="languageSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Language</label>
+                <select id="languageSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100" disabled>
+                  <option value="">Loading languages...</option>
+                </select>
+              </div>
+              <div>
+                <label for="voiceSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Voice Model</label>
+                <select id="voiceSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100" disabled>
+                  <option value="">Loading voices...</option>
+                </select>
+              </div>
+            </div>
+
+            <p id="voiceDescription" class="text-sm text-slate-500">Fetching available languages and voices...</p>
+
+            <div class="flex flex-wrap gap-3">
+              <button id="generateStoryBtn" type="submit" class="inline-flex items-center rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep disabled:cursor-not-allowed disabled:opacity-60">Generate Story</button>
+              <button id="generateAudioBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Convert to Audio</button>
+            </div>
+          </form>
+
+          <div id="progressBox" class="mt-6 hidden rounded-3xl border border-emerald-100 bg-emerald-50 px-4 py-4">
+            <div class="flex items-center gap-3">
+              <div class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-200 border-t-brand"></div>
+              <div>
+                <p id="progressLabel" class="font-semibold text-ink">Generating story...</p>
+                <p id="progressMeta" class="text-sm text-slate-600">Please wait a few seconds.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
+        </article>
+
+        <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Output</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Preview and listen</h2>
+          <p class="mt-3 text-slate-600">Your story appears here first, then the audio player activates after narration is generated.</p>
+
+          <details id="storyPreviewCard" class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" open>
+            <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Story preview</summary>
+            <div id="storyPreviewEmpty" class="mt-4 text-sm text-slate-500">Generate a story to preview the title, intro, main section, ending, and moral.</div>
+            <div id="storyPreviewContent" class="mt-4 hidden space-y-4">
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Title</h3>
+                <p id="storyTitle" class="mt-2 text-xl font-semibold text-ink"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Intro</h3>
+                <p id="storyIntro" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Story</h3>
+                <p id="storyBody" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Ending</h3>
+                <p id="storyEnding" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Moral</h3>
+                <p id="storyMoral" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+            </div>
+          </details>
+
+          <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-semibold text-ink">Audio player</h3>
+                <p id="audioMeta" class="mt-2 text-sm text-slate-500">Generate a story first, then convert it to audio.</p>
+              </div>
+              <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+            </div>
+            <audio id="audioPlayer" class="mt-4 hidden w-full" controls preload="none"></audio>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button id="playBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Play</button>
+              <a id="downloadLink" href="#" class="pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400">Download MP3</a>
+              <button id="regenerateBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Regenerate Story</button>
+              <button id="clearBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="historySection" class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Recent history</p>
+            <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Last 3 generations on this device</h2>
+          </div>
+          <button id="clearHistoryBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear history</button>
+        </div>
+        <div id="historyList" class="mt-5 grid gap-3"></div>
+      </div>
+    </section>
+
+    <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+        <article class="rounded-3xl bg-white p-5 shadow-card">
+          <h2 class="text-lg font-semibold text-ink">AI-generated stories</h2>
+          <p class="mt-2 text-sm text-slate-600">Turn a rough prompt into a structured script with a title, intro, narrative arc, ending, and moral.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-card">
+          <h2 class="text-lg font-semibold text-ink">Natural voice narration</h2>
+          <p class="mt-2 text-sm text-slate-600">Convert the finished story into spoken audio with a live voice model and downloadable MP3 output.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-card">
+          <h2 class="text-lg font-semibold text-ink">Multiple languages</h2>
+          <p class="mt-2 text-sm text-slate-600">Language choices come from the connected voice inventory so the spoken output stays consistent.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-card">
+          <h2 class="text-lg font-semibold text-ink">Fast processing</h2>
+          <p class="mt-2 text-sm text-slate-600">The workflow is streamlined for quick generation, short waits, and clear progress messaging.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-card">
+          <h2 class="text-lg font-semibold text-ink">No signup required</h2>
+          <p class="mt-2 text-sm text-slate-600">Open the page, write the idea, and get story plus audio without creating an account.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">How it works</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">From idea to narrated story in four steps</h2>
+        </div>
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-brand">1. Enter your idea</p>
+            <p class="mt-3 text-slate-600">Paste a short concept, plot seed, or character setup in the idea box.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-brand">2. Choose story settings</p>
+            <p class="mt-3 text-slate-600">Pick the story type, target duration, language, and the voice model you want to use.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-brand">3. Generate story</p>
+            <p class="mt-3 text-slate-600">The tool structures the narration into title, intro, story, ending, and moral.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-brand">4. Listen or download</p>
+            <p class="mt-3 text-slate-600">Convert the story to audio, play it in the browser, or save the MP3 for later.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">SEO content</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">What is AI story narration?</h2>
+      <div class="mt-6 space-y-4 text-slate-700">
+        <p>An AI story generator with voice helps users turn rough concepts into polished spoken content without building every sentence manually. Instead of starting with a blank page, you can enter a simple idea, choose a story style, and let the tool produce a structured narration with a title, introduction, main story, ending, and moral. That makes the workflow useful for people who want both creative support and a fast path to audio. A story narration generator is especially practical when the final goal is listening, sharing, or testing how a story sounds out loud rather than just reading it silently on a screen.</p>
+        <p>One of the strongest use cases is kids storytelling. Parents, teachers, and caregivers often need fresh short stories for bedtime, class activities, or language practice. With an AI story generator with voice, they can start from a small prompt such as a brave rabbit, a lost key, or a magical train ride and quickly receive a complete spoken story. The audio format also helps children stay engaged, because listening can feel lighter and more playful than reading a long paragraph block. For educators, the same workflow can support pronunciation, comprehension, and guided listening exercises.</p>
+        <p>Content creators can also benefit from a story narration generator when drafting scripts for videos, shorts, reels, or podcasts. A rough premise can become a more coherent arc in seconds, which saves time during ideation. Once the script is ready, a text to speech story tool makes it possible to hear pacing, transitions, and emotional flow before recording a final human version. That is valuable for script editing because weak sections often become obvious when heard aloud. Creators can iterate faster, compare tones, and test different languages or voices from one browser-based workflow.</p>
+        <p>Learning and self-study are another good fit. Students can turn historical scenes, moral lessons, or simple concept summaries into audio stories that are easier to revisit during breaks, walks, or commutes. Audio storytelling supports memory by pairing narrative structure with voice, which can make information feel more vivid and easier to retain. More broadly, the benefits of narrated stories include convenience, accessibility, reduced reading fatigue, and a smoother mobile experience. When a text to speech story tool combines structured writing with quick MP3 output, it becomes a practical way to move from idea to useful audio without extra software or account setup.</p>
+      </div>
+    </section>
+
+    <section id="faq" class="mx-auto max-w-4xl px-4 py-4 pb-16 sm:px-6">
+      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
+      <div class="mt-8 space-y-4">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
+          <p class="mt-2 text-slate-600">Yes. The page is designed as a free online workflow for generating a story and converting it into narrated audio.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Can I choose voices?</h3>
+          <p class="mt-2 text-slate-600">Yes. The voice model list updates dynamically from the connected speech service and is filtered by language.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">What languages are supported?</h3>
+          <p class="mt-2 text-slate-600">Supported languages depend on the live voice inventory returned by the current TTS provider. The language dropdown reflects what is available.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
+          <p class="mt-2 text-slate-600">Yes. After audio is generated, you can download the narration as an MP3 file.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">How long does generation take?</h3>
+          <p class="mt-2 text-slate-600">Story generation usually completes within a few seconds, while audio time depends on narration length and TTS queue speed.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p>&copy; 2026 Adsense Tools Page. Utility-first web tools for everyday tasks.</p>
+      <nav class="flex gap-4">
+        <a href="/privacy-policy" class="hover:text-ink">Privacy Policy</a>
+        <a href="/terms" class="hover:text-ink">Terms</a>
+        <a href="/about" class="hover:text-ink">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const TOOL_BASE_PATH = "/story-narration-generator";
+    const HISTORY_KEY = "storyNarrationHistory";
+
+    const storyForm = document.getElementById("storyForm");
+    const ideaInput = document.getElementById("ideaInput");
+    const storyTypeSelect = document.getElementById("storyTypeSelect");
+    const durationSelect = document.getElementById("durationSelect");
+    const languageSelect = document.getElementById("languageSelect");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const generateStoryBtn = document.getElementById("generateStoryBtn");
+    const generateAudioBtn = document.getElementById("generateAudioBtn");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const voiceDescription = document.getElementById("voiceDescription");
+    const progressBox = document.getElementById("progressBox");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressMeta = document.getElementById("progressMeta");
+    const messageBox = document.getElementById("messageBox");
+    const storyPreviewEmpty = document.getElementById("storyPreviewEmpty");
+    const storyPreviewContent = document.getElementById("storyPreviewContent");
+    const storyTitle = document.getElementById("storyTitle");
+    const storyIntro = document.getElementById("storyIntro");
+    const storyBody = document.getElementById("storyBody");
+    const storyEnding = document.getElementById("storyEnding");
+    const storyMoral = document.getElementById("storyMoral");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioMeta = document.getElementById("audioMeta");
+    const audioStatus = document.getElementById("audioStatus");
+    const playBtn = document.getElementById("playBtn");
+    const downloadLink = document.getElementById("downloadLink");
+    const regenerateBtn = document.getElementById("regenerateBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const historyList = document.getElementById("historyList");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+    let availableVoices = [];
+    let filteredVoices = [];
+    let currentStory = null;
+    let currentAudio = null;
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function setBusy(isBusy, label = "", meta = "") {
+      progressBox.classList.toggle("hidden", !isBusy);
+      if (isBusy) {
+        progressLabel.textContent = label;
+        progressMeta.textContent = meta;
+      }
+      generateStoryBtn.disabled = isBusy;
+      generateAudioBtn.disabled = isBusy || !currentStory || !voiceSelect.value;
+      regenerateBtn.disabled = isBusy || !ideaInput.value.trim();
+    }
+
+    function setMessage(type, text) {
+      if (!text) {
+        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
+        messageBox.textContent = "";
+        return;
+      }
+      const palette = {
+        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
+        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
+        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
+      };
+      messageBox.className = palette[type] || palette.info;
+      messageBox.textContent = text;
+    }
+
+    function resetAudioState() {
+      currentAudio = null;
+      audioPlayer.pause();
+      audioPlayer.removeAttribute("src");
+      audioPlayer.load();
+      audioPlayer.classList.add("hidden");
+      playBtn.disabled = true;
+      downloadLink.href = "#";
+      downloadLink.className = "pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400";
+      audioMeta.textContent = "Generate a story first, then convert it to audio.";
+      audioStatus.textContent = "Waiting";
+    }
+
+    function renderStory(story) {
+      storyPreviewEmpty.classList.add("hidden");
+      storyPreviewContent.classList.remove("hidden");
+      storyTitle.textContent = story.title;
+      storyIntro.textContent = story.intro;
+      storyBody.textContent = story.story;
+      storyEnding.textContent = story.ending;
+      storyMoral.textContent = story.moral;
+    }
+
+    function getVoiceLanguageKey(voice) {
+      return (voice.language || voice.language_name || "unknown").trim().toLowerCase();
+    }
+
+    function getVoiceLanguageLabel(voice) {
+      const label = (voice.language_name || voice.language || "Default").trim();
+      return label === "Unknown" ? "Default" : label;
+    }
+
+    function getAvailableLanguages(voices) {
+      const map = new Map();
+      voices.forEach((voice) => {
+        const key = getVoiceLanguageKey(voice);
+        if (!map.has(key)) {
+          map.set(key, { key, label: getVoiceLanguageLabel(voice) });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function renderSelectedVoiceMeta() {
+      const voice = filteredVoices.find((item) => item.id === voiceSelect.value);
+      if (!voice) {
+        voiceDescription.textContent = "Choose a language to see matching voices.";
+        return;
+      }
+      const parts = [
+        voice.language_name || voice.language || "Unknown language",
+        voice.gender || "unknown",
+        voice.quality || "unknown quality"
+      ];
+      voiceDescription.textContent = `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
+    }
+
+    function renderFilteredVoices(preferredVoiceId = "") {
+      const selectedLanguage = languageSelect.value;
+      filteredVoices = availableVoices.filter((voice) => getVoiceLanguageKey(voice) === selectedLanguage);
+
+      if (!filteredVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "No voices";
+        voiceDescription.textContent = "No voice models are currently available for this language.";
+        generateAudioBtn.disabled = true;
+        return;
+      }
+
+      voiceSelect.innerHTML = filteredVoices.map((voice) => {
+        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
+        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+      }).join("");
+
+      const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
+      voiceSelect.value = preferredVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} ready`;
+      renderSelectedVoiceMeta();
+      generateAudioBtn.disabled = !currentStory;
+    }
+
+    function applyVoicePayload(payload) {
+      availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
+      if (!availableVoices.length) {
+        languageSelect.innerHTML = '<option value="">No languages available</option>';
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        languageSelect.disabled = true;
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voices unavailable";
+        voiceDescription.textContent = "The speech service did not return usable voice options.";
+        return;
+      }
+
+      const languages = getAvailableLanguages(availableVoices);
+      languageSelect.innerHTML = languages.map((language) => (
+        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)}</option>`
+      )).join("");
+      languageSelect.disabled = false;
+
+      const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
+      languageSelect.value = getVoiceLanguageKey(defaultVoice);
+      renderFilteredVoices(defaultVoice.id);
+    }
+
+    async function loadVoices() {
+      voiceStatus.textContent = "Loading voices...";
+      voiceDescription.textContent = "Fetching available languages and voices...";
+      voiceSelect.disabled = true;
+      languageSelect.disabled = true;
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to load voices.");
+        }
+        applyVoicePayload(data);
+      } catch (error) {
+        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
+        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
+        voiceSelect.disabled = true;
+        languageSelect.disabled = true;
+        voiceStatus.textContent = "Voice error";
+        voiceDescription.textContent = error.message || "Unable to load voices right now.";
+      }
+    }
+
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveHistory(items) {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, 3)));
+    }
+
+    function addToHistory(item) {
+      const existing = getHistory().filter((entry) => entry.audioUrl !== item.audioUrl);
+      saveHistory([item, ...existing]);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const items = getHistory();
+      historyList.innerHTML = "";
+      if (!items.length) {
+        historyList.innerHTML = '<p class="rounded-2xl bg-slate-50 px-4 py-5 text-sm text-slate-600">No recent story narrations yet.</p>';
+        return;
+      }
+
+      items.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "rounded-3xl border border-slate-200 bg-slate-50 p-4";
+        card.innerHTML = `
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-sm font-semibold text-ink">${escapeHtml(item.title || "Untitled story")}</p>
+              <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.ideaPreview || "")}</p>
+              <p class="mt-1 text-xs text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
+            </div>
+            <button type="button" class="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white">Replay audio</button>
+          </div>
+        `;
+        const replayBtn = card.querySelector("button");
+        replayBtn.addEventListener("click", () => {
+          currentAudio = item;
+          audioPlayer.src = item.audioUrl;
+          audioPlayer.classList.remove("hidden");
+          audioMeta.textContent = `${item.title || "Story"} loaded from local history.`;
+          audioStatus.textContent = "History";
+          playBtn.disabled = false;
+          downloadLink.href = item.downloadUrl || item.audioUrl;
+          downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+          setMessage("info", `Loaded "${item.title || "story"}" from local history.`);
+        });
+        historyList.appendChild(card);
+      });
+    }
+
+    async function generateStory() {
+      const idea = ideaInput.value.trim();
+      if (!idea) {
+        setMessage("error", "Please enter your idea before generating a story.");
+        return;
+      }
+      if (!languageSelect.value) {
+        setMessage("error", "Please wait for languages to load, then choose one.");
+        return;
+      }
+
+      setMessage("", "");
+      setBusy(true, "Generating story...", "Creating a structured narration from your idea.");
+      resetAudioState();
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/generate-story`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            idea,
+            story_type: storyTypeSelect.value,
+            duration: durationSelect.value,
+            language: languageSelect.options[languageSelect.selectedIndex].text,
+            audience: "general"
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to generate the story.");
+        }
+
+        currentStory = data.story;
+        renderStory(data.story);
+        generateAudioBtn.disabled = !voiceSelect.value;
+        regenerateBtn.disabled = false;
+        setMessage("success", `Story ready. ${data.story.estimated_word_count.toLocaleString()} words estimated for narration.`);
+      } catch (error) {
+        currentStory = null;
+        generateAudioBtn.disabled = true;
+        setMessage("error", error.message || "Story generation failed.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function generateAudio() {
+      if (!currentStory) {
+        setMessage("error", "Generate a story first, then convert it to audio.");
+        return;
+      }
+      if (!voiceSelect.value) {
+        setMessage("error", "Please choose a voice model before converting.");
+        return;
+      }
+
+      setMessage("", "");
+      setBusy(true, "Converting to audio...", `Sending narration to ${voiceSelect.value}.`);
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/generate-audio`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: currentStory.narration_text,
+            voice_model: voiceSelect.value
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to convert the story to audio.");
+        }
+
+        currentAudio = data;
+        audioPlayer.src = data.audio_url;
+        audioPlayer.classList.remove("hidden");
+        playBtn.disabled = false;
+        downloadLink.href = `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`;
+        downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+        audioMeta.textContent = `${data.extracted_characters.toLocaleString()} characters voiced across ${data.chunks_processed} audio chunk(s).`;
+        audioStatus.textContent = "Ready";
+        addToHistory({
+          title: currentStory.title,
+          ideaPreview: ideaInput.value.trim().slice(0, 110),
+          audioUrl: data.audio_url,
+          downloadUrl: `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`,
+          voice: data.voice,
+          createdAt: new Date().toLocaleString()
+        });
+        setMessage("success", `Audio ready in ${data.voice}. You can play it now or download the MP3.`);
+      } catch (error) {
+        setMessage("error", error.message || "Audio generation failed.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function clearAll() {
+      storyForm.reset();
+      currentStory = null;
+      storyPreviewEmpty.classList.remove("hidden");
+      storyPreviewContent.classList.add("hidden");
+      generateAudioBtn.disabled = true;
+      regenerateBtn.disabled = true;
+      setMessage("", "");
+      resetAudioState();
+      if (availableVoices.length) {
+        const defaultVoice = availableVoices[0];
+        languageSelect.value = getVoiceLanguageKey(defaultVoice);
+        renderFilteredVoices(defaultVoice.id);
+      }
+    }
+
+    storyForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await generateStory();
+    });
+
+    generateAudioBtn.addEventListener("click", async () => {
+      await generateAudio();
+    });
+
+    regenerateBtn.addEventListener("click", async () => {
+      await generateStory();
+    });
+
+    clearBtn.addEventListener("click", clearAll);
+
+    playBtn.addEventListener("click", () => {
+      if (!audioPlayer.src) {
+        setMessage("error", "No audio is ready yet.");
+        return;
+      }
+      audioPlayer.play();
+    });
+
+    languageSelect.addEventListener("change", () => {
+      renderFilteredVoices();
+    });
+
+    voiceSelect.addEventListener("change", () => {
+      renderSelectedVoiceMeta();
+      generateAudioBtn.disabled = !currentStory || !voiceSelect.value;
+    });
+
+    clearHistoryBtn.addEventListener("click", () => {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+      setMessage("info", "Local history cleared on this device.");
+    });
+
+    renderHistory();
+    loadVoices();
+  </script>
+</body>
+</html>
