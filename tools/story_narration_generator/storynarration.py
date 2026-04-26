@@ -19,10 +19,10 @@ try:
         APP_DIR,
         STORY_APP_HOST,
         STORY_APP_PORT,
-        STORY_GROK_API_KEY,
-        STORY_GROK_BASE_URL,
-        STORY_GROK_MODEL,
-        STORY_GROK_TIMEOUT_SECONDS,
+        STORY_GROQ_API_KEY,
+        STORY_GROQ_BASE_URL,
+        STORY_GROQ_MODEL,
+        STORY_GROQ_TIMEOUT_SECONDS,
         STORY_MAX_IDEA_CHARS,
         STORY_TTS_API_KEY,
         STORY_TTS_BASE_URL,
@@ -38,10 +38,10 @@ except ImportError:
         APP_DIR,
         STORY_APP_HOST,
         STORY_APP_PORT,
-        STORY_GROK_API_KEY,
-        STORY_GROK_BASE_URL,
-        STORY_GROK_MODEL,
-        STORY_GROK_TIMEOUT_SECONDS,
+        STORY_GROQ_API_KEY,
+        STORY_GROQ_BASE_URL,
+        STORY_GROQ_MODEL,
+        STORY_GROQ_TIMEOUT_SECONDS,
         STORY_MAX_IDEA_CHARS,
         STORY_TTS_API_KEY,
         STORY_TTS_BASE_URL,
@@ -57,11 +57,13 @@ except ImportError:
 OUTPUTS_DIR = APP_DIR / "outputs"
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s [story-narration] %(message)s",
-)
 logger = logging.getLogger("story-narration")
+logger.setLevel(logging.INFO)
+logger.propagate = False
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [story-narration] %(message)s"))
+    logger.addHandler(handler)
 
 app = FastAPI(
     title="AI Story Narration Generator",
@@ -400,15 +402,15 @@ def compose_narration_text(title: str, intro: str, story: str, ending: str, mora
     )
 
 
-async def generate_story_from_grok(payload: GenerateStoryRequest, request_id: str) -> StoryPayload:
+async def generate_story_from_groq(payload: GenerateStoryRequest, request_id: str) -> StoryPayload:
     validate_story_runtime_settings()
     system_prompt, user_prompt = build_story_prompt(payload)
     headers = {
-        "Authorization": f"Bearer {STORY_GROK_API_KEY}",
+        "Authorization": f"Bearer {STORY_GROQ_API_KEY}",
         "Content-Type": "application/json",
     }
     body = {
-        "model": STORY_GROK_MODEL,
+        "model": STORY_GROQ_MODEL,
         "temperature": 0.8,
         "messages": [
             {"role": "system", "content": system_prompt},
@@ -416,8 +418,16 @@ async def generate_story_from_grok(payload: GenerateStoryRequest, request_id: st
         ],
     }
 
-    async with httpx.AsyncClient(timeout=STORY_GROK_TIMEOUT_SECONDS) as client:
-        response = await client.post(f"{STORY_GROK_BASE_URL}/v1/chat/completions", headers=headers, json=body)
+    async with httpx.AsyncClient(timeout=STORY_GROQ_TIMEOUT_SECONDS) as client:
+        response = await client.post(f"{STORY_GROQ_BASE_URL}/chat/completions", headers=headers, json=body)
+        if response.is_error:
+            logger.error(
+                "[%s] Groq upstream error %s from %s: %s",
+                request_id,
+                response.status_code,
+                response.request.url,
+                response.text,
+            )
         response.raise_for_status()
         data = response.json()
 
@@ -538,13 +548,17 @@ async def generate_story(payload: GenerateStoryRequest) -> GenerateStoryResponse
     )
 
     try:
-        logger.info("[%s] Generating story for type=%s duration=%s language=%s", request_id, story_type, duration, language)
-        story = await generate_story_from_grok(normalized_payload, request_id)
+        logger.info("[%s] Generating story for type=%s duration=%s language=%s via Groq", request_id, story_type, duration, language)
+        story = await generate_story_from_groq(normalized_payload, request_id)
     except httpx.HTTPStatusError as exc:
         logger.exception("[%s] Story generation failed with upstream status error", request_id)
-        raise HTTPException(status_code=502, detail="The story generation service returned an error.") from exc
+        upstream_detail = exc.response.text.strip() if exc.response is not None and exc.response.text else ""
+        detail = "The story generation service returned an error."
+        if upstream_detail:
+            detail = f"{detail} Upstream response: {upstream_detail}"
+        raise HTTPException(status_code=502, detail=detail) from exc
     except httpx.HTTPError as exc:
-        logger.exception("[%s] Story generation failed while calling Grok", request_id)
+        logger.exception("[%s] Story generation failed while calling Groq", request_id)
         raise HTTPException(status_code=502, detail="Unable to reach the story generation service right now.") from exc
     except RuntimeError as exc:
         logger.exception("[%s] Story generation returned invalid data", request_id)

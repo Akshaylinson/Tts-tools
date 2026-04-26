@@ -3,7 +3,8 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from tools.pdf_to_audio.pdftoaudio import app as pdf_to_audio_app
 
@@ -42,6 +43,7 @@ app = FastAPI(
     title="Adsense Tools",
     description="Shared landing pages plus mounted tool apps.",
 )
+app.mount("/assets", StaticFiles(directory=str(APP_DIR / "assets")), name="assets")
 
 
 @app.get("/", include_in_schema=False)
@@ -72,6 +74,11 @@ async def about_page() -> HTMLResponse:
 @app.get("/health", include_in_schema=False)
 async def health() -> dict:
     return {"status": "ok"}
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon() -> RedirectResponse:
+    return RedirectResponse(url="/assets/favicon.svg", status_code=307)
 
 
 app.mount("/pdf-to-audio", pdf_to_audio_app)

@@ -47,7 +47,7 @@ Adsense Tools Page/
 - `app.py` is the shared root app for common pages.
 - `tools/pdf_to_audio/` contains all PDF-to-audio-specific code, config, HTML, Docker build files, and outputs.
 - `tools/Text-to-audio/` contains all text-to-audio-specific code, config, HTML, Docker build files, and outputs.
-- `tools/story_narration_generator/` contains the AI story narration generator page, Grok prompt logic, TTS integration, HTML, Docker assets, and outputs.
+- `tools/story_narration_generator/` contains the AI story narration generator page, Groq prompt logic, TTS integration, HTML, Docker assets, and outputs.
 - The root `docker-compose.yml` builds the whole site using the PDF tool Dockerfile and serves the shared app entrypoint.
 
 ## Run Locally
