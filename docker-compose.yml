@@ -7,6 +7,7 @@ services:
       dockerfile: tools/pdf_to_audio/Dockerfile
     env_file:
       - ./tools/pdf_to_audio/.env
+      - ./tools/Text-to-audio/.env
     ports:
       - "8010:8010"
     volumes:

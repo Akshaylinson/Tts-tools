@@ -10,7 +10,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY tools/pdf_to_audio/requirements.txt ./tools/pdf_to_audio/requirements.txt
+COPY tools/Text-to-audio/requirements.txt ./tools/Text-to-audio/requirements.txt
 RUN pip install --no-cache-dir -r ./tools/pdf_to_audio/requirements.txt
+RUN pip install --no-cache-dir -r ./tools/Text-to-audio/requirements.txt
 
 COPY . .
 
