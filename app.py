@@ -1,3 +1,5 @@
+import importlib.util
+import sys
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -7,6 +9,25 @@ from tools.pdf_to_audio.pdftoaudio import app as pdf_to_audio_app
 
 
 APP_DIR = Path(__file__).resolve().parent
+
+
+def load_tool_app(package_dir: Path, module_name: str):
+    package_init = package_dir / "__init__.py"
+    spec = importlib.util.spec_from_file_location(
+        module_name,
+        package_init,
+        submodule_search_locations=[str(package_dir)],
+    )
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Unable to load tool package from {package_dir}")
+
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module.app
+
+
+text_to_audio_app = load_tool_app(APP_DIR / "tools" / "Text-to-audio", "text_to_audio_tool")
 
 
 def read_html_file(name: str) -> str:
@@ -52,4 +73,5 @@ async def health() -> dict:
     return {"status": "ok"}
 
 
-app.mount("/", pdf_to_audio_app)
+app.mount("/pdf-to-audio", pdf_to_audio_app)
+app.mount("/text-to-audio", text_to_audio_app)

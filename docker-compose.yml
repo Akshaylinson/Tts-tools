@@ -11,4 +11,5 @@ services:
       - "8010:8010"
     volumes:
       - ./tools/pdf_to_audio/outputs:/app/tools/pdf_to_audio/outputs
+      - ./tools/Text-to-audio/outputs:/app/tools/Text-to-audio/outputs
     restart: unless-stopped

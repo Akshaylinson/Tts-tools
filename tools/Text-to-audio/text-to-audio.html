@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Audio Converter - Free Online Tool</title>
+  <meta name="description" content="Convert text to audio instantly with our free text-to-speech tool. Generate high-quality voice from any text online.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="canonical" href="/text-to-audio">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Text to Audio Converter",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Convert text into downloadable MP3 audio online with a free text to speech tool."
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this text to audio converter free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. You can convert text to audio online for free without creating an account."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my text stored?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The tool processes text to generate audio and keeps only the output needed for playback and download."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What audio format is generated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Generated audio is delivered as MP3 for broad browser and device compatibility."
+          }
+        }
+      ]
+    }
+  </script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#0f172a",
+            slatewarm: "#f8fafc",
+            brand: "#0f766e",
+            branddeep: "#134e4a",
+            accent: "#f59e0b",
+            coral: "#ea580c"
+          },
+          boxShadow: {
+            card: "0 20px 60px rgba(15, 23, 42, 0.08)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .seo-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 900px;
+    }
+  </style>
+</head>
+<body class="bg-slatewarm text-slate-900 antialiased">
+  <header class="bg-ink text-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <a href="/" class="text-lg font-semibold tracking-tight">Adsense Tools</a>
+      <nav class="flex items-center gap-4 text-sm text-slate-300">
+        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#how-to-use" class="hover:text-white">How to Use</a>
+        <a href="#faq" class="hover:text-white">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_52%,_#1f2937)] text-white">
+      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
+        <div>
+          <p class="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-amber-100">Free text to speech online tool</p>
+          <h1 class="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">Convert Text to Audio Online - Free &amp; Instant</h1>
+          <p class="mt-5 max-w-2xl text-lg text-slate-200">Turn any text into natural-sounding audio in seconds. Paste a script, notes, article, or message and convert text to voice for fast listening on desktop or mobile.</p>
+          <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
+            <span class="rounded-full border border-white/20 px-3 py-1">No signup required</span>
+            <span class="rounded-full border border-white/20 px-3 py-1">MP3 output</span>
+            <span class="rounded-full border border-white/20 px-3 py-1">Mobile ready</span>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-900 shadow-card sm:p-6">
+          <div class="rounded-2xl bg-[linear-gradient(135deg,_rgba(15,118,110,0.08),_rgba(234,88,12,0.08))] p-5">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Hero input</p>
+            <h2 class="mt-2 text-2xl font-semibold text-ink">Turn text into audio instantly</h2>
+            <p class="mt-2 text-sm text-slate-600">Paste a few lines or a long block of text, then generate audio with the live CodeVoice engine.</p>
+            <textarea id="heroTextInput" rows="8" class="mt-4 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="Paste or type your text here..."></textarea>
+            <div class="mt-3 flex items-center justify-between gap-3 text-sm text-slate-500">
+              <span id="heroCounter">0 / 5000</span>
+              <button id="heroConvertBtn" type="button" class="inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-ink transition hover:bg-amber-400">Convert to Audio</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-semibold text-ink">Tool interface</h2>
+              <p class="mt-2 text-sm text-slate-600">Enter text, choose a voice, and generate a downloadable MP3 with a simple browser workflow.</p>
+            </div>
+            <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">HTML5 Audio</span>
+          </div>
+
+          <label for="textInput" class="mt-6 block text-sm font-semibold text-ink">Text input</label>
+          <textarea id="textInput" rows="10" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="Enter or paste text to convert to audio..."></textarea>
+          <div class="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+            <span id="charCounter">0 / 5000</span>
+            <span>Longer text will be split into manageable speech chunks.</span>
+          </div>
+
+          <div class="mt-6 grid gap-4 md:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Language</p>
+              <select id="languageSelect" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+                <option>Loading languages...</option>
+              </select>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Voice</p>
+              <select id="voiceSelect" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+                <option>Loading voices...</option>
+              </select>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Playback speed</p>
+              <select id="speedSelect" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100">
+                <option value="0.75">0.75x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.25">1.25x</option>
+              </select>
+            </div>
+          </div>
+          <p id="voiceDescription" class="mt-3 text-sm text-slate-500">Fetching available voices...</p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button id="convertBtn" type="button" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Convert to Audio</button>
+            <button id="clearTextBtn" type="button" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">Clear text</button>
+          </div>
+
+          <p id="errorMessage" class="mt-4 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></p>
+          <div id="progressWrap" class="mt-4 hidden">
+            <div class="flex items-center justify-between text-sm text-slate-600">
+              <span id="progressLabel">Preparing your text...</span>
+              <span class="font-medium">Working</span>
+            </div>
+            <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
+              <div id="progressBar" class="h-full w-1/5 rounded-full bg-coral transition-all duration-300"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-semibold text-ink">Audio output</h2>
+              <p class="mt-2 text-sm text-slate-600">Play, download, save, or reset your latest conversion.</p>
+            </div>
+            <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
+          </div>
+
+          <audio id="audioPlayer" class="mt-6 w-full" controls preload="none"></audio>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <button id="playBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Play</button>
+            <a id="downloadBtn" href="#" download class="pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
+            <button id="saveBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Save</button>
+            <button id="resetBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Reset</button>
+          </div>
+          <p id="successMeta" class="mt-3 text-sm text-slate-500"></p>
+
+          <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <h3 class="text-lg font-semibold text-ink">Quick tips</h3>
+            <ul class="mt-3 space-y-2 text-sm text-slate-600">
+              <li>Use punctuation for more natural speech rhythm.</li>
+              <li>Keep very long scripts under 5,000 characters per request.</li>
+              <li>Use the speed control to review content faster or slower.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="historySection" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-2xl font-semibold text-ink">Recent conversions</h2>
+            <p class="text-sm text-slate-600">Your last 5 text to audio conversions are stored in this browser for quick replay.</p>
+          </div>
+          <button id="clearHistoryBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear history</button>
+        </div>
+        <div id="historyList" class="mt-5 grid gap-3"></div>
+      </div>
+    </section>
+
+    <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="mb-8 max-w-2xl">
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Built for speed and practical listening</h2>
+        <p class="mt-3 text-slate-600">This text to audio converter is designed to help users move from raw text to usable spoken output with minimal friction.</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">Instant conversion</h3>
+          <p class="mt-2 text-sm text-slate-600">Paste text and generate audio quickly with a streamlined browser workflow.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">High-quality voice output</h3>
+          <p class="mt-2 text-sm text-slate-600">Uses the live CodeVoice engine for natural-sounding speech output.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">No signup required</h3>
+          <p class="mt-2 text-sm text-slate-600">Open the page, paste text, and start converting without account friction.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">Works on mobile</h3>
+          <p class="mt-2 text-sm text-slate-600">Responsive layout keeps input, playback, and download easy on smaller screens.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">Supports long text input</h3>
+          <p class="mt-2 text-sm text-slate-600">Longer input is split into audio chunks to keep playback reliable.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
+          <h3 class="font-semibold text-ink">Fast processing</h3>
+          <p class="mt-2 text-sm text-slate-600">Optimized for short wait times and immediate MP3 download once ready.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="how-to-use" class="bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div class="mb-8 max-w-2xl">
+          <h2 class="text-3xl font-bold tracking-tight text-ink">How to use</h2>
+          <p class="mt-3 text-slate-600">The flow is intentionally simple so users can convert text to speech without a learning curve.</p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-4">
+          <article class="rounded-3xl bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-brand">Step 1</p>
+            <h3 class="mt-2 font-semibold text-ink">Enter or paste your text</h3>
+            <p class="mt-2 text-sm text-slate-600">Add the text you want to listen to in the main input area.</p>
+          </article>
+          <article class="rounded-3xl bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-brand">Step 2</p>
+            <h3 class="mt-2 font-semibold text-ink">Click "Convert to Audio"</h3>
+            <p class="mt-2 text-sm text-slate-600">The tool sends your text to the speech engine and begins generation.</p>
+          </article>
+          <article class="rounded-3xl bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-brand">Step 3</p>
+            <h3 class="mt-2 font-semibold text-ink">Wait for processing</h3>
+            <p class="mt-2 text-sm text-slate-600">A progress state keeps you informed while the MP3 is being created.</p>
+          </article>
+          <article class="rounded-3xl bg-slate-50 p-5">
+            <p class="text-sm font-semibold text-brand">Step 4</p>
+            <h3 class="mt-2 font-semibold text-ink">Play or download your audio</h3>
+            <p class="mt-2 text-sm text-slate-600">Listen in the browser or save the file for later use.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <div class="grid gap-6 lg:grid-cols-4">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h2 class="text-2xl font-semibold text-ink">Multitask better</h2>
+          <p class="mt-3 text-slate-600">Turn notes, scripts, or drafts into audio and listen while commuting, cleaning, or exercising.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h2 class="text-2xl font-semibold text-ink">Useful for creators</h2>
+          <p class="mt-3 text-slate-600">Quickly preview written content in spoken form before publishing or recording a final version.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h2 class="text-2xl font-semibold text-ink">Improve accessibility</h2>
+          <p class="mt-3 text-slate-600">Listening can reduce reading fatigue and make text easier to process for many users.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h2 class="text-2xl font-semibold text-ink">Save time</h2>
+          <p class="mt-3 text-slate-600">Switch from reading mode to listening mode and absorb information in a more flexible format.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="seo-section bg-white">
+      <div class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Why use a text to audio converter?</h2>
+        <div class="mt-6 space-y-5 text-[1.05rem] leading-8 text-slate-700">
+          <p>A text to audio converter changes written text into spoken audio that you can play online or download for later. Instead of reading everything on screen, users can convert text to voice and listen while doing other tasks. That makes a text to speech online workflow useful for everyday situations where reading is inconvenient, tiring, or simply slower than listening. For many users, a reliable text to audio converter is one of the easiest ways to turn static content into something more flexible and accessible.</p>
+          <p>Students often use text to speech online tools to listen to revision notes, summaries, study guides, and copied article passages. A long reading session can feel heavy on a small screen, but turning the same material into audio makes it easier to review while walking, traveling, or taking a break from direct reading. Professionals can also benefit when they need to review drafts, memos, emails, meeting notes, or documentation without staying glued to a laptop. In both cases, the ability to convert text to voice quickly saves time and supports better focus.</p>
+          <p>Content creators also find value in a text to audio converter because hearing written material often reveals awkward phrasing, long sentences, and unnatural transitions that are easy to miss while silently reading. Listening to a blog post draft, video script, newsletter, or landing page copy can help with editing and tone. That is especially useful when creators want faster feedback without recording the script themselves each time they make a change. A free text to speech online tool offers a practical first-pass audio preview before final production work begins.</p>
+          <p>There are also strong accessibility and convenience benefits. Some users prefer listening because it reduces eye strain or reading fatigue, while others simply want to make better use of passive time during commuting, routine work, or household tasks. When you convert text to voice, you can keep learning or reviewing information while your hands and eyes are busy elsewhere. That flexibility is a major reason text to speech online tools remain useful across education, work, and personal productivity use cases.</p>
+          <p>This page focuses on a clean and fast experience: paste text, choose a voice, generate audio, and download an MP3. The goal is not just to produce speech, but to make text more usable in real situations. Whether you need a simple text to audio converter for quick listening, a text to speech online tool for repeated review, or a way to convert text to voice before publishing, this type of workflow can fit naturally into daily tasks without extra software or account setup.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+      <h2 class="text-3xl font-bold tracking-tight text-ink">Frequently asked questions</h2>
+      <div class="mt-8 space-y-4">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
+          <p class="mt-2 text-slate-600">Yes. You can convert text to audio online for free without creating an account.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Is my text stored?</h3>
+          <p class="mt-2 text-slate-600">The tool processes text to generate audio and keeps the output available for playback and download. Avoid entering sensitive information unless your deployment policy allows it.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">What languages are supported?</h3>
+          <p class="mt-2 text-slate-600">Supported languages depend on the live voices currently available from the connected speech engine. The language selector updates from the available voice list.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">What audio format is generated?</h3>
+          <p class="mt-2 text-slate-600">Output is delivered as MP3 for wide browser, phone, and desktop compatibility.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Is there a character limit?</h3>
+          <p class="mt-2 text-slate-600">Yes. This page currently supports up to 5,000 characters per request to keep conversion fast and stable.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p>&copy; 2026 Adsense Tools Page. Utility-first web tools for everyday tasks.</p>
+      <nav class="flex gap-4">
+        <a href="/privacy-policy" class="hover:text-ink">Privacy Policy</a>
+        <a href="/terms" class="hover:text-ink">Terms</a>
+        <a href="/about" class="hover:text-ink">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const TOOL_BASE_PATH = window.location.pathname === "/" ? "" : window.location.pathname.replace(/\/$/, "");
+    const MAX_CHARS = 5000;
+    const HISTORY_KEY = "textAudioHistory";
+
+    const heroTextInput = document.getElementById("heroTextInput");
+    const heroCounter = document.getElementById("heroCounter");
+    const heroConvertBtn = document.getElementById("heroConvertBtn");
+    const textInput = document.getElementById("textInput");
+    const charCounter = document.getElementById("charCounter");
+    const languageSelect = document.getElementById("languageSelect");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const speedSelect = document.getElementById("speedSelect");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const voiceDescription = document.getElementById("voiceDescription");
+    const convertBtn = document.getElementById("convertBtn");
+    const clearTextBtn = document.getElementById("clearTextBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const playBtn = document.getElementById("playBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const errorMessage = document.getElementById("errorMessage");
+    const progressWrap = document.getElementById("progressWrap");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressBar = document.getElementById("progressBar");
+    const successMeta = document.getElementById("successMeta");
+    const historyList = document.getElementById("historyList");
+
+    let availableVoices = [];
+    let filteredVoices = [];
+    let currentResult = null;
+
+    function debugLog(message, details) {
+      if (details === undefined) {
+        console.log(`[text-audio] ${message}`);
+        return;
+      }
+      console.log(`[text-audio] ${message}`, details);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function setError(message = "") {
+      errorMessage.textContent = message;
+      errorMessage.classList.toggle("hidden", !message);
+    }
+
+    function setProgress(active, label = "Preparing your text...", width = "20%") {
+      progressWrap.classList.toggle("hidden", !active);
+      progressLabel.textContent = label;
+      progressBar.style.width = width;
+    }
+
+    function updateCounter(value) {
+      const count = value.length;
+      charCounter.textContent = `${count.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
+      heroCounter.textContent = `${count.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
+    }
+
+    function syncTextInputs(source) {
+      const value = source.value;
+      if (source !== textInput) {
+        textInput.value = value;
+      }
+      if (source !== heroTextInput) {
+        heroTextInput.value = value;
+      }
+      updateCounter(value);
+    }
+
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveHistory(items) {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, 5)));
+    }
+
+    function addToHistory(item) {
+      const existing = getHistory().filter((entry) => entry.audioUrl !== item.audioUrl);
+      saveHistory([item, ...existing]);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const items = getHistory();
+      historyList.innerHTML = "";
+
+      if (!items.length) {
+        historyList.innerHTML = '<p class="rounded-2xl bg-slate-50 px-4 py-5 text-sm text-slate-600">No recent text-to-audio conversions yet.</p>';
+        return;
+      }
+
+      items.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between";
+        card.innerHTML = `
+          <div>
+            <p class="font-semibold text-ink">${escapeHtml(item.preview)}</p>
+            <p class="text-sm text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" class="replay-btn rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Replay</button>
+            <a href="${item.audioUrl}" download class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Download</a>
+          </div>
+        `;
+        card.querySelector(".replay-btn").addEventListener("click", () => {
+          audioPlayer.src = item.audioUrl;
+          applyPlaybackSpeed();
+          audioPlayer.play();
+          successMeta.textContent = `Loaded from history: ${item.preview}`;
+        });
+        historyList.appendChild(card);
+      });
+    }
+
+    function getVoiceLanguageKey(voice) {
+      return (voice.language || voice.language_name || "unknown").trim().toLowerCase();
+    }
+
+    function getVoiceLanguageLabel(voice) {
+      return (voice.language_name || voice.language || "Unknown").trim();
+    }
+
+    function getAvailableLanguages(voices) {
+      const languageMap = new Map();
+      voices.forEach((voice) => {
+        const key = getVoiceLanguageKey(voice);
+        if (!languageMap.has(key)) {
+          languageMap.set(key, {
+            key,
+            label: getVoiceLanguageLabel(voice),
+            count: 0
+          });
+        }
+        languageMap.get(key).count += 1;
+      });
+      return Array.from(languageMap.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function renderSelectedVoiceMeta() {
+      const voice = filteredVoices.find((item) => item.id === voiceSelect.value);
+      if (!voice) {
+        voiceDescription.textContent = "Choose a language to see matching voices.";
+        return;
+      }
+      const parts = [
+        voice.language_name || voice.language || "Unknown language",
+        voice.gender || "unknown",
+        voice.quality || "unknown quality"
+      ].filter(Boolean);
+      voiceDescription.textContent = `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
+    }
+
+    function renderFilteredVoices(preferredVoiceId = "") {
+      const selectedLanguage = languageSelect.value;
+      filteredVoices = availableVoices
+        .filter((voice) => getVoiceLanguageKey(voice) === selectedLanguage)
+        .slice(0, 5);
+
+      if (!filteredVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "No voices";
+        voiceDescription.textContent = "No voice models are currently available for this language.";
+        return;
+      }
+
+      voiceSelect.innerHTML = filteredVoices.map((voice) => {
+        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
+        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+      }).join("");
+
+      const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
+      voiceSelect.value = preferredVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} in this language`;
+      renderSelectedVoiceMeta();
+    }
+
+    function renderLanguageOptions(payload) {
+      availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
+
+      if (!availableVoices.length) {
+        languageSelect.innerHTML = '<option value="">No languages available</option>';
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        languageSelect.disabled = true;
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voices unavailable";
+        voiceDescription.textContent = "CodeVoice did not return any usable voices.";
+        return;
+      }
+
+      const languages = getAvailableLanguages(availableVoices);
+      languageSelect.innerHTML = languages.map((language) => (
+        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)} (${language.count})</option>`
+      )).join("");
+
+      const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
+      languageSelect.value = getVoiceLanguageKey(defaultVoice);
+      languageSelect.disabled = false;
+      renderFilteredVoices(defaultVoice.id);
+      debugLog("Loaded voice options", payload);
+    }
+
+    async function loadVoices() {
+      languageSelect.disabled = true;
+      voiceSelect.disabled = true;
+      voiceStatus.textContent = "Loading voices...";
+      voiceDescription.textContent = "Fetching available languages and voices...";
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to load voices.");
+        }
+        renderLanguageOptions(data);
+      } catch (error) {
+        debugLog("Voice loading failed", error);
+        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
+        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
+        languageSelect.disabled = true;
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voice error";
+        voiceDescription.textContent = error.message || "Unable to load voices right now.";
+      }
+    }
+
+    function applyPlaybackSpeed() {
+      audioPlayer.playbackRate = Number(speedSelect.value || "1");
+    }
+
+    function resetToolState(clearText = false) {
+      setError("");
+      setProgress(false);
+      successMeta.textContent = "";
+      currentResult = null;
+      audioPlayer.pause();
+      audioPlayer.removeAttribute("src");
+      audioPlayer.load();
+      downloadBtn.href = "#";
+      downloadBtn.classList.add("pointer-events-none", "text-slate-400");
+      if (clearText) {
+        heroTextInput.value = "";
+        textInput.value = "";
+        updateCounter("");
+      }
+    }
+
+    function validateText(value) {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        setError("Please enter or paste some text first.");
+        return false;
+      }
+      if (trimmed.length > MAX_CHARS) {
+        setError(`Text is too long. Please keep it under ${MAX_CHARS.toLocaleString()} characters.`);
+        return false;
+      }
+      return true;
+    }
+
+    async function convertText() {
+      const value = textInput.value;
+      if (!validateText(value)) {
+        return;
+      }
+      if (!voiceSelect.value) {
+        setError("Please wait for voices to load, then choose a voice.");
+        return;
+      }
+
+      setError("");
+      setProgress(true, `Sending text to ${voiceSelect.value}...`, "22%");
+      convertBtn.disabled = true;
+      heroConvertBtn.disabled = true;
+      convertBtn.classList.add("opacity-60", "cursor-not-allowed");
+      heroConvertBtn.classList.add("opacity-60", "cursor-not-allowed");
+      debugLog(`Sending request to ${TOOL_BASE_PATH}/convert-text`, {
+        chars: value.trim().length,
+        voice: voiceSelect.value
+      });
+
+      const stagedProgress = [
+        ["Preparing text for speech...", "44%"],
+        ["Generating audio...", "70%"],
+        ["Finalizing your MP3...", "92%"]
+      ];
+      let progressIndex = 0;
+      const timer = window.setInterval(() => {
+        if (progressIndex < stagedProgress.length) {
+          const [label, width] = stagedProgress[progressIndex];
+          setProgress(true, label, width);
+          progressIndex += 1;
+        }
+      }, 2200);
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/convert-text`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            text: value,
+            voice: voiceSelect.value,
+            language: languageSelect.value
+          })
+        });
+        debugLog(`Received response from ${TOOL_BASE_PATH}/convert-text`, { status: response.status, ok: response.ok });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Server error while converting the text.");
+        }
+
+        currentResult = data;
+        audioPlayer.src = data.audio_url;
+        applyPlaybackSpeed();
+        downloadBtn.href = data.audio_url;
+        downloadBtn.classList.remove("pointer-events-none", "text-slate-400");
+        successMeta.textContent = `Ready in ${data.voice}. ${data.extracted_characters.toLocaleString()} characters processed across ${data.chunks_processed} audio chunk(s).`;
+        setProgress(true, "Conversion complete", "100%");
+
+        addToHistory({
+          preview: value.trim().slice(0, 70) + (value.trim().length > 70 ? "..." : ""),
+          audioUrl: data.audio_url,
+          createdAt: new Date().toLocaleString(),
+          voice: data.voice
+        });
+      } catch (error) {
+        debugLog("Conversion failed", error);
+        setError(error.message || "Something went wrong while converting the text.");
+        setProgress(false);
+      } finally {
+        window.clearInterval(timer);
+        convertBtn.disabled = false;
+        heroConvertBtn.disabled = false;
+        convertBtn.classList.remove("opacity-60", "cursor-not-allowed");
+        heroConvertBtn.classList.remove("opacity-60", "cursor-not-allowed");
+      }
+    }
+
+    heroTextInput.addEventListener("input", () => syncTextInputs(heroTextInput));
+    textInput.addEventListener("input", () => syncTextInputs(textInput));
+    heroConvertBtn.addEventListener("click", convertText);
+    convertBtn.addEventListener("click", convertText);
+    clearTextBtn.addEventListener("click", () => {
+      heroTextInput.value = "";
+      textInput.value = "";
+      updateCounter("");
+      setError("");
+    });
+    resetBtn.addEventListener("click", () => resetToolState(true));
+    playBtn.addEventListener("click", () => {
+      if (!audioPlayer.src) {
+        setError("Convert some text first to play audio.");
+        return;
+      }
+      applyPlaybackSpeed();
+      audioPlayer.play();
+    });
+    saveBtn.addEventListener("click", () => {
+      if (!currentResult || !textInput.value.trim()) {
+        setError("Convert text first, then save it to history.");
+        return;
+      }
+      addToHistory({
+        preview: textInput.value.trim().slice(0, 70) + (textInput.value.trim().length > 70 ? "..." : ""),
+        audioUrl: currentResult.audio_url,
+        createdAt: new Date().toLocaleString(),
+        voice: currentResult.voice
+      });
+      successMeta.textContent = "Saved to local history on this device.";
+    });
+    clearHistoryBtn.addEventListener("click", () => {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+    });
+    languageSelect.addEventListener("change", () => {
+      renderFilteredVoices();
+      setError("");
+    });
+    voiceSelect.addEventListener("change", renderSelectedVoiceMeta);
+    speedSelect.addEventListener("change", applyPlaybackSpeed);
+    audioPlayer.addEventListener("loadedmetadata", applyPlaybackSpeed);
+
+    renderHistory();
+    updateCounter("");
+    loadVoices();
+  </script>
+</body>
+</html>

@@ -13,12 +13,21 @@ Adsense Tools Page/
 |-- privacy-policy.html
 |-- terms.html
 |-- tools/
-|   `-- pdf_to_audio/
+|   |-- pdf_to_audio/
+|   |   |-- .env
+|   |   |-- .env.example
+|   |   |-- Dockerfile
+|   |   |-- pdf-to-audio.html
+|   |   |-- pdftoaudio.py
+|   |   |-- requirements.txt
+|   |   |-- settings.py
+|   |   `-- outputs/
+|   `-- Text-to-audio/
 |       |-- .env
 |       |-- .env.example
 |       |-- Dockerfile
-|       |-- pdf-to-audio.html
-|       |-- pdftoaudio.py
+|       |-- text-to-audio.html
+|       |-- texttoaudio.py
 |       |-- requirements.txt
 |       |-- settings.py
 |       `-- outputs/
@@ -28,6 +37,7 @@ Adsense Tools Page/
 
 - `app.py` is the shared root app for common pages.
 - `tools/pdf_to_audio/` contains all PDF-to-audio-specific code, config, HTML, Docker build files, and outputs.
+- `tools/Text-to-audio/` contains all text-to-audio-specific code, config, HTML, Docker build files, and outputs.
 - The root `docker-compose.yml` builds the whole site using the PDF tool Dockerfile and serves the shared app entrypoint.
 
 ## Run Locally
@@ -35,6 +45,7 @@ Adsense Tools Page/
 ```bash
 cd "Adsense Tools Page"
 pip install -r tools/pdf_to_audio/requirements.txt
+pip install -r tools/Text-to-audio/requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 8010 --reload
 ```
 
@@ -47,7 +58,7 @@ cd "Adsense Tools Page"
 docker compose up --build
 ```
 
-The compose file reads PDF tool settings from `tools/pdf_to_audio/.env`.
+The compose file currently reads PDF tool settings from `tools/pdf_to_audio/.env`, while the text-to-audio tool loads its own settings from `tools/Text-to-audio/.env`.
 
 ## Adding More Tools
 

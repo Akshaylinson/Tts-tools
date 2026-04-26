@@ -326,6 +326,7 @@
     const audioPlayer = document.getElementById("audioPlayer");
     const successMeta = document.getElementById("successMeta");
     const historyList = document.getElementById("historyList");
+    const TOOL_BASE_PATH = window.location.pathname === "/" ? "" : window.location.pathname.replace(/\/$/, "");
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
     const HISTORY_KEY = "pdfAudioHistory";
@@ -473,7 +474,7 @@
       voiceDescription.textContent = "Fetching available languages and voices...";
 
       try {
-        const response = await fetch("/api/voices");
+        const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.detail || "Unable to load voices.");
@@ -598,7 +599,7 @@
       setProgress(true, `Uploading PDF for ${voiceSelect.value}...`, "24%");
       convertBtn.disabled = true;
       convertBtn.classList.add("opacity-60", "cursor-not-allowed");
-      debugLog("Uploading PDF to /convert-pdf", {
+      debugLog(`Uploading PDF to ${TOOL_BASE_PATH}/convert-pdf`, {
         fileName: currentFile.name,
         size: currentFile.size,
         language: languageSelect.options[languageSelect.selectedIndex]?.text || languageSelect.value,
@@ -620,11 +621,11 @@
       }, 2500);
 
       try {
-        const response = await fetch("/convert-pdf", {
+        const response = await fetch(`${TOOL_BASE_PATH}/convert-pdf`, {
           method: "POST",
           body: formData
         });
-        debugLog("Received response from /convert-pdf", { status: response.status, ok: response.ok });
+        debugLog(`Received response from ${TOOL_BASE_PATH}/convert-pdf`, { status: response.status, ok: response.ok });
 
         const data = await response.json();
         if (!response.ok) {
