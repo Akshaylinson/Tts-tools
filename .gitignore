@@ -1,0 +1,9 @@
+node_modules/
+__pycache__/
+*.pyc
+
+tools/**/.env
+tools/**/outputs/
+
+!tools/**/.env.example
+!tools/**/outputs/.gitkeep
