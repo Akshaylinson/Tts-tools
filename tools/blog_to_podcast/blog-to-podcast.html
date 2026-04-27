@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog to Podcast Converter - Free Online Tool</title>
+  <meta name="description" content="Convert blogs and articles into podcast-style audio instantly. Turn any content into a listenable podcast for free.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#0f3d3e">
+  <link rel="canonical" href="/blog-to-podcast">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#0f172a",
+            pine: "#0f3d3e",
+            tealbright: "#0f766e",
+            sand: "#f3efe5",
+            mist: "#f8fafc",
+            coral: "#f97316"
+          },
+          boxShadow: {
+            soft: "0 20px 60px rgba(15, 23, 42, 0.08)"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-sand text-slate-900 antialiased">
+  <header class="border-b border-white/10 bg-ink text-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <a href="/" class="text-lg font-semibold tracking-tight">Adsense Tools</a>
+      <nav class="flex items-center gap-4 text-sm text-slate-300">
+        <a href="#tool" class="hover:text-white">Tool</a>
+        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#faq" class="hover:text-white">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-[radial-gradient(circle_at_top_left,_rgba(249,115,22,0.20),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(45,212,191,0.18),_transparent_30%),linear-gradient(135deg,_#0f172a,_#0f3d3e_58%,_#134e4a)] text-white">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <p class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-teal-100">AI podcast script + audio workflow</p>
+        <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Turn Blogs into Podcast Audio</h1>
+        <p class="mt-5 max-w-2xl text-lg text-slate-200">Convert any article into a ready-to-listen podcast. Paste a blog URL or article text, generate a spoken-style script, and turn it into downloadable narration in one streamlined flow.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#tool" class="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-ink transition hover:bg-slate-100">Generate Podcast</a>
+          <span class="inline-flex rounded-full border border-white/20 px-4 py-3 text-sm text-slate-200">No signup required</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="tool" class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div class="grid gap-6 lg:grid-cols-[1.18fr_0.82fr]">
+        <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Core tool</p>
+              <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Build your podcast from a blog or article</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Choose a source, pick the output style, and generate a natural podcast script before sending it to audio.</p>
+            </div>
+            <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
+          </div>
+
+          <form id="podcastForm" class="mt-8 space-y-6">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Choose input type</p>
+              <div class="mt-3 inline-flex rounded-full bg-slate-100 p-1">
+                <button id="urlModeBtn" type="button" class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm">Enter URL</button>
+                <button id="textModeBtn" type="button" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600">Paste Text</button>
+              </div>
+            </div>
+
+            <div id="urlInputWrap">
+              <label for="urlInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Article URL</label>
+              <input id="urlInput" type="url" class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base outline-none transition focus:border-tealbright focus:bg-white focus:ring-2 focus:ring-teal-100" placeholder="https://example.com/blog-post">
+              <p class="mt-2 text-sm text-slate-500">Use a public blog or article page with readable content.</p>
+            </div>
+
+            <div id="textInputWrap" class="hidden">
+              <label for="textInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Paste article text</label>
+              <textarea id="textInput" rows="9" maxlength="18000" class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base outline-none transition focus:border-tealbright focus:bg-white focus:ring-2 focus:ring-teal-100" placeholder="Paste the article text you want to convert into a podcast-style narration."></textarea>
+              <p class="mt-2 text-sm text-slate-500">Best for copied blog posts, notes, newsletters, and long-form article drafts.</p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-3">
+              <div>
+                <label for="lengthSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Podcast length</label>
+                <select id="lengthSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100">
+                  <option value="full">Full article</option>
+                  <option value="short">Short (1-2 min summary)</option>
+                  <option value="medium" selected>Medium (3-5 min)</option>
+                </select>
+              </div>
+              <div>
+                <label for="languageSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Language</label>
+                <select id="languageSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+                  <option value="">Loading languages...</option>
+                </select>
+              </div>
+              <div>
+                <label for="voiceSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Voice model</label>
+                <select id="voiceSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+                  <option value="">Loading voices...</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="rounded-3xl bg-slate-50 px-4 py-4 text-sm text-slate-600">
+              <p id="voiceDescription">Fetching available languages and voices...</p>
+              <p id="inputMeta" class="mt-2">The tool will extract readable article text, generate a podcast script, and prepare MP3 narration.</p>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+              <button id="generateScriptBtn" type="submit" class="inline-flex items-center rounded-full bg-tealbright px-5 py-3 font-semibold text-white transition hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60">Generate Podcast Script</button>
+              <button id="generateAudioBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Convert to Audio</button>
+            </div>
+          </form>
+
+          <div id="progressBox" class="mt-6 hidden rounded-3xl border border-teal-100 bg-teal-50 px-4 py-4">
+            <div class="flex items-center gap-3">
+              <div class="h-5 w-5 animate-spin rounded-full border-2 border-teal-200 border-t-tealbright"></div>
+              <div>
+                <p id="progressLabel" class="font-semibold text-ink">Processing...</p>
+                <p id="progressMeta" class="text-sm text-slate-600">Please wait a few seconds.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
+        </article>
+
+        <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Output</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Preview, listen, and download</h2>
+          <p class="mt-3 text-slate-600">Your podcast script appears first. Audio playback unlocks after narration is generated.</p>
+
+          <details class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" open>
+            <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Podcast script</summary>
+            <div id="scriptEmpty" class="mt-4 text-sm text-slate-500">Generate a podcast script to preview the title, intro, main narration, and outro.</div>
+            <div id="scriptContent" class="mt-4 hidden space-y-4">
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Title</h3>
+                <p id="scriptTitle" class="mt-2 text-xl font-semibold text-ink"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Intro</h3>
+                <p id="scriptIntro" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Main narration</h3>
+                <div id="scriptMain" class="mt-2 space-y-3 text-slate-700"></div>
+              </section>
+              <section>
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Outro</h3>
+                <p id="scriptOutro" class="mt-2 whitespace-pre-line text-slate-700"></p>
+              </section>
+            </div>
+          </details>
+
+          <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-semibold text-ink">Audio player</h3>
+                <p id="audioMeta" class="mt-2 text-sm text-slate-500">Generate a script first, then convert it to audio.</p>
+              </div>
+              <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+            </div>
+            <audio id="audioPlayer" class="mt-4 hidden w-full" controls preload="none"></audio>
+            <div class="mt-4 flex items-center gap-3">
+              <label for="speedSelect" class="text-sm font-medium text-slate-600">Speed</label>
+              <select id="speedSelect" class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                <option value="0.8">0.8x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.2">1.2x</option>
+                <option value="1.5">1.5x</option>
+              </select>
+            </div>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <button id="playBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Play</button>
+              <a id="downloadLink" href="#" class="pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400">Download MP3</a>
+              <button id="copyScriptBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Copy Script</button>
+              <button id="regenerateBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Regenerate</button>
+              <button id="clearBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="historySection" class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Recent history</p>
+            <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Last 3 conversions on this device</h2>
+          </div>
+          <button id="clearHistoryBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear history</button>
+        </div>
+        <div id="historyList" class="mt-5 grid gap-3"></div>
+      </div>
+    </section>
+
+    <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+        <article class="rounded-3xl bg-white p-5 shadow-soft">
+          <h2 class="text-lg font-semibold text-ink">Convert blogs into podcasts</h2>
+          <p class="mt-2 text-sm text-slate-600">Move from article text to podcast-ready narration without rebuilding the script by hand.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-soft">
+          <h2 class="text-lg font-semibold text-ink">AI-powered narration</h2>
+          <p class="mt-2 text-sm text-slate-600">The script is rewritten for listening, with an intro, smoother transitions, and a clean outro.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-soft">
+          <h2 class="text-lg font-semibold text-ink">Multiple languages</h2>
+          <p class="mt-2 text-sm text-slate-600">Language options stay aligned with the available voice inventory returned by the speech provider.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-soft">
+          <h2 class="text-lg font-semibold text-ink">No signup required</h2>
+          <p class="mt-2 text-sm text-slate-600">Open the page, paste the content, and generate a spoken version without creating an account.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-5 shadow-soft">
+          <h2 class="text-lg font-semibold text-ink">Fast processing</h2>
+          <p class="mt-2 text-sm text-slate-600">The workflow uses direct API calls, concise UI states, and async backend processing for quick results.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-white">
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">How it works</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">From article to audio in four steps</h2>
+        </div>
+        <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-tealbright">1. Paste a blog URL or text</p>
+            <p class="mt-3 text-slate-600">Start with either a public article link or copied text from a post, newsletter, or draft.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-tealbright">2. Generate podcast script</p>
+            <p class="mt-3 text-slate-600">The tool restructures the content into a spoken-style podcast script with a clear opening and flow.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-tealbright">3. Convert to audio</p>
+            <p class="mt-3 text-slate-600">Choose a voice model and send the final script to the text-to-speech engine for MP3 generation.</p>
+          </article>
+          <article class="rounded-3xl bg-mist p-6">
+            <p class="text-sm font-semibold text-tealbright">4. Listen or download</p>
+            <p class="mt-3 text-slate-600">Play the podcast in your browser, change playback speed, or download the MP3 for later listening.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">SEO content</p>
+      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Why use a blog to podcast converter?</h2>
+      <div class="mt-6 space-y-4 text-slate-700">
+        <p>A blog to podcast converter helps turn written content into spoken content that feels natural to hear, not just natural to read. Instead of feeding a long article directly into generic text to speech, the tool first adapts the source into a more conversational format. That matters because podcast listeners expect a clear introduction, steady pacing, smoother transitions, and a closing thought that wraps everything together. A strong blog to podcast converter takes the important ideas from an article and reshapes them into a script that sounds more like a host speaking than a page being read aloud.</p>
+        <p>That audio-first rewrite is useful because many people want to consume information while multitasking. Commuters, gym-goers, students, and busy professionals often prefer listening over reading when they are away from a desk. An article to audio podcast workflow gives them another way to access the same content without asking for more screen time. For publishers and creators, that means a single post can support both readers and listeners. If you want to convert blog to audio for your audience, a spoken version can extend the reach of every article you already publish.</p>
+        <p>The benefits are practical for creators as well. A podcast-style script is easier to reuse in newsletters, social clips, voiceovers, and short audio briefings. Instead of building a spoken summary from scratch, you can generate a first draft that already has structure and rhythm. This makes an article to audio podcast flow valuable for solo creators, bloggers, and marketing teams that need more output from the same research and writing. It also helps when you want to test whether a topic works better as a quick summary, a medium-length explanation, or a fuller audio recap.</p>
+        <p>Learners and professionals can use the same workflow to review dense material in a lighter format. Converting explainers, study notes, or industry posts into audio makes it easier to revisit ideas during travel or breaks. When you convert blog to audio, the content becomes more accessible for people who experience reading fatigue or simply retain information better through listening. In short, a blog to podcast converter is useful whenever written content needs to become portable, repeatable, and easier to consume. It turns an article into something that can be played, paused, replayed, and downloaded like any other audio resource.</p>
+      </div>
+    </section>
+
+    <section id="faq" class="mx-auto max-w-4xl px-4 py-4 pb-16 sm:px-6">
+      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
+      <div class="mt-8 space-y-4">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
+          <p class="mt-2 text-slate-600">Yes. The page is designed as a free online workflow for generating a podcast-style script and audio narration.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="text-lg font-semibold text-ink">Can I paste any blog URL?</h3>
+          <p class="mt-2 text-slate-600">You can paste public article URLs that allow standard page fetching. Some sites may block bots or hide content behind scripts or paywalls.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="text-lg font-semibold text-ink">Is content stored?</h3>
+          <p class="mt-2 text-slate-600">The page does not require signup, and only the latest local history entries are kept in your browser for convenience. Generated audio files are stored on the server output path for delivery.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
+          <p class="mt-2 text-slate-600">Yes. Once narration is ready, you can play it in the browser and download the MP3 file.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+          <h3 class="text-lg font-semibold text-ink">How long does it take?</h3>
+          <p class="mt-2 text-slate-600">Script generation usually finishes within a few seconds. Audio timing depends on article length, selected voice, and TTS queue speed.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p>&copy; 2026 Adsense Tools Page. Utility-first web tools for everyday tasks.</p>
+      <nav class="flex gap-4">
+        <a href="/privacy-policy" class="hover:text-ink">Privacy Policy</a>
+        <a href="/terms" class="hover:text-ink">Terms</a>
+        <a href="/about" class="hover:text-ink">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const TOOL_BASE_PATH = "/blog-to-podcast";
+    const HISTORY_KEY = "blogToPodcastHistory";
+
+    const podcastForm = document.getElementById("podcastForm");
+    const urlModeBtn = document.getElementById("urlModeBtn");
+    const textModeBtn = document.getElementById("textModeBtn");
+    const urlInputWrap = document.getElementById("urlInputWrap");
+    const textInputWrap = document.getElementById("textInputWrap");
+    const urlInput = document.getElementById("urlInput");
+    const textInput = document.getElementById("textInput");
+    const lengthSelect = document.getElementById("lengthSelect");
+    const languageSelect = document.getElementById("languageSelect");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const generateScriptBtn = document.getElementById("generateScriptBtn");
+    const generateAudioBtn = document.getElementById("generateAudioBtn");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const voiceDescription = document.getElementById("voiceDescription");
+    const inputMeta = document.getElementById("inputMeta");
+    const progressBox = document.getElementById("progressBox");
+    const progressLabel = document.getElementById("progressLabel");
+    const progressMeta = document.getElementById("progressMeta");
+    const messageBox = document.getElementById("messageBox");
+    const scriptEmpty = document.getElementById("scriptEmpty");
+    const scriptContent = document.getElementById("scriptContent");
+    const scriptTitle = document.getElementById("scriptTitle");
+    const scriptIntro = document.getElementById("scriptIntro");
+    const scriptMain = document.getElementById("scriptMain");
+    const scriptOutro = document.getElementById("scriptOutro");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioMeta = document.getElementById("audioMeta");
+    const audioStatus = document.getElementById("audioStatus");
+    const speedSelect = document.getElementById("speedSelect");
+    const playBtn = document.getElementById("playBtn");
+    const downloadLink = document.getElementById("downloadLink");
+    const copyScriptBtn = document.getElementById("copyScriptBtn");
+    const regenerateBtn = document.getElementById("regenerateBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const historyList = document.getElementById("historyList");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+    let inputMode = "url";
+    let availableVoices = [];
+    let filteredVoices = [];
+    let currentPodcast = null;
+    let currentAudio = null;
+    let currentSourceText = "";
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function setInputMode(mode) {
+      inputMode = mode;
+      const isUrl = mode === "url";
+      urlInputWrap.classList.toggle("hidden", !isUrl);
+      textInputWrap.classList.toggle("hidden", isUrl);
+      urlModeBtn.className = isUrl
+        ? "rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm"
+        : "rounded-full px-4 py-2 text-sm font-semibold text-slate-600";
+      textModeBtn.className = !isUrl
+        ? "rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm"
+        : "rounded-full px-4 py-2 text-sm font-semibold text-slate-600";
+      inputMeta.textContent = isUrl
+        ? "The tool will extract readable article text from the URL before generating the podcast script."
+        : "The pasted text will be used directly for podcast script generation.";
+    }
+
+    function setBusy(isBusy, label = "", meta = "") {
+      progressBox.classList.toggle("hidden", !isBusy);
+      if (isBusy) {
+        progressLabel.textContent = label;
+        progressMeta.textContent = meta;
+      }
+      generateScriptBtn.disabled = isBusy;
+      generateAudioBtn.disabled = isBusy || !currentPodcast || !voiceSelect.value;
+      regenerateBtn.disabled = isBusy || !hasInputValue();
+      copyScriptBtn.disabled = !currentPodcast;
+    }
+
+    function setMessage(type, text) {
+      if (!text) {
+        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
+        messageBox.textContent = "";
+        return;
+      }
+      const palette = {
+        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
+        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
+        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
+      };
+      messageBox.className = palette[type] || palette.info;
+      messageBox.textContent = text;
+    }
+
+    function hasInputValue() {
+      return inputMode === "url" ? Boolean(urlInput.value.trim()) : Boolean(textInput.value.trim());
+    }
+
+    function getVoiceLanguageKey(voice) {
+      return (voice.language || voice.language_name || "unknown").trim().toLowerCase();
+    }
+
+    function getVoiceLanguageLabel(voice) {
+      const label = (voice.language_name || voice.language || "Default").trim();
+      return label === "Unknown" ? "Default" : label;
+    }
+
+    function getAvailableLanguages(voices) {
+      const map = new Map();
+      voices.forEach((voice) => {
+        const key = getVoiceLanguageKey(voice);
+        if (!map.has(key)) {
+          map.set(key, { key, label: getVoiceLanguageLabel(voice) });
+        }
+      });
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    function renderSelectedVoiceMeta() {
+      const voice = filteredVoices.find((item) => item.id === voiceSelect.value);
+      if (!voice) {
+        voiceDescription.textContent = "Choose a language to see matching voices.";
+        return;
+      }
+      const parts = [
+        voice.language_name || voice.language || "Unknown language",
+        voice.gender || "unknown",
+        voice.quality || "unknown quality"
+      ];
+      voiceDescription.textContent = `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
+    }
+
+    function renderFilteredVoices(preferredVoiceId = "") {
+      filteredVoices = availableVoices.filter((voice) => getVoiceLanguageKey(voice) === languageSelect.value);
+      if (!filteredVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "No voices";
+        voiceDescription.textContent = "No voice models are currently available for this language.";
+        generateAudioBtn.disabled = true;
+        return;
+      }
+
+      voiceSelect.innerHTML = filteredVoices.map((voice) => {
+        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
+        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+      }).join("");
+
+      const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
+      voiceSelect.value = preferredVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} ready`;
+      renderSelectedVoiceMeta();
+      generateAudioBtn.disabled = !currentPodcast;
+    }
+
+    function applyVoicePayload(payload) {
+      availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
+      if (!availableVoices.length) {
+        languageSelect.innerHTML = '<option value="">No languages available</option>';
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        languageSelect.disabled = true;
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voices unavailable";
+        voiceDescription.textContent = "The speech service did not return usable voice options.";
+        return;
+      }
+
+      const languages = getAvailableLanguages(availableVoices);
+      languageSelect.innerHTML = languages.map((language) => (
+        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)}</option>`
+      )).join("");
+      languageSelect.disabled = false;
+
+      const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
+      languageSelect.value = getVoiceLanguageKey(defaultVoice);
+      renderFilteredVoices(defaultVoice.id);
+    }
+
+    async function loadVoices() {
+      voiceStatus.textContent = "Loading voices...";
+      voiceDescription.textContent = "Fetching available languages and voices...";
+      voiceSelect.disabled = true;
+      languageSelect.disabled = true;
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to load voices.");
+        }
+        applyVoicePayload(data);
+      } catch (error) {
+        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
+        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
+        voiceSelect.disabled = true;
+        languageSelect.disabled = true;
+        voiceStatus.textContent = "Voice error";
+        voiceDescription.textContent = error.message || "Unable to load voices right now.";
+      }
+    }
+
+    function renderPodcast(podcast) {
+      scriptEmpty.classList.add("hidden");
+      scriptContent.classList.remove("hidden");
+      scriptTitle.textContent = podcast.title;
+      scriptIntro.textContent = podcast.intro;
+      scriptOutro.textContent = podcast.outro;
+      scriptMain.innerHTML = podcast.main_content.map((segment) => (
+        `<p class="rounded-2xl bg-white px-4 py-3">${escapeHtml(segment)}</p>`
+      )).join("");
+    }
+
+    function resetAudioState() {
+      currentAudio = null;
+      audioPlayer.pause();
+      audioPlayer.removeAttribute("src");
+      audioPlayer.load();
+      audioPlayer.classList.add("hidden");
+      playBtn.disabled = true;
+      downloadLink.href = "#";
+      downloadLink.className = "pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400";
+      audioMeta.textContent = "Generate a script first, then convert it to audio.";
+      audioStatus.textContent = "Waiting";
+    }
+
+    function getScriptText() {
+      if (!currentPodcast) {
+        return "";
+      }
+      return [
+        `Title: ${currentPodcast.title}`,
+        "",
+        `Intro: ${currentPodcast.intro}`,
+        "",
+        "Main Content:",
+        ...currentPodcast.main_content.map((segment, index) => `${index + 1}. ${segment}`),
+        "",
+        `Outro: ${currentPodcast.outro}`
+      ].join("\n");
+    }
+
+    async function extractSourceTextIfNeeded() {
+      if (inputMode === "text") {
+        const text = textInput.value.trim();
+        if (!text) {
+          throw new Error("Please paste article text before generating a podcast.");
+        }
+        return text;
+      }
+
+      const url = urlInput.value.trim();
+      if (!url) {
+        throw new Error("Please enter an article URL before generating a podcast.");
+      }
+
+      setBusy(true, "Extracting content...", "Fetching and cleaning readable article text.");
+      const response = await fetch(`${TOOL_BASE_PATH}/extract-content`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || "Unable to extract article content.");
+      }
+      currentSourceText = data.text;
+      return data.text;
+    }
+
+    async function generatePodcastScript() {
+      setMessage("", "");
+      resetAudioState();
+      currentPodcast = null;
+
+      try {
+        const sourceText = await extractSourceTextIfNeeded();
+        if (inputMode === "text") {
+          currentSourceText = sourceText;
+        }
+
+        setBusy(true, "Generating podcast...", "Rewriting the article into a spoken podcast script.");
+        const response = await fetch(`${TOOL_BASE_PATH}/generate-podcast`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: sourceText,
+            length: lengthSelect.value,
+            language: languageSelect.options[languageSelect.selectedIndex]?.text || ""
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to generate the podcast script.");
+        }
+
+        currentPodcast = data.podcast;
+        renderPodcast(data.podcast);
+        generateAudioBtn.disabled = !voiceSelect.value;
+        regenerateBtn.disabled = false;
+        copyScriptBtn.disabled = false;
+        setMessage("success", `Podcast script ready. Estimated narration length: ${data.podcast.estimated_word_count.toLocaleString()} words.`);
+      } catch (error) {
+        currentPodcast = null;
+        generateAudioBtn.disabled = true;
+        copyScriptBtn.disabled = true;
+        setMessage("error", error.message || "Podcast generation failed.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function getHistory() {
+      try {
+        return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveHistory(items) {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, 3)));
+    }
+
+    function addToHistory(item) {
+      const existing = getHistory().filter((entry) => entry.audioUrl !== item.audioUrl);
+      saveHistory([item, ...existing]);
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const items = getHistory();
+      historyList.innerHTML = "";
+      if (!items.length) {
+        historyList.innerHTML = '<p class="rounded-2xl bg-slate-50 px-4 py-5 text-sm text-slate-600">No recent podcast conversions yet.</p>';
+        return;
+      }
+
+      items.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "rounded-3xl border border-slate-200 bg-slate-50 p-4";
+        card.innerHTML = `
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="text-sm font-semibold text-ink">${escapeHtml(item.title || "Untitled podcast")}</p>
+              <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.sourcePreview || "")}</p>
+              <p class="mt-1 text-xs text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
+            </div>
+            <button type="button" class="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white">Replay audio</button>
+          </div>
+        `;
+        const replayBtn = card.querySelector("button");
+        replayBtn.addEventListener("click", () => {
+          audioPlayer.src = item.audioUrl;
+          audioPlayer.classList.remove("hidden");
+          audioPlayer.playbackRate = Number(speedSelect.value);
+          audioMeta.textContent = `${item.title || "Podcast"} loaded from local history.`;
+          audioStatus.textContent = "History";
+          playBtn.disabled = false;
+          downloadLink.href = item.downloadUrl || item.audioUrl;
+          downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+          setMessage("info", `Loaded "${item.title || "podcast"}" from local history.`);
+        });
+        historyList.appendChild(card);
+      });
+    }
+
+    async function generateAudio() {
+      if (!currentPodcast) {
+        setMessage("error", "Generate a podcast script first, then convert it to audio.");
+        return;
+      }
+      if (!voiceSelect.value) {
+        setMessage("error", "Please choose a voice model before converting.");
+        return;
+      }
+
+      setMessage("", "");
+      setBusy(true, "Creating audio...", `Sending narration to ${voiceSelect.value}.`);
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/generate-audio`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: currentPodcast.narration_text,
+            voice_model: voiceSelect.value
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to convert the podcast to audio.");
+        }
+
+        currentAudio = data;
+        audioPlayer.src = data.audio_url;
+        audioPlayer.classList.remove("hidden");
+        audioPlayer.playbackRate = Number(speedSelect.value);
+        playBtn.disabled = false;
+        downloadLink.href = `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`;
+        downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+        audioMeta.textContent = `${data.extracted_characters.toLocaleString()} characters voiced across ${data.chunks_processed} audio chunk(s).`;
+        audioStatus.textContent = "Ready";
+
+        addToHistory({
+          title: currentPodcast.title,
+          sourcePreview: currentSourceText.slice(0, 110),
+          audioUrl: data.audio_url,
+          downloadUrl: `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`,
+          voice: data.voice,
+          createdAt: new Date().toLocaleString()
+        });
+        setMessage("success", `Audio ready in ${data.voice}. You can play it now or download the MP3.`);
+      } catch (error) {
+        setMessage("error", error.message || "Audio generation failed.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function copyScript() {
+      const scriptText = getScriptText();
+      if (!scriptText) {
+        setMessage("error", "No podcast script is available to copy.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(scriptText);
+        setMessage("success", "Podcast script copied to your clipboard.");
+      } catch (error) {
+        setMessage("error", "Unable to copy the script in this browser.");
+      }
+    }
+
+    function clearAll() {
+      podcastForm.reset();
+      currentPodcast = null;
+      currentAudio = null;
+      currentSourceText = "";
+      scriptEmpty.classList.remove("hidden");
+      scriptContent.classList.add("hidden");
+      generateAudioBtn.disabled = true;
+      regenerateBtn.disabled = true;
+      copyScriptBtn.disabled = true;
+      setMessage("", "");
+      resetAudioState();
+      setInputMode("url");
+      if (availableVoices.length) {
+        const defaultVoice = availableVoices[0];
+        languageSelect.value = getVoiceLanguageKey(defaultVoice);
+        renderFilteredVoices(defaultVoice.id);
+      }
+    }
+
+    podcastForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await generatePodcastScript();
+    });
+
+    generateAudioBtn.addEventListener("click", async () => {
+      await generateAudio();
+    });
+
+    copyScriptBtn.addEventListener("click", async () => {
+      await copyScript();
+    });
+
+    regenerateBtn.addEventListener("click", async () => {
+      await generatePodcastScript();
+    });
+
+    clearBtn.addEventListener("click", clearAll);
+
+    playBtn.addEventListener("click", () => {
+      if (!audioPlayer.src) {
+        setMessage("error", "No audio is ready yet.");
+        return;
+      }
+      audioPlayer.playbackRate = Number(speedSelect.value);
+      audioPlayer.play();
+    });
+
+    speedSelect.addEventListener("change", () => {
+      audioPlayer.playbackRate = Number(speedSelect.value);
+    });
+
+    languageSelect.addEventListener("change", () => {
+      renderFilteredVoices();
+    });
+
+    voiceSelect.addEventListener("change", () => {
+      renderSelectedVoiceMeta();
+      generateAudioBtn.disabled = !currentPodcast || !voiceSelect.value;
+    });
+
+    urlModeBtn.addEventListener("click", () => setInputMode("url"));
+    textModeBtn.addEventListener("click", () => setInputMode("text"));
+
+    clearHistoryBtn.addEventListener("click", () => {
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+      setMessage("info", "Local history cleared on this device.");
+    });
+
+    setInputMode("url");
+    renderHistory();
+    loadVoices();
+  </script>
+</body>
+</html>

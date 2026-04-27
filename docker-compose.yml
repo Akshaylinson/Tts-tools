@@ -9,10 +9,12 @@ services:
       - ./tools/pdf_to_audio/.env
       - ./tools/Text-to-audio/.env
       - ./tools/story_narration_generator/.env
+      - ./tools/blog_to_podcast/.env
     ports:
       - "8010:8010"
     volumes:
       - ./tools/pdf_to_audio/outputs:/app/tools/pdf_to_audio/outputs
       - ./tools/Text-to-audio/outputs:/app/tools/Text-to-audio/outputs
       - ./tools/story_narration_generator/outputs:/app/tools/story_narration_generator/outputs
+      - ./tools/blog_to_podcast/outputs:/app/tools/blog_to_podcast/outputs
     restart: unless-stopped
