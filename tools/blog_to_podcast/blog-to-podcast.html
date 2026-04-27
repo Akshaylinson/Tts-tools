@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog to Podcast Converter - Free Online Tool</title>
-  <meta name="description" content="Convert blogs and articles into podcast-style audio instantly. Turn any content into a listenable podcast for free.">
+  <meta name="description" content="Convert blogs and articles into solo or multi-speaker podcast-style audio instantly. Turn any content into a listenable podcast for free.">
   <meta name="robots" content="index,follow">
   <meta name="theme-color" content="#0f3d3e">
   <link rel="canonical" href="/blog-to-podcast">
@@ -47,7 +47,7 @@
       <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
         <p class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-teal-100">AI podcast script + audio workflow</p>
         <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Turn Blogs into Podcast Audio</h1>
-        <p class="mt-5 max-w-2xl text-lg text-slate-200">Convert any article into a ready-to-listen podcast. Paste a blog URL or article text, generate a spoken-style script, and turn it into downloadable narration in one streamlined flow.</p>
+        <p class="mt-5 max-w-2xl text-lg text-slate-200">Convert any article into a ready-to-listen podcast. Choose solo narration or a multi-speaker conversation, then generate downloadable audio in one streamlined flow.</p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a href="#tool" class="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-ink transition hover:bg-slate-100">Generate Podcast</a>
           <span class="inline-flex rounded-full border border-white/20 px-4 py-3 text-sm text-slate-200">No signup required</span>
@@ -62,7 +62,7 @@
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Core tool</p>
               <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Build your podcast from a blog or article</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">Choose a source, pick the output style, and generate a natural podcast script before sending it to audio.</p>
+              <p class="mt-3 max-w-2xl text-slate-600">Choose a source, select solo or multi-speaker mode, and generate a podcast-ready script before sending it to audio.</p>
             </div>
             <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
           </div>
@@ -88,7 +88,15 @@
               <p class="mt-2 text-sm text-slate-500">Best for copied blog posts, notes, newsletters, and long-form article drafts.</p>
             </div>
 
-            <div class="grid gap-4 md:grid-cols-3">
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div>
+                <label for="modeSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Mode</label>
+                <select id="modeSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100">
+                  <option value="solo" selected>Solo</option>
+                  <option value="two">2 Speakers</option>
+                  <option value="three">3 Speakers</option>
+                </select>
+              </div>
               <div>
                 <label for="lengthSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Podcast length</label>
                 <select id="lengthSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100">
@@ -103,17 +111,38 @@
                   <option value="">Loading languages...</option>
                 </select>
               </div>
-              <div>
-                <label for="voiceSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Voice model</label>
-                <select id="voiceSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+              <div class="rounded-2xl bg-slate-50 px-4 py-4 text-sm text-slate-600">
+                <p id="modeSummary">Solo mode uses one voice for a clean single-speaker narration.</p>
+              </div>
+            </div>
+
+            <div id="voiceFields" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div id="speaker1Wrap">
+                <label for="speaker1Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 1 Voice</label>
+                <select id="speaker1Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
                   <option value="">Loading voices...</option>
                 </select>
+                <p id="speaker1Meta" class="mt-2 text-xs text-slate-500">Primary narration voice.</p>
+              </div>
+              <div id="speaker2Wrap" class="hidden">
+                <label for="speaker2Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 2 Voice</label>
+                <select id="speaker2Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+                  <option value="">Loading voices...</option>
+                </select>
+                <p id="speaker2Meta" class="mt-2 text-xs text-slate-500">Reaction and supporting insight voice.</p>
+              </div>
+              <div id="speaker3Wrap" class="hidden">
+                <label for="speaker3Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 3 Voice</label>
+                <select id="speaker3Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+                  <option value="">Loading voices...</option>
+                </select>
+                <p id="speaker3Meta" class="mt-2 text-xs text-slate-500">Beginner or question-asking voice.</p>
               </div>
             </div>
 
             <div class="rounded-3xl bg-slate-50 px-4 py-4 text-sm text-slate-600">
               <p id="voiceDescription">Fetching available languages and voices...</p>
-              <p id="inputMeta" class="mt-2">The tool will extract readable article text, generate a podcast script, and prepare MP3 narration.</p>
+              <p id="inputMeta" class="mt-2">The tool will extract readable article text, generate a podcast script or conversation, and prepare MP3 narration.</p>
             </div>
 
             <div class="flex flex-wrap gap-3">
@@ -143,7 +172,7 @@
           <details class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" open>
             <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Podcast script</summary>
             <div id="scriptEmpty" class="mt-4 text-sm text-slate-500">Generate a podcast script to preview the title, intro, main narration, and outro.</div>
-            <div id="scriptContent" class="mt-4 hidden space-y-4">
+            <div id="scriptContent" class="mt-4 space-y-4 hidden">
               <section>
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Title</h3>
                 <p id="scriptTitle" class="mt-2 text-xl font-semibold text-ink"></p>
@@ -152,9 +181,13 @@
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Intro</h3>
                 <p id="scriptIntro" class="mt-2 whitespace-pre-line text-slate-700"></p>
               </section>
-              <section>
+              <section id="mainSection">
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Main narration</h3>
                 <div id="scriptMain" class="mt-2 space-y-3 text-slate-700"></div>
+              </section>
+              <section id="dialogueSection" class="hidden">
+                <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Conversation flow</h3>
+                <div id="scriptDialogue" class="mt-3 space-y-3"></div>
               </section>
               <section>
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Outro</h3>
@@ -210,19 +243,19 @@
       <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
         <article class="rounded-3xl bg-white p-5 shadow-soft">
           <h2 class="text-lg font-semibold text-ink">Convert blogs into podcasts</h2>
-          <p class="mt-2 text-sm text-slate-600">Move from article text to podcast-ready narration without rebuilding the script by hand.</p>
+          <p class="mt-2 text-sm text-slate-600">Move from article text to podcast-ready narration or conversation without rebuilding the script by hand.</p>
         </article>
         <article class="rounded-3xl bg-white p-5 shadow-soft">
           <h2 class="text-lg font-semibold text-ink">AI-powered narration</h2>
-          <p class="mt-2 text-sm text-slate-600">The script is rewritten for listening, with an intro, smoother transitions, and a clean outro.</p>
+          <p class="mt-2 text-sm text-slate-600">Generate solo scripts or structured speaker dialogue with intros, transitions, and clean outros.</p>
         </article>
         <article class="rounded-3xl bg-white p-5 shadow-soft">
           <h2 class="text-lg font-semibold text-ink">Multiple languages</h2>
           <p class="mt-2 text-sm text-slate-600">Language options stay aligned with the available voice inventory returned by the speech provider.</p>
         </article>
         <article class="rounded-3xl bg-white p-5 shadow-soft">
-          <h2 class="text-lg font-semibold text-ink">No signup required</h2>
-          <p class="mt-2 text-sm text-slate-600">Open the page, paste the content, and generate a spoken version without creating an account.</p>
+          <h2 class="text-lg font-semibold text-ink">Multi-speaker ready</h2>
+          <p class="mt-2 text-sm text-slate-600">Assign two or three voices, generate natural conversation, and merge everything into one MP3.</p>
         </article>
         <article class="rounded-3xl bg-white p-5 shadow-soft">
           <h2 class="text-lg font-semibold text-ink">Fast processing</h2>
@@ -243,12 +276,12 @@
             <p class="mt-3 text-slate-600">Start with either a public article link or copied text from a post, newsletter, or draft.</p>
           </article>
           <article class="rounded-3xl bg-mist p-6">
-            <p class="text-sm font-semibold text-tealbright">2. Generate podcast script</p>
-            <p class="mt-3 text-slate-600">The tool restructures the content into a spoken-style podcast script with a clear opening and flow.</p>
+            <p class="text-sm font-semibold text-tealbright">2. Choose podcast mode</p>
+            <p class="mt-3 text-slate-600">Pick solo narration, a two-speaker conversation, or a three-speaker discussion with selected voices.</p>
           </article>
           <article class="rounded-3xl bg-mist p-6">
-            <p class="text-sm font-semibold text-tealbright">3. Convert to audio</p>
-            <p class="mt-3 text-slate-600">Choose a voice model and send the final script to the text-to-speech engine for MP3 generation.</p>
+            <p class="text-sm font-semibold text-tealbright">3. Generate script and audio</p>
+            <p class="mt-3 text-slate-600">The tool creates the podcast script or conversation, then produces speaker audio and combines it into one file.</p>
           </article>
           <article class="rounded-3xl bg-mist p-6">
             <p class="text-sm font-semibold text-tealbright">4. Listen or download</p>
@@ -264,8 +297,8 @@
       <div class="mt-6 space-y-4 text-slate-700">
         <p>A blog to podcast converter helps turn written content into spoken content that feels natural to hear, not just natural to read. Instead of feeding a long article directly into generic text to speech, the tool first adapts the source into a more conversational format. That matters because podcast listeners expect a clear introduction, steady pacing, smoother transitions, and a closing thought that wraps everything together. A strong blog to podcast converter takes the important ideas from an article and reshapes them into a script that sounds more like a host speaking than a page being read aloud.</p>
         <p>That audio-first rewrite is useful because many people want to consume information while multitasking. Commuters, gym-goers, students, and busy professionals often prefer listening over reading when they are away from a desk. An article to audio podcast workflow gives them another way to access the same content without asking for more screen time. For publishers and creators, that means a single post can support both readers and listeners. If you want to convert blog to audio for your audience, a spoken version can extend the reach of every article you already publish.</p>
-        <p>The benefits are practical for creators as well. A podcast-style script is easier to reuse in newsletters, social clips, voiceovers, and short audio briefings. Instead of building a spoken summary from scratch, you can generate a first draft that already has structure and rhythm. This makes an article to audio podcast flow valuable for solo creators, bloggers, and marketing teams that need more output from the same research and writing. It also helps when you want to test whether a topic works better as a quick summary, a medium-length explanation, or a fuller audio recap.</p>
-        <p>Learners and professionals can use the same workflow to review dense material in a lighter format. Converting explainers, study notes, or industry posts into audio makes it easier to revisit ideas during travel or breaks. When you convert blog to audio, the content becomes more accessible for people who experience reading fatigue or simply retain information better through listening. In short, a blog to podcast converter is useful whenever written content needs to become portable, repeatable, and easier to consume. It turns an article into something that can be played, paused, replayed, and downloaded like any other audio resource.</p>
+        <p>A multi-speaker podcast generator expands that value even further. Instead of only producing a single narrator track, it can build a host-and-guest style flow or a three-way discussion that feels more dynamic. That makes the tool useful for teams that want an AI conversation podcast tool for explainers, roundups, recaps, and learning content. If you want to convert blog to podcast with multiple voices, a dialogue-based format can make complex topics easier to follow because one speaker can explain while another reacts, questions, or reframes the point for a different audience.</p>
+        <p>Creators, educators, and professionals can use both solo and multi-speaker modes depending on the goal. A solo narration may work best for direct summaries, while a multi-speaker podcast generator can create a more interactive listening experience for reviews, study materials, or internal briefings. In short, a modern article to audio podcast workflow is not just about reading text aloud. It is about turning useful content into portable audio that can be played, paused, replayed, and shared in the format that fits the listener best.</p>
       </div>
     </section>
 
@@ -274,7 +307,7 @@
       <div class="mt-8 space-y-4">
         <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
           <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
-          <p class="mt-2 text-slate-600">Yes. The page is designed as a free online workflow for generating a podcast-style script and audio narration.</p>
+          <p class="mt-2 text-slate-600">Yes. The page is designed as a free online workflow for generating podcast-style scripts and audio narration.</p>
         </article>
         <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
           <h3 class="text-lg font-semibold text-ink">Can I paste any blog URL?</h3>
@@ -290,7 +323,7 @@
         </article>
         <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
           <h3 class="text-lg font-semibold text-ink">How long does it take?</h3>
-          <p class="mt-2 text-slate-600">Script generation usually finishes within a few seconds. Audio timing depends on article length, selected voice, and TTS queue speed.</p>
+          <p class="mt-2 text-slate-600">Script generation usually finishes within a few seconds. Audio timing depends on article length, selected voices, and TTS queue speed.</p>
         </article>
       </div>
     </section>
@@ -310,6 +343,16 @@
   <script>
     const TOOL_BASE_PATH = "/blog-to-podcast";
     const HISTORY_KEY = "blogToPodcastHistory";
+    const MODE_LABELS = {
+      solo: "Solo",
+      two: "2 Speakers",
+      three: "3 Speakers"
+    };
+    const MODE_SUMMARIES = {
+      solo: "Solo mode uses one voice for a clean single-speaker narration.",
+      two: "Two-speaker mode creates a host-and-reactor style conversation.",
+      three: "Three-speaker mode creates a host, analyst, and beginner discussion."
+    };
 
     const podcastForm = document.getElementById("podcastForm");
     const urlModeBtn = document.getElementById("urlModeBtn");
@@ -318,9 +361,19 @@
     const textInputWrap = document.getElementById("textInputWrap");
     const urlInput = document.getElementById("urlInput");
     const textInput = document.getElementById("textInput");
+    const modeSelect = document.getElementById("modeSelect");
+    const modeSummary = document.getElementById("modeSummary");
     const lengthSelect = document.getElementById("lengthSelect");
     const languageSelect = document.getElementById("languageSelect");
-    const voiceSelect = document.getElementById("voiceSelect");
+    const speaker1Wrap = document.getElementById("speaker1Wrap");
+    const speaker2Wrap = document.getElementById("speaker2Wrap");
+    const speaker3Wrap = document.getElementById("speaker3Wrap");
+    const speaker1Select = document.getElementById("speaker1Select");
+    const speaker2Select = document.getElementById("speaker2Select");
+    const speaker3Select = document.getElementById("speaker3Select");
+    const speaker1Meta = document.getElementById("speaker1Meta");
+    const speaker2Meta = document.getElementById("speaker2Meta");
+    const speaker3Meta = document.getElementById("speaker3Meta");
     const generateScriptBtn = document.getElementById("generateScriptBtn");
     const generateAudioBtn = document.getElementById("generateAudioBtn");
     const voiceStatus = document.getElementById("voiceStatus");
@@ -336,6 +389,9 @@
     const scriptIntro = document.getElementById("scriptIntro");
     const scriptMain = document.getElementById("scriptMain");
     const scriptOutro = document.getElementById("scriptOutro");
+    const mainSection = document.getElementById("mainSection");
+    const dialogueSection = document.getElementById("dialogueSection");
+    const scriptDialogue = document.getElementById("scriptDialogue");
     const audioPlayer = document.getElementById("audioPlayer");
     const audioMeta = document.getElementById("audioMeta");
     const audioStatus = document.getElementById("audioStatus");
@@ -364,6 +420,14 @@
         .replaceAll("'", "&#39;");
     }
 
+    function getCurrentMode() {
+      return modeSelect.value || "solo";
+    }
+
+    function getActiveSpeakerCount() {
+      return getCurrentMode() === "three" ? 3 : (getCurrentMode() === "two" ? 2 : 1);
+    }
+
     function setInputMode(mode) {
       inputMode = mode;
       const isUrl = mode === "url";
@@ -378,33 +442,6 @@
       inputMeta.textContent = isUrl
         ? "The tool will extract readable article text from the URL before generating the podcast script."
         : "The pasted text will be used directly for podcast script generation.";
-    }
-
-    function setBusy(isBusy, label = "", meta = "") {
-      progressBox.classList.toggle("hidden", !isBusy);
-      if (isBusy) {
-        progressLabel.textContent = label;
-        progressMeta.textContent = meta;
-      }
-      generateScriptBtn.disabled = isBusy;
-      generateAudioBtn.disabled = isBusy || !currentPodcast || !voiceSelect.value;
-      regenerateBtn.disabled = isBusy || !hasInputValue();
-      copyScriptBtn.disabled = !currentPodcast;
-    }
-
-    function setMessage(type, text) {
-      if (!text) {
-        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
-        messageBox.textContent = "";
-        return;
-      }
-      const palette = {
-        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
-        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
-        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
-      };
-      messageBox.className = palette[type] || palette.info;
-      messageBox.textContent = text;
     }
 
     function hasInputValue() {
@@ -431,51 +468,143 @@
       return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
     }
 
-    function renderSelectedVoiceMeta() {
-      const voice = filteredVoices.find((item) => item.id === voiceSelect.value);
-      if (!voice) {
-        voiceDescription.textContent = "Choose a language to see matching voices.";
+    function getSpeakerSelects() {
+      return [
+        { key: "speaker_1", select: speaker1Select, wrap: speaker1Wrap, meta: speaker1Meta },
+        { key: "speaker_2", select: speaker2Select, wrap: speaker2Wrap, meta: speaker2Meta },
+        { key: "speaker_3", select: speaker3Select, wrap: speaker3Wrap, meta: speaker3Meta }
+      ];
+    }
+
+    function setBusy(isBusy, label = "", meta = "") {
+      progressBox.classList.toggle("hidden", !isBusy);
+      if (isBusy) {
+        progressLabel.textContent = label;
+        progressMeta.textContent = meta;
+      }
+      generateScriptBtn.disabled = isBusy;
+      generateAudioBtn.disabled = isBusy || !currentPodcast || !hasRequiredVoiceSelection();
+      regenerateBtn.disabled = isBusy || !hasInputValue();
+      copyScriptBtn.disabled = !currentPodcast;
+    }
+
+    function setMessage(type, text) {
+      if (!text) {
+        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
+        messageBox.textContent = "";
         return;
+      }
+      const palette = {
+        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
+        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
+        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
+      };
+      messageBox.className = palette[type] || palette.info;
+      messageBox.textContent = text;
+    }
+
+    function hasRequiredVoiceSelection() {
+      return getSelectedVoices(true) !== null;
+    }
+
+    function getSelectedVoices(allowIncomplete = false) {
+      const activeCount = getActiveSpeakerCount();
+      const mapping = {};
+      const active = getSpeakerSelects().slice(0, activeCount);
+      for (const speaker of active) {
+        const value = speaker.select.value;
+        if (!value && !allowIncomplete) {
+          return null;
+        }
+        if (value) {
+          mapping[speaker.key] = value;
+        }
+      }
+      return mapping;
+    }
+
+    function describeVoice(voice) {
+      if (!voice) {
+        return "Choose a language to see matching voices.";
       }
       const parts = [
         voice.language_name || voice.language || "Unknown language",
         voice.gender || "unknown",
         voice.quality || "unknown quality"
       ];
-      voiceDescription.textContent = `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
+      return `${parts.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
     }
 
-    function renderFilteredVoices(preferredVoiceId = "") {
+    function updateVoiceMetaForSelect(select, target) {
+      const voice = filteredVoices.find((item) => item.id === select.value);
+      target.textContent = describeVoice(voice);
+    }
+
+    function updateVoiceSummary() {
+      const summaries = [];
+      const activeCount = getActiveSpeakerCount();
+      const active = getSpeakerSelects().slice(0, activeCount);
+      active.forEach((speaker, index) => {
+        const voice = filteredVoices.find((item) => item.id === speaker.select.value);
+        if (voice) {
+          summaries.push(`Speaker ${index + 1}: ${voice.label}`);
+        }
+      });
+      voiceDescription.textContent = summaries.length
+        ? `${summaries.join(" | ")}`
+        : "Choose a language to see matching voices.";
+    }
+
+    function renderFilteredVoices(preferredVoiceIds = {}) {
       filteredVoices = availableVoices.filter((voice) => getVoiceLanguageKey(voice) === languageSelect.value);
-      if (!filteredVoices.length) {
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
-        voiceSelect.disabled = true;
-        voiceStatus.textContent = "No voices";
-        voiceDescription.textContent = "No voice models are currently available for this language.";
-        generateAudioBtn.disabled = true;
-        return;
-      }
+      const activeCount = getActiveSpeakerCount();
+      const speakerEntries = getSpeakerSelects();
 
-      voiceSelect.innerHTML = filteredVoices.map((voice) => {
-        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
-        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
-      }).join("");
+      speakerEntries.forEach((speaker, index) => {
+        const isActive = index < activeCount;
+        speaker.wrap.classList.toggle("hidden", !isActive);
+        speaker.select.disabled = !isActive || !filteredVoices.length;
+        if (!isActive) {
+          speaker.select.innerHTML = '<option value="">Not used in this mode</option>';
+          speaker.meta.textContent = index === 1
+            ? "Reaction and supporting insight voice."
+            : "Beginner or question-asking voice.";
+          return;
+        }
 
-      const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
-      voiceSelect.value = preferredVoice.id;
-      voiceSelect.disabled = false;
-      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} ready`;
-      renderSelectedVoiceMeta();
-      generateAudioBtn.disabled = !currentPodcast;
+        if (!filteredVoices.length) {
+          speaker.select.innerHTML = '<option value="">No voices available</option>';
+          speaker.meta.textContent = "No voice models are currently available for this language.";
+          return;
+        }
+
+        speaker.select.innerHTML = filteredVoices.map((voice) => {
+          const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
+          return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
+        }).join("");
+
+        const preferred = preferredVoiceIds[speaker.key];
+        const selectedVoice = filteredVoices.find((voice) => voice.id === preferred) || filteredVoices[Math.min(index, filteredVoices.length - 1)] || filteredVoices[0];
+        speaker.select.value = selectedVoice.id;
+        updateVoiceMetaForSelect(speaker.select, speaker.meta);
+      });
+
+      voiceStatus.textContent = filteredVoices.length
+        ? `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} ready`
+        : "No voices";
+      updateVoiceSummary();
+      generateAudioBtn.disabled = !currentPodcast || !hasRequiredVoiceSelection();
     }
 
     function applyVoicePayload(payload) {
       availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
       if (!availableVoices.length) {
         languageSelect.innerHTML = '<option value="">No languages available</option>';
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
         languageSelect.disabled = true;
-        voiceSelect.disabled = true;
+        getSpeakerSelects().forEach(({ select }) => {
+          select.innerHTML = '<option value="">No voices available</option>';
+          select.disabled = true;
+        });
         voiceStatus.textContent = "Voices unavailable";
         voiceDescription.textContent = "The speech service did not return usable voice options.";
         return;
@@ -489,13 +618,12 @@
 
       const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
       languageSelect.value = getVoiceLanguageKey(defaultVoice);
-      renderFilteredVoices(defaultVoice.id);
+      renderFilteredVoices({ speaker_1: defaultVoice.id });
     }
 
     async function loadVoices() {
       voiceStatus.textContent = "Loading voices...";
       voiceDescription.textContent = "Fetching available languages and voices...";
-      voiceSelect.disabled = true;
       languageSelect.disabled = true;
 
       try {
@@ -506,13 +634,24 @@
         }
         applyVoicePayload(data);
       } catch (error) {
-        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
         languageSelect.innerHTML = '<option value="">Language loading failed</option>';
-        voiceSelect.disabled = true;
         languageSelect.disabled = true;
+        getSpeakerSelects().forEach(({ select }) => {
+          select.innerHTML = '<option value="">Voice loading failed</option>';
+          select.disabled = true;
+        });
         voiceStatus.textContent = "Voice error";
         voiceDescription.textContent = error.message || "Unable to load voices right now.";
       }
+    }
+
+    function applyModeUi() {
+      const mode = getCurrentMode();
+      modeSummary.textContent = MODE_SUMMARIES[mode];
+      inputMeta.textContent = mode === "solo"
+        ? "The tool will extract readable article text, generate a solo podcast script, and prepare MP3 narration."
+        : "The tool will extract readable article text, generate a multi-speaker conversation, and prepare a merged MP3.";
+      renderFilteredVoices(getSelectedVoices(true) || {});
     }
 
     function renderPodcast(podcast) {
@@ -521,9 +660,27 @@
       scriptTitle.textContent = podcast.title;
       scriptIntro.textContent = podcast.intro;
       scriptOutro.textContent = podcast.outro;
-      scriptMain.innerHTML = podcast.main_content.map((segment) => (
-        `<p class="rounded-2xl bg-white px-4 py-3">${escapeHtml(segment)}</p>`
-      )).join("");
+
+      if (podcast.mode === "solo") {
+        mainSection.classList.remove("hidden");
+        dialogueSection.classList.add("hidden");
+        scriptMain.innerHTML = podcast.main_content.map((segment) => (
+          `<p class="rounded-2xl bg-white px-4 py-3">${escapeHtml(segment)}</p>`
+        )).join("");
+        scriptDialogue.innerHTML = "";
+      } else {
+        mainSection.classList.remove("hidden");
+        dialogueSection.classList.remove("hidden");
+        scriptMain.innerHTML = podcast.main_content.map((segment) => (
+          `<p class="rounded-2xl bg-white px-4 py-3">${escapeHtml(segment)}</p>`
+        )).join("");
+        scriptDialogue.innerHTML = (podcast.dialogue || []).map((segment) => (
+          `<article class="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-tealbright">${escapeHtml(segment.speaker.replace("_", " "))}</p>
+            <p class="mt-2 text-slate-700">${escapeHtml(segment.text)}</p>
+          </article>`
+        )).join("");
+      }
     }
 
     function resetAudioState() {
@@ -543,6 +700,19 @@
       if (!currentPodcast) {
         return "";
       }
+      if (currentPodcast.mode !== "solo" && Array.isArray(currentPodcast.dialogue)) {
+        return [
+          `Title: ${currentPodcast.title}`,
+          "",
+          `Intro: ${currentPodcast.intro}`,
+          "",
+          "Conversation:",
+          ...currentPodcast.dialogue.map((segment) => `${segment.speaker.replace("_", " ")}: ${segment.text}`),
+          "",
+          `Outro: ${currentPodcast.outro}`
+        ].join("\n");
+      }
+
       return [
         `Title: ${currentPodcast.title}`,
         "",
@@ -594,14 +764,27 @@
           currentSourceText = sourceText;
         }
 
-        setBusy(true, "Generating podcast...", "Rewriting the article into a spoken podcast script.");
+        const mode = getCurrentMode();
+        const voices = getSelectedVoices();
+        if (!voices) {
+          throw new Error("Please select all required speaker voices before generating.");
+        }
+
+        const generationLabel = mode === "solo" ? "Generating podcast..." : "Generating conversation...";
+        const generationMeta = mode === "solo"
+          ? "Rewriting the article into a spoken solo podcast script."
+          : "Building a natural multi-speaker conversation from the article.";
+        setBusy(true, generationLabel, generationMeta);
+
         const response = await fetch(`${TOOL_BASE_PATH}/generate-podcast`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             text: sourceText,
+            mode,
             length: lengthSelect.value,
-            language: languageSelect.options[languageSelect.selectedIndex]?.text || ""
+            language: languageSelect.options[languageSelect.selectedIndex]?.text || "",
+            voices
           })
         });
         const data = await response.json();
@@ -611,10 +794,13 @@
 
         currentPodcast = data.podcast;
         renderPodcast(data.podcast);
-        generateAudioBtn.disabled = !voiceSelect.value;
+        generateAudioBtn.disabled = !hasRequiredVoiceSelection();
         regenerateBtn.disabled = false;
         copyScriptBtn.disabled = false;
-        setMessage("success", `Podcast script ready. Estimated narration length: ${data.podcast.estimated_word_count.toLocaleString()} words.`);
+        setMessage(
+          "success",
+          `${MODE_LABELS[data.mode]} script ready. Estimated narration length: ${data.podcast.estimated_word_count.toLocaleString()} words.`
+        );
       } catch (error) {
         currentPodcast = null;
         generateAudioBtn.disabled = true;
@@ -659,7 +845,7 @@
             <div>
               <p class="text-sm font-semibold text-ink">${escapeHtml(item.title || "Untitled podcast")}</p>
               <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.sourcePreview || "")}</p>
-              <p class="mt-1 text-xs text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
+              <p class="mt-1 text-xs text-slate-500">${escapeHtml(item.createdAt)} - ${escapeHtml(item.mode || "Solo")}</p>
             </div>
             <button type="button" class="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white">Replay audio</button>
           </div>
@@ -685,27 +871,45 @@
         setMessage("error", "Generate a podcast script first, then convert it to audio.");
         return;
       }
-      if (!voiceSelect.value) {
-        setMessage("error", "Please choose a voice model before converting.");
+
+      const mode = currentPodcast.mode || getCurrentMode();
+      const voices = getSelectedVoices();
+      if (!voices) {
+        setMessage("error", "Please select all required speaker voices before converting.");
         return;
       }
 
       setMessage("", "");
-      setBusy(true, "Creating audio...", `Sending narration to ${voiceSelect.value}.`);
+      const statusMeta = mode === "solo"
+        ? `Sending narration to ${voices.speaker_1}.`
+        : "Generating voices for each speaker and combining the final MP3.";
+      setBusy(true, "Generating voices...", statusMeta);
 
       try {
+        const body = mode === "solo"
+          ? {
+              mode,
+              text: currentPodcast.narration_text,
+              voice_model: voices.speaker_1
+            }
+          : {
+              mode,
+              dialogue: currentPodcast.dialogue,
+              voices
+            };
+
         const response = await fetch(`${TOOL_BASE_PATH}/generate-audio`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: currentPodcast.narration_text,
-            voice_model: voiceSelect.value
-          })
+          body: JSON.stringify(body)
         });
         const data = await response.json();
         if (!response.ok) {
           throw new Error(data.detail || "Unable to convert the podcast to audio.");
         }
+
+        progressLabel.textContent = "Combining audio...";
+        progressMeta.textContent = "Finalizing the continuous MP3 output.";
 
         currentAudio = data;
         audioPlayer.src = data.audio_url;
@@ -722,10 +926,10 @@
           sourcePreview: currentSourceText.slice(0, 110),
           audioUrl: data.audio_url,
           downloadUrl: `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`,
-          voice: data.voice,
+          mode: MODE_LABELS[mode],
           createdAt: new Date().toLocaleString()
         });
-        setMessage("success", `Audio ready in ${data.voice}. You can play it now or download the MP3.`);
+        setMessage("success", `Audio ready. ${MODE_LABELS[mode]} podcast is now available to play or download.`);
       } catch (error) {
         setMessage("error", error.message || "Audio generation failed.");
       } finally {
@@ -755,17 +959,20 @@
       currentSourceText = "";
       scriptEmpty.classList.remove("hidden");
       scriptContent.classList.add("hidden");
+      dialogueSection.classList.add("hidden");
+      mainSection.classList.remove("hidden");
       generateAudioBtn.disabled = true;
       regenerateBtn.disabled = true;
       copyScriptBtn.disabled = true;
       setMessage("", "");
       resetAudioState();
       setInputMode("url");
+      modeSelect.value = "solo";
       if (availableVoices.length) {
         const defaultVoice = availableVoices[0];
         languageSelect.value = getVoiceLanguageKey(defaultVoice);
-        renderFilteredVoices(defaultVoice.id);
       }
+      applyModeUi();
     }
 
     podcastForm.addEventListener("submit", async (event) => {
@@ -801,12 +1008,20 @@
     });
 
     languageSelect.addEventListener("change", () => {
-      renderFilteredVoices();
+      renderFilteredVoices(getSelectedVoices(true) || {});
     });
 
-    voiceSelect.addEventListener("change", () => {
-      renderSelectedVoiceMeta();
-      generateAudioBtn.disabled = !currentPodcast || !voiceSelect.value;
+    getSpeakerSelects().forEach(({ select, meta }) => {
+      select.addEventListener("change", () => {
+        updateVoiceMetaForSelect(select, meta);
+        updateVoiceSummary();
+        generateAudioBtn.disabled = !currentPodcast || !hasRequiredVoiceSelection();
+      });
+    });
+
+    modeSelect.addEventListener("change", () => {
+      applyModeUi();
+      generateAudioBtn.disabled = !currentPodcast || !hasRequiredVoiceSelection();
     });
 
     urlModeBtn.addEventListener("click", () => setInputMode("url"));

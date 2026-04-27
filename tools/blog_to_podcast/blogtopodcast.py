@@ -6,7 +6,7 @@ import logging
 import re
 import uuid
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import httpx
@@ -75,7 +75,7 @@ if not logger.handlers:
 
 app = FastAPI(
     title="Blog to Podcast Converter",
-    description="Convert article URLs or pasted text into podcast-style scripts and downloadable audio.",
+    description="Convert article URLs or pasted text into solo or multi-speaker podcast scripts and downloadable audio.",
 )
 app.mount("/outputs", StaticFiles(directory=str(OUTPUTS_DIR)), name="outputs")
 
@@ -91,6 +91,24 @@ LENGTH_WORD_TARGETS = {
     "medium": (300, 600),
     "full": (700, 1200),
 }
+MODE_SPEAKER_COUNT = {
+    "solo": 1,
+    "two": 2,
+    "three": 3,
+}
+MODE_LABELS = {
+    "solo": "Solo",
+    "two": "2 Speakers",
+    "three": "3 Speakers",
+}
+DIALOGUE_TURN_TARGETS = {
+    "short": (8, 12),
+    "medium": (12, 18),
+    "full": (18, 24),
+}
+MAX_DIALOGUE_SEGMENTS = 30
+MULTI_SPEAKER_PAUSE_MS = 400
+TTS_SEGMENT_RETRY_ATTEMPTS = 2
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36 BlogToPodcastBot/1.0"
@@ -124,10 +142,30 @@ class ExtractContentResponse(BaseModel):
     extracted_characters: int
 
 
+class SpeakerVoices(BaseModel):
+    speaker_1: Optional[str] = ""
+    speaker_2: Optional[str] = ""
+    speaker_3: Optional[str] = ""
+
+    def normalized(self) -> Dict[str, str]:
+        return {
+            key: normalize_voice_value(value or "")
+            for key, value in self.model_dump().items()
+            if normalize_voice_value(value or "")
+        }
+
+
+class DialogueSegment(BaseModel):
+    speaker: str = Field(..., min_length=1, max_length=32)
+    text: str = Field(..., min_length=1, max_length=1600)
+
+
 class GeneratePodcastRequest(BaseModel):
     text: str = Field(..., min_length=30, max_length=24000)
+    mode: str = Field(default="solo", min_length=4, max_length=16)
     length: str = Field(..., min_length=5, max_length=16)
     language: str = Field(..., min_length=2, max_length=64)
+    voices: SpeakerVoices = Field(default_factory=SpeakerVoices)
 
 
 class PodcastScriptPayload(BaseModel):
@@ -137,6 +175,8 @@ class PodcastScriptPayload(BaseModel):
     outro: str
     narration_text: str
     estimated_word_count: int
+    mode: str
+    dialogue: List[DialogueSegment] = Field(default_factory=list)
 
 
 class GeneratePodcastResponse(BaseModel):
@@ -144,11 +184,15 @@ class GeneratePodcastResponse(BaseModel):
     podcast: PodcastScriptPayload
     length: str
     language: str
+    mode: str
 
 
 class GenerateAudioRequest(BaseModel):
-    text: str = Field(..., min_length=20, max_length=16000)
-    voice_model: str = Field(..., min_length=1, max_length=100)
+    mode: str = Field(default="solo", min_length=4, max_length=16)
+    text: str = Field(default="", max_length=16000)
+    voice_model: str = Field(default="", max_length=100)
+    dialogue: List[DialogueSegment] = Field(default_factory=list)
+    voices: SpeakerVoices = Field(default_factory=SpeakerVoices)
 
 
 class GenerateAudioResponse(BaseModel):
@@ -176,6 +220,21 @@ def normalize_text_input(text: str) -> str:
 
 def normalize_voice_value(value: str) -> str:
     return re.sub(r"\s+", " ", (value or "").strip())
+
+
+def normalize_mode(value: str) -> str:
+    normalized = (value or "solo").strip().lower()
+    if normalized not in MODE_SPEAKER_COUNT:
+        raise HTTPException(status_code=400, detail="Please choose a valid podcast mode.")
+    return normalized
+
+
+def speaker_keys_for_mode(mode: str) -> List[str]:
+    return [f"speaker_{index}" for index in range(1, MODE_SPEAKER_COUNT[mode] + 1)]
+
+
+def speaker_label(speaker_key: str) -> str:
+    return speaker_key.replace("_", " ").title()
 
 
 def make_log_preview(text: str, limit: int = 120) -> str:
@@ -350,6 +409,25 @@ def extract_json_object(raw_text: str) -> dict:
         return json.loads(match.group(0))
 
 
+def extract_json_array(raw_text: str) -> list:
+    text = raw_text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        match = re.search(r"\[.*\]", text, re.DOTALL)
+        if not match:
+            raise RuntimeError("The podcast model did not return a valid dialogue array.")
+        parsed = json.loads(match.group(0))
+    if isinstance(parsed, dict) and isinstance(parsed.get("dialogue"), list):
+        parsed = parsed["dialogue"]
+    if not isinstance(parsed, list):
+        raise RuntimeError("The podcast model did not return a dialogue array.")
+    return parsed
+
+
 def clean_required_section(value: str, label: str) -> str:
     cleaned = normalize_text_input(value)
     if not cleaned:
@@ -373,6 +451,18 @@ def clean_main_content(value: object) -> List[str]:
 def compose_narration_text(title: str, intro: str, main_content: List[str], outro: str) -> str:
     joined_main = " ... ".join(main_content)
     return normalize_text_input(f"{title}. ... {intro} ... {joined_main} ... {outro}")
+
+
+def compose_dialogue_script_text(dialogue: List[DialogueSegment]) -> str:
+    return "\n".join(f"{speaker_label(segment.speaker)}: {segment.text}" for segment in dialogue)
+
+
+def count_tts_chunks_for_text(text: str) -> int:
+    return len(chunk_text_for_tts(text))
+
+
+def count_tts_chunks_for_dialogue(dialogue: List[DialogueSegment]) -> int:
+    return sum(count_tts_chunks_for_text(segment.text) for segment in dialogue)
 
 
 def build_podcast_prompt(payload: GeneratePodcastRequest) -> Tuple[str, str]:
@@ -404,28 +494,72 @@ def build_podcast_prompt(payload: GeneratePodcastRequest) -> Tuple[str, str]:
     return system_prompt, user_prompt
 
 
-async def generate_podcast_from_grok(payload: GeneratePodcastRequest, request_id: str) -> PodcastScriptPayload:
+def build_multi_speaker_prompt(payload: GeneratePodcastRequest) -> Tuple[str, str]:
+    min_words, max_words = LENGTH_WORD_TARGETS[payload.length]
+    min_turns, max_turns = DIALOGUE_TURN_TARGETS[payload.length]
+    if payload.mode == "two":
+        mode_rules = (
+            "Create a natural two-speaker podcast conversation.\n"
+            "- speaker_1 explains the topic and leads the flow.\n"
+            "- speaker_2 reacts, asks helpful follow-up questions, and adds insight.\n"
+        )
+    else:
+        mode_rules = (
+            "Create a natural three-speaker podcast conversation.\n"
+            "- speaker_1 is the host who guides the episode.\n"
+            "- speaker_2 is the analyst who explains and deepens the topic.\n"
+            "- speaker_3 is the beginner who asks clarifying questions and keeps it accessible.\n"
+        )
+
+    system_prompt = (
+        "You are an expert podcast writer for multi-speaker dialogue. "
+        "Transform source articles into spoken conversations with short, natural back-and-forth turns. "
+        "Return valid JSON only as an array. "
+        "Each item must have exactly these keys: speaker, text. "
+        "Use only the speaker ids speaker_1, speaker_2, and speaker_3 when applicable."
+    )
+    user_prompt = (
+        f"Language: {payload.language}\n"
+        f"Mode: {payload.mode}\n"
+        f"Target length: {payload.length}\n"
+        f"Word budget: {min_words} to {max_words} words\n"
+        f"Turn budget: {min_turns} to {max_turns} turns, never more than {MAX_DIALOGUE_SEGMENTS}\n\n"
+        f"{mode_rules}\n"
+        "Conversation rules:\n"
+        "- Keep each turn to 1 to 3 sentences.\n"
+        "- Open with a podcast-style intro across the first one or two turns.\n"
+        "- Build a clear, non-repetitive flow.\n"
+        "- Preserve the key ideas, examples, and takeaways from the source article.\n"
+        "- Make transitions sound natural and conversational.\n"
+        "- End with a concise outro in the final one or two turns.\n"
+        "- Avoid filler, clickbait, stage directions, or markdown.\n"
+        "- Keep the conversation safe for a general audience and AdSense-friendly.\n\n"
+        f"Source article text:\n{payload.text}\n\n"
+        "Return JSON only as an array."
+    )
+    return system_prompt, user_prompt
+
+
+async def request_chat_completion(system_prompt: str, user_prompt: str, request_id: str, temperature: float = 0.6) -> str:
     validate_grok_runtime_settings()
-    system_prompt, user_prompt = build_podcast_prompt(payload)
     headers = {
         "Authorization": f"Bearer {BLOG_GROK_API_KEY}",
         "Content-Type": "application/json",
     }
     body = {
         "model": BLOG_GROK_MODEL,
-        "temperature": 0.6,
+        "temperature": temperature,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-        "response_format": {"type": "json_object"},
     }
 
     async with httpx.AsyncClient(timeout=BLOG_GROK_TIMEOUT_SECONDS) as client:
         response = await client.post(f"{BLOG_GROK_BASE_URL}/chat/completions", headers=headers, json=body)
         if response.is_error:
             logger.error(
-                "[%s] Grok upstream error %s from %s: %s",
+                "[%s] Groq upstream error %s from %s: %s",
                 request_id,
                 response.status_code,
                 response.request.url,
@@ -444,6 +578,12 @@ async def generate_podcast_from_grok(payload: GeneratePodcastRequest, request_id
         content = "".join(part.get("text", "") for part in content if isinstance(part, dict))
     if not isinstance(content, str) or not content.strip():
         raise RuntimeError("The podcast model returned an empty response.")
+    return content
+
+
+async def generate_solo_podcast(payload: GeneratePodcastRequest, request_id: str) -> PodcastScriptPayload:
+    system_prompt, user_prompt = build_podcast_prompt(payload)
+    content = await request_chat_completion(system_prompt, user_prompt, request_id, temperature=0.6)
 
     parsed = extract_json_object(content)
     title = clean_required_section(str(parsed.get("title") or ""), "title")
@@ -460,7 +600,70 @@ async def generate_podcast_from_grok(payload: GeneratePodcastRequest, request_id
         outro=outro,
         narration_text=narration_text,
         estimated_word_count=estimated_word_count,
+        mode="solo",
+        dialogue=[],
     )
+
+
+def parse_dialogue_segments(raw_text: str, mode: str) -> List[DialogueSegment]:
+    allowed_speakers = set(speaker_keys_for_mode(mode))
+    raw_segments = extract_json_array(raw_text)
+    parsed_segments: List[DialogueSegment] = []
+
+    for item in raw_segments:
+        if not isinstance(item, dict):
+            raise RuntimeError("Each dialogue segment must be an object with speaker and text fields.")
+        speaker = str(item.get("speaker") or "").strip().lower()
+        text = normalize_text_input(str(item.get("text") or ""))
+        if speaker not in allowed_speakers:
+            raise RuntimeError("The podcast dialogue used an unexpected speaker id.")
+        if not text:
+            raise RuntimeError("The podcast dialogue included an empty text segment.")
+        parsed_segments.append(DialogueSegment(speaker=speaker, text=text))
+
+    if not parsed_segments:
+        raise RuntimeError("The podcast model returned an empty dialogue.")
+    if len(parsed_segments) > MAX_DIALOGUE_SEGMENTS:
+        raise RuntimeError(f"The generated dialogue exceeded the {MAX_DIALOGUE_SEGMENTS} segment limit.")
+    return parsed_segments
+
+
+def build_multi_speaker_payload(dialogue: List[DialogueSegment], mode: str) -> PodcastScriptPayload:
+    intro = dialogue[0].text
+    outro = dialogue[-1].text
+    main_slice = dialogue[1:-1] if len(dialogue) > 2 else dialogue
+    main_content = [f"{speaker_label(segment.speaker)}: {segment.text}" for segment in main_slice]
+    title = f"{MODE_LABELS[mode]} Podcast Conversation"
+    narration_text = compose_dialogue_script_text(dialogue)
+    estimated_word_count = len(" ".join(segment.text for segment in dialogue).split())
+
+    return PodcastScriptPayload(
+        title=title,
+        intro=intro,
+        main_content=main_content,
+        outro=outro,
+        narration_text=narration_text,
+        estimated_word_count=estimated_word_count,
+        mode=mode,
+        dialogue=dialogue,
+    )
+
+
+async def generate_multi_speaker_podcast(payload: GeneratePodcastRequest, request_id: str) -> PodcastScriptPayload:
+    system_prompt, user_prompt = build_multi_speaker_prompt(payload)
+    last_error: Optional[Exception] = None
+
+    for attempt in range(1, 3):
+        content = await request_chat_completion(system_prompt, user_prompt, request_id, temperature=0.7)
+        try:
+            dialogue = parse_dialogue_segments(content, payload.mode)
+            return build_multi_speaker_payload(dialogue, payload.mode)
+        except RuntimeError as exc:
+            last_error = exc
+            logger.warning("[%s] Dialogue parse failed on attempt %s: %s", request_id, attempt, exc)
+            user_prompt = f"{user_prompt}\n\nRetry instruction: return only a valid JSON array with the required speaker ids."
+
+    raise RuntimeError(str(last_error or "The podcast model returned invalid dialogue."))
 
 
 def chunk_text_for_tts(text: str) -> List[str]:
@@ -505,7 +708,6 @@ def chunk_text_for_tts(text: str) -> List[str]:
 
     if current:
         chunks.append(current)
-
     return chunks
 
 
@@ -528,7 +730,7 @@ async def create_tts_job(client: httpx.AsyncClient, text: str, voice: str) -> st
     return job_id
 
 
-async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str, request_id: str, chunk_index: int) -> Tuple[bytes, str]:
+async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str, request_id: str, chunk_index: str) -> Tuple[bytes, str]:
     headers = {}
     if BLOG_TTS_API_KEY:
         headers["X-API-Key"] = BLOG_TTS_API_KEY
@@ -561,35 +763,127 @@ async def wait_for_tts_audio(client: httpx.AsyncClient, job_id: str, request_id:
     raise RuntimeError("The TTS request timed out before audio was ready.")
 
 
-async def convert_text_to_audio(clean_text: str, request_id: str, voice: str) -> str:
-    chunks = chunk_text_for_tts(clean_text)
+async def synthesize_text_segment(client: httpx.AsyncClient, text: str, voice: str, request_id: str, segment_label: str) -> Tuple[AudioSegment, int]:
+    chunks = chunk_text_for_tts(text)
     if not chunks:
         raise HTTPException(status_code=422, detail="The narration text is empty after cleanup.")
 
     merged_audio: Optional[AudioSegment] = None
-    logger.info("[%s] Split narration into %s chunk(s)", request_id, len(chunks))
+    for chunk_index, chunk in enumerate(chunks, start=1):
+        attempt_error: Optional[Exception] = None
+        for attempt in range(1, TTS_SEGMENT_RETRY_ATTEMPTS + 1):
+            try:
+                logger.info(
+                    "[%s] Sending %s chunk %s/%s to TTS API (%s chars) using voice=%s. Preview: \"%s\"",
+                    request_id,
+                    segment_label,
+                    chunk_index,
+                    len(chunks),
+                    len(chunk),
+                    voice,
+                    make_log_preview(chunk),
+                )
+                job_id = await create_tts_job(client, chunk, voice)
+                audio_bytes, audio_format = await wait_for_tts_audio(client, job_id, request_id, f"{segment_label}-{chunk_index}")
+                segment_audio = AudioSegment.from_file(
+                    io.BytesIO(audio_bytes),
+                    format="wav" if audio_format == "wav" else "mp3",
+                )
+                merged_audio = segment_audio if merged_audio is None else merged_audio + segment_audio
+                attempt_error = None
+                break
+            except (httpx.HTTPError, RuntimeError) as exc:
+                attempt_error = exc
+                logger.warning("[%s] TTS chunk retry %s/%s failed for %s: %s", request_id, attempt, TTS_SEGMENT_RETRY_ATTEMPTS, segment_label, exc)
+                if attempt == TTS_SEGMENT_RETRY_ATTEMPTS:
+                    raise
+        if attempt_error:
+            raise attempt_error
 
-    async with httpx.AsyncClient(timeout=180) as client:
-        for chunk_index, chunk in enumerate(chunks, start=1):
-            logger.info(
-                "[%s] Sending chunk %s/%s to TTS API %s/v1/tts (%s chars). Preview: \"%s\"",
-                request_id,
-                chunk_index,
-                len(chunks),
-                BLOG_TTS_BASE_URL,
-                len(chunk),
-                make_log_preview(chunk),
-            )
-            job_id = await create_tts_job(client, chunk, voice)
-            audio_bytes, audio_format = await wait_for_tts_audio(client, job_id, request_id, chunk_index)
-            segment = AudioSegment.from_file(io.BytesIO(audio_bytes), format="wav" if audio_format == "wav" else "mp3")
-            merged_audio = segment if merged_audio is None else merged_audio + segment
+    if merged_audio is None:
+        raise RuntimeError("Unable to generate audio for the requested text.")
+    return merged_audio, len(chunks)
 
-    stem_source = re.sub(r"[^a-zA-Z0-9_-]+", "-", make_log_preview(clean_text, limit=40)).strip("-").lower() or "podcast"
+
+def export_audio_segment(audio: AudioSegment, stem_source: str) -> str:
     output_name = f"{stem_source}-{uuid.uuid4().hex[:10]}.mp3"
     output_path = OUTPUTS_DIR / output_name
-    merged_audio.export(output_path, format="mp3", bitrate="128k")
+    audio.export(output_path, format="mp3", bitrate="128k")
     return output_name
+
+
+async def convert_text_to_audio(clean_text: str, request_id: str, voice: str) -> Tuple[str, int]:
+    async with httpx.AsyncClient(timeout=180) as client:
+        merged_audio, chunk_count = await synthesize_text_segment(client, clean_text, voice, request_id, "solo")
+
+    stem_source = re.sub(r"[^a-zA-Z0-9_-]+", "-", make_log_preview(clean_text, limit=40)).strip("-").lower() or "podcast"
+    return export_audio_segment(merged_audio, stem_source), chunk_count
+
+
+async def convert_dialogue_to_audio(dialogue: List[DialogueSegment], voices: Dict[str, str], request_id: str) -> Tuple[str, int]:
+    final_audio = AudioSegment.empty()
+    silence = AudioSegment.silent(duration=MULTI_SPEAKER_PAUSE_MS)
+    processed_chunks = 0
+
+    async with httpx.AsyncClient(timeout=180) as client:
+        for index, segment in enumerate(dialogue, start=1):
+            speaker_voice = voices.get(segment.speaker)
+            if not speaker_voice:
+                raise HTTPException(status_code=400, detail=f"Missing voice mapping for {speaker_label(segment.speaker)}.")
+            segment_audio, chunk_count = await synthesize_text_segment(
+                client,
+                segment.text,
+                speaker_voice,
+                request_id,
+                f"{segment.speaker}-{index}",
+            )
+            processed_chunks += chunk_count
+            final_audio += segment_audio
+            if index < len(dialogue):
+                final_audio += silence
+
+    stem_source = re.sub(
+        r"[^a-zA-Z0-9_-]+",
+        "-",
+        make_log_preview(" ".join(segment.text for segment in dialogue), limit=40),
+    ).strip("-").lower() or "podcast-conversation"
+    return export_audio_segment(final_audio, stem_source), processed_chunks
+
+
+def validate_voice_mapping(mode: str, voices: SpeakerVoices, require_complete: bool) -> Dict[str, str]:
+    normalized_voices = voices.normalized()
+    required_keys = speaker_keys_for_mode(mode)
+
+    if require_complete:
+        missing = [speaker_label(key) for key in required_keys if not normalized_voices.get(key)]
+        if missing:
+            raise HTTPException(status_code=400, detail=f"Please choose voices for: {', '.join(missing)}.")
+
+    return {key: normalized_voices[key] for key in required_keys if normalized_voices.get(key)}
+
+
+async def validate_selected_voices(voice_map: Dict[str, str], request_id: str) -> Dict[str, str]:
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            available_voices = await fetch_available_tts_voices(client)
+    except Exception as exc:
+        logger.warning("[%s] Voice validation lookup failed (%s). Using requested voices directly.", request_id, exc)
+        return voice_map
+
+    validated: Dict[str, str] = {}
+    for speaker, requested_voice in voice_map.items():
+        matching_voice = next(
+            (
+                item
+                for item in available_voices
+                if item.id.lower() == requested_voice.lower() or item.label.lower() == requested_voice.lower()
+            ),
+            None,
+        )
+        if not matching_voice:
+            raise HTTPException(status_code=400, detail=f"The selected voice for {speaker_label(speaker)} is not currently available.")
+        validated[speaker] = matching_voice.id
+    return validated
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -640,6 +934,7 @@ async def extract_content(payload: ExtractContentRequest) -> ExtractContentRespo
 async def generate_podcast(payload: GeneratePodcastRequest) -> GeneratePodcastResponse:
     request_id = uuid.uuid4().hex[:8]
     cleaned_text = normalize_text_input(payload.text)
+    mode = normalize_mode(payload.mode)
     length = payload.length.strip().lower()
     language = normalize_text_input(payload.language)
 
@@ -654,12 +949,23 @@ async def generate_podcast(payload: GeneratePodcastRequest) -> GeneratePodcastRe
         raise HTTPException(status_code=400, detail="Please choose a valid podcast length.")
     if not language:
         raise HTTPException(status_code=400, detail="Please choose a podcast language.")
+    if mode != "solo":
+        validate_voice_mapping(mode, payload.voices, require_complete=True)
 
-    normalized_payload = GeneratePodcastRequest(text=cleaned_text, length=length, language=language)
+    normalized_payload = GeneratePodcastRequest(
+        text=cleaned_text,
+        mode=mode,
+        length=length,
+        language=language,
+        voices=payload.voices,
+    )
 
     try:
-        logger.info("[%s] Generating podcast length=%s language=%s via Grok", request_id, length, language)
-        podcast = await generate_podcast_from_grok(normalized_payload, request_id)
+        logger.info("[%s] Generating podcast mode=%s length=%s language=%s via Groq", request_id, mode, length, language)
+        if mode == "solo":
+            podcast = await generate_solo_podcast(normalized_payload, request_id)
+        else:
+            podcast = await generate_multi_speaker_podcast(normalized_payload, request_id)
     except httpx.HTTPStatusError as exc:
         logger.exception("[%s] Podcast generation failed with upstream status error", request_id)
         upstream_detail = exc.response.text.strip() if exc.response is not None and exc.response.text else ""
@@ -678,7 +984,7 @@ async def generate_podcast(payload: GeneratePodcastRequest) -> GeneratePodcastRe
             detail = f"{detail} Upstream response: {upstream_detail}"
         raise HTTPException(status_code=502, detail=detail) from exc
     except httpx.HTTPError as exc:
-        logger.exception("[%s] Podcast generation failed while calling Grok", request_id)
+        logger.exception("[%s] Podcast generation failed while calling Groq", request_id)
         raise HTTPException(status_code=502, detail="Unable to reach the podcast generation service right now.") from exc
     except RuntimeError as exc:
         logger.exception("[%s] Podcast generation returned invalid data", request_id)
@@ -692,38 +998,44 @@ async def generate_podcast(payload: GeneratePodcastRequest) -> GeneratePodcastRe
         podcast=podcast,
         length=length,
         language=language,
+        mode=mode,
     )
 
 
 @app.post("/generate-audio", response_model=GenerateAudioResponse)
 async def generate_audio(request: Request, payload: GenerateAudioRequest) -> GenerateAudioResponse:
     request_id = uuid.uuid4().hex[:8]
+    mode = normalize_mode(payload.mode)
     narration_text = normalize_text_input(payload.text)
-    requested_voice = normalize_voice_value(payload.voice_model or BLOG_TTS_DEFAULT_VOICE)
-
-    if not narration_text:
-        raise HTTPException(status_code=400, detail="Please generate a podcast script before converting it to audio.")
-    if not requested_voice:
-        raise HTTPException(status_code=400, detail="Please choose a voice model before converting.")
 
     try:
-        try:
-            async with httpx.AsyncClient(timeout=30) as client:
-                available_voices = await fetch_available_tts_voices(client)
-            matching_voice = next(
-                (item for item in available_voices if item.id.lower() == requested_voice.lower() or item.label.lower() == requested_voice.lower()),
-                None,
-            )
-            if not matching_voice:
-                raise HTTPException(status_code=400, detail="The selected voice is not currently available.")
-            selected_voice = matching_voice.id
-        except HTTPException:
-            raise
-        except Exception as exc:
-            logger.warning("[%s] Voice validation lookup failed (%s). Using requested voice directly.", request_id, exc)
-            selected_voice = requested_voice
+        if mode == "solo":
+            requested_voice = normalize_voice_value(payload.voice_model or BLOG_TTS_DEFAULT_VOICE)
+            if not narration_text:
+                raise HTTPException(status_code=400, detail="Please generate a podcast script before converting it to audio.")
+            if not requested_voice:
+                raise HTTPException(status_code=400, detail="Please choose a voice model before converting.")
 
-        output_name = await convert_text_to_audio(narration_text, request_id, selected_voice)
+            selected_voice_map = await validate_selected_voices({"speaker_1": requested_voice}, request_id)
+            output_name, chunk_count = await convert_text_to_audio(narration_text, request_id, selected_voice_map["speaker_1"])
+            output_voice = selected_voice_map["speaker_1"]
+            extracted_characters = len(narration_text)
+        else:
+            voice_map = validate_voice_mapping(mode, payload.voices, require_complete=True)
+            if not payload.dialogue:
+                raise HTTPException(status_code=400, detail="Please generate the multi-speaker podcast script before converting it to audio.")
+            dialogue = [DialogueSegment(speaker=segment.speaker.lower(), text=normalize_text_input(segment.text)) for segment in payload.dialogue]
+            if any(not segment.text for segment in dialogue):
+                raise HTTPException(status_code=400, detail="One or more dialogue segments are empty.")
+            allowed_speakers = set(speaker_keys_for_mode(mode))
+            if any(segment.speaker not in allowed_speakers for segment in dialogue):
+                raise HTTPException(status_code=400, detail="The dialogue includes an unexpected speaker id.")
+
+            selected_voice_map = await validate_selected_voices(voice_map, request_id)
+            output_name, chunk_count = await convert_dialogue_to_audio(dialogue, selected_voice_map, request_id)
+            output_voice = ", ".join(f"{speaker_label(key)}: {value}" for key, value in selected_voice_map.items())
+            extracted_characters = len(" ".join(segment.text for segment in dialogue))
+
         output_url = str(request.base_url).rstrip("/") + f"{TOOL_ROUTE_PREFIX}/outputs/{output_name}"
     except HTTPException:
         raise
@@ -743,9 +1055,9 @@ async def generate_audio(request: Request, payload: GenerateAudioRequest) -> Gen
         status="success",
         audio_url=output_url,
         filename=output_name,
-        chunks_processed=len(chunk_text_for_tts(narration_text)),
-        extracted_characters=len(narration_text),
-        voice=selected_voice,
+        chunks_processed=chunk_count,
+        extracted_characters=extracted_characters,
+        voice=output_voice,
     )
 
 
