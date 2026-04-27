@@ -162,7 +162,7 @@ class DialogueSegment(BaseModel):
 
 class GeneratePodcastRequest(BaseModel):
     text: str = Field(..., min_length=30, max_length=24000)
-    mode: str = Field(default="solo", min_length=4, max_length=16)
+    mode: str = Field(default="solo", min_length=3, max_length=16)
     length: str = Field(..., min_length=5, max_length=16)
     language: str = Field(..., min_length=2, max_length=64)
     voices: SpeakerVoices = Field(default_factory=SpeakerVoices)
@@ -188,7 +188,7 @@ class GeneratePodcastResponse(BaseModel):
 
 
 class GenerateAudioRequest(BaseModel):
-    mode: str = Field(default="solo", min_length=4, max_length=16)
+    mode: str = Field(default="solo", min_length=3, max_length=16)
     text: str = Field(default="", max_length=16000)
     voice_model: str = Field(default="", max_length=100)
     dialogue: List[DialogueSegment] = Field(default_factory=list)
