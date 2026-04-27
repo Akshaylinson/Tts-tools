@@ -25,16 +25,21 @@ BLOG_PODCAST_APP_HOST = get_env("BLOG_PODCAST_APP_HOST", "0.0.0.0")
 BLOG_PODCAST_APP_PORT = int(get_env("BLOG_PODCAST_APP_PORT", "8010"))
 
 BLOG_GROK_BASE_URL = get_env_alias(
-    ["BLOG_GROK_BASE_URL", "BLOG_GROQ_BASE_URL"],
-    "https://api.x.ai/v1",
+    ["BLOG_GROQ_BASE_URL", "BLOG_GROK_BASE_URL", "STORY_GROQ_BASE_URL", "STORY_GROK_BASE_URL"],
+    "https://api.groq.com/openai/v1",
 ).rstrip("/")
-BLOG_GROK_API_KEY = get_env_alias(["BLOG_GROK_API_KEY", "BLOG_GROQ_API_KEY"])
+BLOG_GROK_API_KEY = get_env_alias(
+    ["BLOG_GROQ_API_KEY", "BLOG_GROK_API_KEY", "STORY_GROQ_API_KEY", "STORY_GROK_API_KEY"]
+)
 BLOG_GROK_MODEL = get_env_alias(
-    ["BLOG_GROK_MODEL", "BLOG_GROQ_MODEL"],
-    "grok-2-1212",
+    ["BLOG_GROQ_MODEL", "BLOG_GROK_MODEL", "STORY_GROQ_MODEL", "STORY_GROK_MODEL"],
+    "llama-3.3-70b-versatile",
 )
 BLOG_GROK_TIMEOUT_SECONDS = float(
-    get_env_alias(["BLOG_GROK_TIMEOUT_SECONDS", "BLOG_GROQ_TIMEOUT_SECONDS"], "60")
+    get_env_alias(
+        ["BLOG_GROQ_TIMEOUT_SECONDS", "BLOG_GROK_TIMEOUT_SECONDS", "STORY_GROQ_TIMEOUT_SECONDS", "STORY_GROK_TIMEOUT_SECONDS"],
+        "60",
+    )
 )
 
 BLOG_TTS_BASE_URL = get_env("BLOG_TTS_BASE_URL").rstrip("/")
@@ -52,8 +57,9 @@ BLOG_FETCH_MAX_CHARS = int(get_env("BLOG_FETCH_MAX_CHARS", "24000"))
 def validate_grok_runtime_settings() -> None:
     if not BLOG_GROK_API_KEY:
         raise RuntimeError(
-            "Missing required environment variable: BLOG_GROK_API_KEY. "
-            "Set it in 'Adsense Tools Page/tools/blog_to_podcast/.env' or your Docker environment."
+            "Missing required Groq API configuration. "
+            "Set BLOG_GROQ_API_KEY in 'Adsense Tools Page/tools/blog_to_podcast/.env', "
+            "or provide STORY_GROQ_API_KEY for shared use."
         )
 
 

@@ -664,6 +664,16 @@ async def generate_podcast(payload: GeneratePodcastRequest) -> GeneratePodcastRe
         logger.exception("[%s] Podcast generation failed with upstream status error", request_id)
         upstream_detail = exc.response.text.strip() if exc.response is not None and exc.response.text else ""
         detail = "The podcast generation service returned an error."
+        if "Model not found" in upstream_detail:
+            detail = (
+                "The configured model was not found. "
+                "Update BLOG_GROQ_MODEL in tools/blog_to_podcast/.env to a Groq model your API key can access."
+            )
+        if "Incorrect API key provided" in upstream_detail:
+            detail = (
+                "The configured provider key was rejected. "
+                "Set BLOG_GROQ_API_KEY in tools/blog_to_podcast/.env, or rely on STORY_GROQ_API_KEY as a shared key."
+            )
         if upstream_detail:
             detail = f"{detail} Upstream response: {upstream_detail}"
         raise HTTPException(status_code=502, detail=detail) from exc
