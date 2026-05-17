@@ -27,26 +27,94 @@
   </header>
 
   <main>
-    <section class="bg-[radial-gradient(circle_at_top_left,_rgba(20,184,166,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_55%,_#1f2937)] text-white">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <p class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-teal-100">Fast browser-based utility pages</p>
-        <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Useful online tools built for everyday tasks</h1>
-        <p class="mt-5 max-w-2xl text-lg text-slate-200">This landing page collects simple, high-utility web tools designed for fast use, clear SEO structure, and mobile-friendly access. Start with our PDF to Audio Converter, Text to Audio Converter, or AI Story Narration Generator and expand this hub with more practical tools over time.</p>
-        <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
-          <span class="rounded-full border border-white/20 px-3 py-1">Clean landing page</span>
-          <span class="rounded-full border border-white/20 px-3 py-1">AdSense-friendly structure</span>
-          <span class="rounded-full border border-white/20 px-3 py-1">Fast-loading tool cards</span>
+    <section class="workspace-hero bg-[radial-gradient(circle_at_top_left,_rgba(20,184,166,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_55%,_#1f2937)] text-white">
+      <div class="workspace-hero-shell mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <div class="workspace-copy">
+          <p class="hero-kicker inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-teal-100">AI audio ecosystem for modern creators and teams</p>
+          <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">One premium workspace for listening, narrating, converting, and refining ideas with AI.</h1>
+          <p class="mt-5 max-w-2xl text-lg text-slate-200">Explore an immersive suite of AI audio tools built for reading less, hearing more, and shipping polished content faster. From PDF listening to podcast creation to spoken-flow proofreading, every tool is designed as part of one intelligent audio operating system.</p>
+          <div class="hero-actions mt-8 flex flex-wrap gap-3">
+            <a href="#featured-tools" class="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-ink transition hover:bg-slate-100">Explore the Workspace</a>
+            <a href="/audio-proofreader" class="inline-flex rounded-full border border-white/20 px-5 py-3 font-semibold text-white transition hover:bg-white/10">Open AI Audio Proofreader</a>
+          </div>
+          <div class="hero-trust mt-8 grid gap-3 sm:grid-cols-3">
+            <div class="trust-pill">
+              <span class="trust-metric">5</span>
+              <span class="trust-label">AI audio modules</span>
+            </div>
+            <div class="trust-pill">
+              <span class="trust-metric">Live</span>
+              <span class="trust-label">Groq + CodeVoice stack</span>
+            </div>
+            <div class="trust-pill">
+              <span class="trust-metric">Fast</span>
+              <span class="trust-label">Browser-first workflows</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="workspace-preview" aria-hidden="true">
+          <div class="preview-orb preview-orb-a"></div>
+          <div class="preview-orb preview-orb-b"></div>
+          <div class="preview-frame">
+            <div class="preview-topbar">
+              <span class="preview-chip">AI Audio Command Center</span>
+              <span class="preview-status">System Active</span>
+            </div>
+            <div class="preview-grid">
+              <article class="preview-panel preview-panel-primary">
+                <div class="preview-panel-head">
+                  <p>Waveform Intelligence</p>
+                  <span>Live</span>
+                </div>
+                <div class="wave-cluster">
+                  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <p class="preview-panel-copy">Audio flows, pacing signals, and voice generation states visualized in one cinematic layer.</p>
+              </article>
+              <article class="preview-panel">
+                <div class="preview-panel-head">
+                  <p>Proofreader</p>
+                  <span>68% -> 86%</span>
+                </div>
+                <div class="signal-line"></div>
+                <p class="preview-panel-copy">Spoken-flow refinement with instant playback preview.</p>
+              </article>
+              <article class="preview-panel">
+                <div class="preview-panel-head">
+                  <p>Podcast Builder</p>
+                  <span>3 Voices</span>
+                </div>
+                <div class="voice-stack">
+                  <span></span><span></span><span></span>
+                </div>
+                <p class="preview-panel-copy">Multi-speaker scripting and narrated production from article input.</p>
+              </article>
+              <article class="preview-panel preview-panel-wide">
+                <div class="preview-panel-head">
+                  <p>Tool Activity</p>
+                  <span>Cross-suite</span>
+                </div>
+                <div class="activity-list">
+                  <div><strong>PDF -> Audio</strong><span>Extracting and voicing long-form content</span></div>
+                  <div><strong>Text -> Audio</strong><span>Instant narration for scripts and notes</span></div>
+                  <div><strong>Story Narration</strong><span>AI story generation with voice output</span></div>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="featured-tools" class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-      <div class="mb-8 max-w-2xl">
-        <h2 class="text-3xl font-bold tracking-tight text-ink">Featured tools</h2>
-        <p class="mt-3 text-slate-600">Each tool gets its own dedicated page, backend logic, and conversion flow while staying discoverable from this main landing page.</p>
+    <section id="featured-tools" class="workspace-band mx-auto max-w-6xl px-4 py-14 sm:px-6">
+      <div class="section-intro mb-8 max-w-3xl">
+        <p class="section-kicker">Premium AI modules</p>
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Choose a tool inside the AI audio workspace</h2>
+        <p class="mt-3 text-slate-600">Every module is designed for a different audio-first job, but the experience stays visually connected so users can move fluidly across the platform.</p>
       </div>
-      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+      <div class="tool-bento">
+        <article class="tool-module tool-module-tall rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">AI writing tool</p>
@@ -55,12 +123,19 @@
             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Writing Tool</span>
           </div>
           <p class="mt-4 text-slate-600">Paste writing, hear it read aloud, review AI spoken-flow feedback, apply improvements, and preview the stronger version instantly.</p>
+          <div class="module-visual module-visual-proofreader">
+            <div class="mini-wave mini-wave-short"></div>
+            <div class="mini-score">
+              <span>Confidence</span>
+              <strong>86%</strong>
+            </div>
+          </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="/audio-proofreader" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Open Audio Proofreader</a>
             <a href="/about" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">About this project</a>
           </div>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <article class="tool-module rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">Featured</p>
@@ -69,12 +144,15 @@
             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Audio Tool</span>
           </div>
           <p class="mt-4 text-slate-600">Paste a blog URL or article text, turn it into a podcast-style script, generate narration, and download a ready-to-listen MP3.</p>
+          <div class="module-visual module-visual-podcast">
+            <span></span><span></span><span></span>
+          </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="/blog-to-podcast" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Open Blog to Podcast</a>
             <a href="/about" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">About this project</a>
           </div>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <article class="tool-module tool-module-wide rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Live now</p>
@@ -83,12 +161,16 @@
             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">PDF Tool</span>
           </div>
           <p class="mt-4 text-slate-600">Upload a PDF, extract the text, generate speech, and download a clean MP3 file. Useful for students, professionals, and accessibility-focused users.</p>
+          <div class="module-visual module-visual-document">
+            <div class="doc-sheet"></div>
+            <div class="doc-lines"></div>
+          </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="/pdf-to-audio" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Open PDF to Audio</a>
             <a href="/about" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">About this project</a>
           </div>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <article class="tool-module rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-700">New tool</p>
@@ -97,12 +179,15 @@
             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Text Tool</span>
           </div>
           <p class="mt-4 text-slate-600">Paste text, choose a voice, convert text to speech, and download a ready-to-use MP3. Helpful for creators, students, accessibility, and quick listening workflows.</p>
+          <div class="module-visual module-visual-text">
+            <div class="signal-line"></div>
+          </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="/text-to-audio" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Open Text to Audio</a>
             <a href="/about" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">About this project</a>
           </div>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <article class="tool-module rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
           <div class="flex items-start justify-between gap-4">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Story tool</p>
@@ -111,6 +196,11 @@
             <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Story Tool</span>
           </div>
           <p class="mt-4 text-slate-600">Enter a rough idea, generate a structured story, convert it into narrated audio, and download the final MP3 for playback or sharing.</p>
+          <div class="module-visual module-visual-story">
+            <span class="story-node"></span>
+            <span class="story-node"></span>
+            <span class="story-node"></span>
+          </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <a href="/story-narration-generator" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Open Story Narration</a>
             <a href="/about" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">About this project</a>
@@ -119,56 +209,60 @@
       </div>
     </section>
 
-    <section id="why-tools" class="bg-white">
+    <section id="why-tools" class="workspace-story bg-white">
       <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div class="grid gap-6 md:grid-cols-3">
-          <article class="rounded-3xl bg-slate-50 p-6">
-            <h2 class="text-xl font-semibold text-ink">Built for search intent</h2>
-            <p class="mt-3 text-slate-600">Dedicated tool pages can target clear user needs such as conversion, listening, summarizing, and calculation workflows.</p>
+        <div class="story-grid">
+          <article class="story-panel story-panel-large rounded-3xl bg-slate-50 p-6">
+            <p class="section-kicker">Why this platform feels different</p>
+            <h2 class="mt-3 text-3xl font-bold tracking-tight text-ink">Designed as one connected AI audio environment</h2>
+            <p class="mt-4 text-slate-600">Instead of isolated utility pages, the suite is structured as a premium system for listening, producing, improving, and reusing audio-first content across multiple workflows.</p>
           </article>
-          <article class="rounded-3xl bg-slate-50 p-6">
-            <h2 class="text-xl font-semibold text-ink">Built for usability</h2>
-            <p class="mt-3 text-slate-600">Simple interfaces reduce friction and help users get value quickly without signup-heavy flows or cluttered dashboards.</p>
+          <article class="story-panel rounded-3xl bg-slate-50 p-6">
+            <h2 class="text-xl font-semibold text-ink">Fluid exploration</h2>
+            <p class="mt-3 text-slate-600">Users can move from proofing a message to narrating a document or building a podcast without leaving the same design language.</p>
           </article>
-          <article class="rounded-3xl bg-slate-50 p-6">
+          <article class="story-panel rounded-3xl bg-slate-50 p-6">
             <h2 class="text-xl font-semibold text-ink">Built for expansion</h2>
-            <p class="mt-3 text-slate-600">The landing page structure makes it easy to keep adding new standalone tools under one consistent hub.</p>
+            <p class="mt-3 text-slate-600">The modular architecture makes it easy to grow into new AI audio products without fragmenting the user experience.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="faq" class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
-      <div class="mt-8 space-y-4">
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Is this page a tool itself?</h3>
-          <p class="mt-2 text-slate-600">No. This is the landing page for the tools collection. Each tool has its own separate page and backend flow.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Where is the Blog to Podcast Converter?</h3>
-          <p class="mt-2 text-slate-600">The dedicated tool is available at <code>/blog-to-podcast</code>.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Where is the PDF to Audio page?</h3>
-          <p class="mt-2 text-slate-600">The dedicated tool is available at <code>/pdf-to-audio</code>.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Where is the Text to Audio page?</h3>
-          <p class="mt-2 text-slate-600">The dedicated tool is available at <code>/text-to-audio</code>.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Where is the AI Audio Proofreader?</h3>
-          <p class="mt-2 text-slate-600">The dedicated tool is available at <code>/audio-proofreader</code>.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Where is the AI Story Narration Generator?</h3>
-          <p class="mt-2 text-slate-600">The dedicated tool is available at <code>/story-narration-generator</code>.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Can more tools be added here?</h3>
-          <p class="mt-2 text-slate-600">Yes. This landing page is intentionally structured to list and route users into more standalone utility pages over time.</p>
-        </article>
+    <section id="faq" class="faq-shell mx-auto max-w-5xl px-4 py-16 sm:px-6">
+      <div class="section-intro max-w-2xl">
+        <p class="section-kicker">Platform FAQ</p>
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Answers inside the ecosystem</h2>
+      </div>
+      <div class="faq-grid mt-8">
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card" open>
+          <summary class="text-lg font-semibold text-ink">Is this page a tool itself?</summary>
+          <p class="mt-3 text-slate-600">No. This is the command layer for the AI audio workspace. Each tool opens into its own dedicated experience and backend flow.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Where is the Blog to Podcast Converter?</summary>
+          <p class="mt-3 text-slate-600">The dedicated tool is available at <code>/blog-to-podcast</code>.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Where is the PDF to Audio page?</summary>
+          <p class="mt-3 text-slate-600">The dedicated tool is available at <code>/pdf-to-audio</code>.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Where is the Text to Audio page?</summary>
+          <p class="mt-3 text-slate-600">The dedicated tool is available at <code>/text-to-audio</code>.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Where is the AI Audio Proofreader?</summary>
+          <p class="mt-3 text-slate-600">The dedicated tool is available at <code>/audio-proofreader</code>.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Where is the AI Story Narration Generator?</summary>
+          <p class="mt-3 text-slate-600">The dedicated tool is available at <code>/story-narration-generator</code>.</p>
+        </details>
+        <details class="faq-item rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <summary class="text-lg font-semibold text-ink">Can more tools be added here?</summary>
+          <p class="mt-3 text-slate-600">Yes. The platform is intentionally modular, so more AI audio experiences can be added without breaking the shared ecosystem.</p>
+        </details>
       </div>
     </section>
   </main>
