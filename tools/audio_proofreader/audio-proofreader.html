@@ -79,10 +79,10 @@
             <p id="voiceDescription" class="text-sm text-slate-500">Fetching available languages and voices...</p>
 
             <div class="flex flex-wrap gap-3">
-              <button id="previewBtn" type="submit" class="inline-flex items-center rounded-full bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60">Preview Writing</button>
+              <button id="previewBtn" type="submit" class="inline-flex items-center rounded-full bg-orange-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60">Preview</button>
               <button id="applyBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Apply Improvements</button>
-              <button id="previewImprovedBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Preview Improved Version</button>
             </div>
+            <p class="text-sm text-slate-500">Use <span class="font-semibold text-ink">Preview</span> any time to hear the current text in the box with the selected voice, whether it is your original draft or the improved version.</p>
           </form>
 
           <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
@@ -263,7 +263,6 @@
     const voiceDescription = document.getElementById("voiceDescription");
     const previewBtn = document.getElementById("previewBtn");
     const applyBtn = document.getElementById("applyBtn");
-    const previewImprovedBtn = document.getElementById("previewImprovedBtn");
     const messageBox = document.getElementById("messageBox");
     const audioLoading = document.getElementById("audioLoading");
     const audioReady = document.getElementById("audioReady");
@@ -323,7 +322,6 @@
       isPreviewBusy = isBusy;
       previewBtn.disabled = isBusy || !voiceSelect.value;
       applyBtn.disabled = isBusy || isApplyBusy || !currentAnalysis || !currentAnalysis.improved_text;
-      previewImprovedBtn.disabled = isBusy || isApplyBusy || !currentAnalysis;
       voiceSelect.disabled = isBusy || !availableVoices.length;
       speedSelect.disabled = isBusy;
       textInput.disabled = isApplyBusy;
@@ -334,7 +332,6 @@
       textInput.disabled = isBusy;
       previewBtn.disabled = isBusy || isPreviewBusy || !voiceSelect.value;
       applyBtn.disabled = isBusy || isPreviewBusy || !currentAnalysis || !currentAnalysis.improved_text;
-      previewImprovedBtn.disabled = isBusy || isPreviewBusy || !currentAnalysis;
     }
 
     function setAudioLoading(isLoading) {
@@ -468,7 +465,6 @@
       `).join("") : '<p class="rounded-3xl bg-slate-50 px-4 py-4 text-sm text-slate-600">No sentence-level replacements were needed.</p>';
 
       applyBtn.disabled = isPreviewBusy || isApplyBusy || !analysis.improved_text;
-      previewImprovedBtn.disabled = isPreviewBusy || isApplyBusy || !analysis.improved_text;
     }
 
     async function safeJson(response) {
@@ -598,7 +594,7 @@
         }
         renderAnalysis(data);
         clearAudioPreview();
-        setMessage("success", "Improved version applied.");
+        setMessage("success", "Improved version applied. Click Preview to hear the updated text.");
       } catch (error) {
         setMessage("error", error.message || "Unable to apply improvements right now.");
       } finally {
@@ -614,10 +610,6 @@
 
     applyBtn.addEventListener("click", async () => {
       await applyImprovements();
-    });
-
-    previewImprovedBtn.addEventListener("click", async () => {
-      await runPreview();
     });
 
     replayBtn.addEventListener("click", async () => {
