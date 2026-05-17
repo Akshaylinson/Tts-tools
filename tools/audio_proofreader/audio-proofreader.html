@@ -530,6 +530,7 @@
 
       if (audioResult.ok) {
         audioPlayer.src = audioResult.data.audio_url;
+        audioPlayer.playbackRate = Number(audioResult.data.speed) || 1;
         audioReady.classList.remove("hidden");
         audioEmpty.classList.add("hidden");
         audioLoading.classList.add("hidden");
@@ -619,6 +620,7 @@
       }
       try {
         audioPlayer.currentTime = 0;
+        audioPlayer.playbackRate = Number(speedSelect.value) || 1;
         await audioPlayer.play();
       } catch (error) {
         setMessage("error", "Unable to replay audio in this browser right now.");

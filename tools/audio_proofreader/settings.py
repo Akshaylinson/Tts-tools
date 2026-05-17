@@ -13,6 +13,14 @@ def get_env(name: str, default: str = "") -> str:
     return os.getenv(name, default).strip()
 
 
+def get_env_alias(names: list[str], default: str = "") -> str:
+    for name in names:
+        value = os.getenv(name)
+        if value is not None and value.strip():
+            return value.strip()
+    return default
+
+
 AUDIO_PROOFREADER_APP_HOST = get_env("AUDIO_PROOFREADER_APP_HOST", "0.0.0.0")
 AUDIO_PROOFREADER_APP_PORT = int(get_env("AUDIO_PROOFREADER_APP_PORT", "8010"))
 
@@ -21,13 +29,13 @@ GROQ_MODEL = get_env("GROQ_MODEL")
 GROQ_API_URL = get_env("GROQ_API_URL").rstrip("/")
 GROQ_TIMEOUT_SECONDS = float(get_env("GROQ_TIMEOUT_SECONDS", "60"))
 
-CODEVOICE_API_KEY = get_env("CODEVOICE_API_KEY")
-CODEVOICE_API_URL = get_env("CODEVOICE_API_URL").rstrip("/")
+CODEVOICE_API_KEY = get_env_alias(["CODEVOICE_API_KEY", "TEXT_AUDIO_TTS_API_KEY", "STORY_TTS_API_KEY"])
+CODEVOICE_API_URL = get_env_alias(["CODEVOICE_API_URL", "TEXT_AUDIO_TTS_BASE_URL", "STORY_TTS_BASE_URL"]).rstrip("/")
 CODEVOICE_TIMEOUT_SECONDS = float(get_env("CODEVOICE_TIMEOUT_SECONDS", "180"))
 CODEVOICE_VOICE_TIMEOUT_SECONDS = float(get_env("CODEVOICE_VOICE_TIMEOUT_SECONDS", "30"))
 
-DEFAULT_LANGUAGE = get_env("DEFAULT_LANGUAGE")
-DEFAULT_VOICE = get_env("DEFAULT_VOICE")
+DEFAULT_LANGUAGE = get_env_alias(["DEFAULT_LANGUAGE"], "")
+DEFAULT_VOICE = get_env_alias(["DEFAULT_VOICE", "TEXT_AUDIO_TTS_VOICE", "STORY_TTS_VOICE"], "")
 
 AUDIO_PROOFREADER_MAX_CHARS = int(get_env("AUDIO_PROOFREADER_MAX_CHARS", "10000"))
 AUDIO_PROOFREADER_TTS_CHUNK_CHARS = int(get_env("AUDIO_PROOFREADER_TTS_CHUNK_CHARS", "1600"))

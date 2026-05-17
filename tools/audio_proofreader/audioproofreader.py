@@ -163,6 +163,31 @@ def make_log_preview(text: str, limit: int = 120) -> str:
     return compact[:limit].rstrip() + "..."
 
 
+def humanize_upstream_audio_error(status_code: int, response_text: str = "") -> str:
+    normalized = (response_text or "").lower()
+    if status_code in {401, 403}:
+        return "The voice preview service is not accepting the current service credentials. Please verify the configured CodeVoice API key."
+    if status_code == 404:
+        return "The configured voice preview service endpoint could not be found. Please verify the CodeVoice base URL."
+    if status_code == 422:
+        if "speed" in normalized:
+            return "The voice preview service rejected the requested playback settings. The preview request has been adjusted to use supported synthesis parameters."
+        return "The voice preview service could not process this preview request. Please try a shorter passage or choose a different voice."
+    if 500 <= status_code <= 599:
+        return "The voice preview service is temporarily unavailable. Please try again in a moment."
+    return "The voice preview service could not complete the request right now."
+
+
+def humanize_analysis_error(status_code: int) -> str:
+    if status_code in {401, 403}:
+        return "The writing analysis service is not accepting the current API credentials. Please verify the configured Groq API key."
+    if status_code == 404:
+        return "The configured writing analysis endpoint could not be found. Please verify the Groq API URL."
+    if 500 <= status_code <= 599:
+        return "The writing analysis service is temporarily unavailable. Please try again in a moment."
+    return "The writing analysis service could not process the request right now."
+
+
 def build_voice_option(voice: dict) -> VoiceOption:
     voice_name = normalize_voice_value(str(voice.get("name") or voice.get("id") or ""))
     return VoiceOption(
@@ -461,7 +486,7 @@ async def analyze_text_with_groq(text: str, request_id: str) -> AnalyzeTextRespo
     return clean_analysis_response(extract_json_object(content))
 
 
-async def create_tts_job(client: httpx.AsyncClient, text: str, voice: str, speed: float) -> str:
+async def create_tts_job(client: httpx.AsyncClient, text: str, voice: str) -> str:
     validate_tts_runtime_settings()
     headers = {"Content-Type": "application/json"}
     if CODEVOICE_API_KEY:
@@ -470,7 +495,7 @@ async def create_tts_job(client: httpx.AsyncClient, text: str, voice: str, speed
     response = await client.post(
         f"{CODEVOICE_API_URL}/v1/tts",
         headers=headers,
-        json={"text": text, "voice": voice, "speed": speed},
+        json={"text": text, "voice": voice},
     )
     response.raise_for_status()
     payload = response.json()
@@ -531,7 +556,7 @@ async def convert_text_to_audio(clean_text: str, request_id: str, voice: str, sp
                 len(chunk),
                 make_log_preview(chunk),
             )
-            job_id = await create_tts_job(client, chunk, voice, speed)
+            job_id = await create_tts_job(client, chunk, voice)
             audio_bytes, audio_format = await wait_for_tts_audio(client, job_id, request_id, chunk_index)
             segment = AudioSegment.from_file(io.BytesIO(audio_bytes), format="wav" if audio_format == "wav" else "mp3")
             merged_audio = segment if merged_audio is None else merged_audio + segment
@@ -582,17 +607,21 @@ async def analyze_text(payload: AnalyzeTextRequest) -> AnalyzeTextResponse:
         return await analyze_text_with_groq(text, request_id)
     except httpx.HTTPStatusError as exc:
         logger.exception("[%s] Analysis failed with upstream status error", request_id)
-        upstream_detail = exc.response.text.strip() if exc.response is not None and exc.response.text else ""
-        detail = "The writing analysis service returned an error."
-        if upstream_detail:
-            detail = f"{detail} Upstream response: {upstream_detail}"
+        status_code = exc.response.status_code if exc.response is not None else 502
+        detail = humanize_analysis_error(status_code)
         raise HTTPException(status_code=502, detail=detail) from exc
     except httpx.HTTPError as exc:
         logger.exception("[%s] Analysis failed while calling Groq", request_id)
-        raise HTTPException(status_code=502, detail="Unable to reach the writing analysis service right now.") from exc
+        raise HTTPException(
+            status_code=502,
+            detail="The writing analysis service is currently unreachable. Please try again in a moment.",
+        ) from exc
     except RuntimeError as exc:
         logger.exception("[%s] Analysis returned invalid data", request_id)
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=502,
+            detail="The writing analysis service returned an unexpected response. Please try again shortly.",
+        ) from exc
     except Exception as exc:
         logger.exception("[%s] Unexpected analysis error", request_id)
         raise HTTPException(status_code=500, detail="Unexpected server error during analysis.") from exc
@@ -642,14 +671,28 @@ async def generate_audio(request: Request, payload: GenerateAudioRequest) -> Gen
         output_url = str(request.base_url).rstrip("/") + f"{TOOL_ROUTE_PREFIX}/outputs/{output_name}"
     except HTTPException:
         raise
+    except httpx.HTTPStatusError as exc:
+        logger.exception("[%s] Audio generation failed with upstream status error", request_id)
+        status_code = exc.response.status_code if exc.response is not None else 502
+        response_text = exc.response.text if exc.response is not None else ""
+        raise HTTPException(status_code=502, detail=humanize_upstream_audio_error(status_code, response_text)) from exc
     except RuntimeError as exc:
         logger.exception("[%s] Audio generation failed during TTS processing", request_id)
         detail = str(exc)
         status_code = 504 if "timed out" in detail.lower() else 502
+        if status_code == 504:
+            detail = "The voice preview took too long to finish. Please try again with a shorter passage."
+        elif "job_id" in detail.lower():
+            detail = "The voice preview service returned an incomplete response. Please try again in a moment."
+        else:
+            detail = "The voice preview service could not complete the request right now. Please try again shortly."
         raise HTTPException(status_code=status_code, detail=detail) from exc
     except httpx.HTTPError as exc:
         logger.exception("[%s] Audio generation failed while calling CodeVoice", request_id)
-        raise HTTPException(status_code=502, detail="Failed to reach the configured voice service.") from exc
+        raise HTTPException(
+            status_code=502,
+            detail="The voice preview service is currently unreachable. Please verify the service URL and try again.",
+        ) from exc
     except Exception as exc:
         logger.exception("[%s] Unexpected audio generation error", request_id)
         raise HTTPException(status_code=500, detail="Unexpected server error during audio generation.") from exc
