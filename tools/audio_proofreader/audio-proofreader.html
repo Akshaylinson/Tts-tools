@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Audio Proofreader - Hear Your Writing Before Sending</title>
+  <meta name="description" content="Listen to your emails, essays, and messages with AI-powered audio proofreading and writing feedback.">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#112032">
+  <link rel="canonical" href="/audio-proofreader">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body class="bg-stone-50 text-slate-900 antialiased">
+  <header class="border-b border-white/10 bg-ink text-white">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <a href="/" class="text-lg font-semibold tracking-tight">Adsense Tools</a>
+      <nav class="flex items-center gap-4 text-sm text-slate-300">
+        <a href="#tool" class="hover:text-white">Tool</a>
+        <a href="#benefits" class="hover:text-white">Benefits</a>
+        <a href="#faq" class="hover:text-white">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_30%),radial-gradient(circle_at_top_right,_rgba(14,165,233,0.16),_transparent_26%),linear-gradient(135deg,_#112032,_#15314d_58%,_#2b4f4b)] text-white">
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <p class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-amber-100">AI audio proofreading for everyday writing</p>
+        <h1 class="mt-5 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">AI Audio Proofreader</h1>
+        <p class="mt-4 text-xl text-slate-100">Hear your writing before sending it.</p>
+        <p class="mt-5 max-w-2xl text-lg text-slate-200">Listen to emails, essays, captions, and documents with AI-powered writing feedback.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#tool" class="inline-flex rounded-full bg-white px-5 py-3 font-semibold text-ink transition hover:bg-amber-50">Start Preview</a>
+          <span class="inline-flex rounded-full border border-white/20 px-4 py-3 text-sm text-slate-200">No signup required</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="tool" class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+        <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">Core workflow</p>
+              <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Preview how your writing sounds</h2>
+              <p class="mt-3 max-w-2xl text-slate-600">Paste your text, preview the narration, review spoken-flow issues, and apply improvements without leaving the page.</p>
+            </div>
+            <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
+          </div>
+
+          <form id="proofreaderForm" class="mt-8 space-y-5">
+            <div>
+              <label for="textInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Your writing</label>
+              <textarea id="textInput" rows="12" maxlength="10000" required class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base leading-7 text-slate-900 outline-none transition focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100" placeholder="Paste your email, essay, caption, or message here..."></textarea>
+              <div class="mt-2 flex items-center justify-between gap-4 text-sm text-slate-500">
+                <p>Best for emails, reports, captions, outreach, essays, and spoken social copy.</p>
+                <p><span id="charCount">0</span> / 10000</p>
+              </div>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <div>
+                <label for="voiceSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Voice</label>
+                <select id="voiceSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100" disabled>
+                  <option value="">Loading voices...</option>
+                </select>
+              </div>
+              <div>
+                <label for="speedSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Preview speed</label>
+                <select id="speedSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-orange-400 focus:ring-2 focus:ring-orange-100">
+                  <option value="0.9">0.9x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.1">1.1x</option>
+                </select>
+              </div>
+            </div>
+
+            <p id="voiceDescription" class="text-sm text-slate-500">Fetching available languages and voices...</p>
+
+            <div class="flex flex-wrap gap-3">
+              <button id="previewBtn" type="submit" class="inline-flex items-center rounded-full bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60">Preview Writing</button>
+              <button id="applyBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Apply Improvements</button>
+              <button id="previewImprovedBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Preview Improved Version</button>
+            </div>
+          </form>
+
+          <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
+        </article>
+
+        <aside class="space-y-6">
+          <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-sky-700">Audio preview</p>
+                <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Hear it back instantly</h2>
+              </div>
+              <span id="audioStatusBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+            </div>
+
+            <div id="audioLoading" class="mt-6 hidden rounded-3xl border border-slate-200 bg-slate-50 p-5">
+              <div class="animate-pulse space-y-4">
+                <div class="h-4 w-40 rounded-full bg-slate-200"></div>
+                <div class="h-12 rounded-2xl bg-slate-200"></div>
+                <div class="h-4 w-56 rounded-full bg-slate-200"></div>
+              </div>
+              <p class="mt-4 text-sm text-slate-600">Generating audio preview...</p>
+            </div>
+
+            <div id="audioReady" class="mt-6 hidden">
+              <audio id="audioPlayer" class="w-full" controls preload="none"></audio>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <button id="replayBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Replay</button>
+              </div>
+              <p id="audioMeta" class="mt-4 text-sm text-slate-500">Your preview will appear here.</p>
+            </div>
+
+            <p id="audioEmpty" class="mt-6 text-sm text-slate-500">Click preview to generate narration and hear how the writing sounds before sending.</p>
+          </section>
+
+          <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">AI analysis</p>
+                <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Listener-focused feedback</h2>
+              </div>
+              <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">Heuristic</span>
+            </div>
+
+            <div id="analysisLoading" class="mt-6 hidden rounded-3xl border border-slate-200 bg-slate-50 p-5">
+              <div class="animate-pulse space-y-4">
+                <div class="h-5 w-48 rounded-full bg-slate-200"></div>
+                <div class="grid gap-3 sm:grid-cols-3">
+                  <div class="h-20 rounded-3xl bg-slate-200"></div>
+                  <div class="h-20 rounded-3xl bg-slate-200"></div>
+                  <div class="h-20 rounded-3xl bg-slate-200"></div>
+                </div>
+                <div class="h-16 rounded-3xl bg-slate-200"></div>
+                <div class="h-16 rounded-3xl bg-slate-200"></div>
+              </div>
+              <p class="mt-4 text-sm text-slate-600">Analyzing writing...</p>
+            </div>
+
+            <div id="analysisEmpty" class="mt-6 text-sm text-slate-500">Your confidence score, spoken-flow flags, and suggested improvements will appear here.</div>
+
+            <div id="analysisContent" class="mt-6 hidden space-y-6">
+              <section class="rounded-3xl bg-slate-50 p-5">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h3 class="text-lg font-semibold text-ink">Overall Confidence Score</h3>
+                    <p class="mt-1 text-sm text-slate-500">A practical estimate of how polished the writing sounds aloud.</p>
+                  </div>
+                  <div class="text-right">
+                    <p id="confidenceScore" class="text-4xl font-bold text-ink">0%</p>
+                    <p class="text-xs uppercase tracking-[0.18em] text-slate-500">Heuristic signal</p>
+                  </div>
+                </div>
+                <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                  <article class="rounded-3xl border border-slate-200 bg-white p-4">
+                    <h4 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Clarity</h4>
+                    <p id="clarityScore" class="mt-2 text-lg font-semibold text-ink">-</p>
+                  </article>
+                  <article class="rounded-3xl border border-slate-200 bg-white p-4">
+                    <h4 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Professionalism</h4>
+                    <p id="professionalismScore" class="mt-2 text-lg font-semibold text-ink">-</p>
+                  </article>
+                  <article class="rounded-3xl border border-slate-200 bg-white p-4">
+                    <h4 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Listening Flow</h4>
+                    <p id="listeningFlowScore" class="mt-2 text-lg font-semibold text-ink">-</p>
+                  </article>
+                </div>
+              </section>
+
+              <section>
+                <div class="flex items-center justify-between gap-4">
+                  <h3 class="text-lg font-semibold text-ink">Flags</h3>
+                  <span id="flagsCount" class="text-sm text-slate-500">0 items</span>
+                </div>
+                <div id="flagsList" class="mt-4 grid gap-3"></div>
+              </section>
+
+              <section>
+                <h3 class="text-lg font-semibold text-ink">Suggested Improvements</h3>
+                <div id="suggestionsList" class="mt-4 grid gap-3"></div>
+              </section>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section id="benefits" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="grid gap-6 md:grid-cols-3">
+        <article class="rounded-3xl bg-white p-6 shadow-card">
+          <h2 class="text-xl font-semibold text-ink">Hear the weak spots</h2>
+          <p class="mt-3 text-slate-600">Reading silently can hide harsh tone, long-winded sentences, and awkward transitions. Listening exposes them quickly.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-6 shadow-card">
+          <h2 class="text-xl font-semibold text-ink">Improve before sending</h2>
+          <p class="mt-3 text-slate-600">The AI proofreading tool highlights what may sound confusing or aggressive, then proposes natural wording improvements.</p>
+        </article>
+        <article class="rounded-3xl bg-white p-6 shadow-card">
+          <h2 class="text-xl font-semibold text-ink">Stay fast and focused</h2>
+          <p class="mt-3 text-slate-600">You can paste, preview, apply improvements, and hear your writing again in the same browser session with minimal friction.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="bg-white" style="content-visibility:auto; contain-intrinsic-size: 1px 1200px;">
+      <div class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-orange-600">How audio proofreading helps</p>
+        <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Why hearing your writing changes the editing process</h2>
+        <div class="mt-6 space-y-4 text-slate-700">
+          <p>Audio proofreading helps because writing and listening are not the same experience. A sentence that looks fine on screen can sound stiff, rushed, repetitive, or overly sharp when spoken aloud. That gap matters when you are sending an important email, submitting an essay, writing a client message, or drafting social content that needs the right tone. When you hear your writing, you notice pacing, awkward transitions, and repeated wording much faster than when you only scan it silently. That is why many people use audio proofreading as a final quality check before sending something that represents them.</p>
+          <p>An AI proofreading tool designed for listening goes beyond grammar correction. Instead of only fixing surface mistakes, it looks at how the message lands in a real listening context. Does the sentence drag on too long? Does the tone sound more aggressive than intended? Does the message repeat the same phrase and lose momentum? Those are spoken-flow problems, and they are exactly the kind of issues that become obvious when narration is involved. The goal is not to make your writing sound robotic or overly formal. The goal is to help it sound clear, natural, and human.</p>
+          <p>Students benefit from audio proofreading because essays and applications often improve when ideas are heard in sequence. Listening can reveal sections that feel confusing, unsupported, or too wordy. Professionals benefit for a different reason: workplace writing needs clarity, diplomacy, and rhythm. When you hear your writing before sending, you can catch phrasing that sounds abrupt or vague and adjust it before it reaches a manager, client, or colleague. Content creators also gain a lot from this workflow because captions, scripts, and short-form hooks often need to sound smooth immediately. A spoken preview makes weak lines stand out.</p>
+          <p>This page combines voice preview with AI feedback so the revision loop stays short. You can paste your draft, hear your writing, review the suggested improvements, apply a better version, and preview it again right away. That makes audio proofreading practical as a daily habit instead of an occasional extra step. If you want a fast AI proofreading tool that helps you hear your writing and improve how it sounds aloud, this workflow is built for exactly that use case.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="mx-auto max-w-4xl px-4 py-4 pb-16 sm:px-6" style="content-visibility:auto; contain-intrinsic-size: 1px 900px;">
+      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
+      <div class="mt-8 space-y-4">
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">What does the confidence score mean?</h3>
+          <p class="mt-2 text-slate-600">It is a practical, heuristic estimate of how clear and natural the writing is likely to sound aloud. It is not a scientific or absolute score.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Does this tool rewrite everything automatically?</h3>
+          <p class="mt-2 text-slate-600">No. It keeps the original intent, points out spoken-flow issues, and gives you the option to apply the improved version when it is useful.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Who is this useful for?</h3>
+          <p class="mt-2 text-slate-600">Students, professionals, freelancers, founders, marketers, and content creators can all use it to hear their writing before sending or publishing.</p>
+        </article>
+        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+          <h3 class="text-lg font-semibold text-ink">Can I download the preview audio?</h3>
+          <p class="mt-2 text-slate-600">No. This page is built for fast in-browser preview and replay rather than file downloads.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p>&copy; 2026 Adsense Tools Page. Utility-first web tools for everyday tasks.</p>
+      <nav class="flex gap-4">
+        <a href="/privacy-policy" class="hover:text-ink">Privacy Policy</a>
+        <a href="/terms" class="hover:text-ink">Terms</a>
+        <a href="/about" class="hover:text-ink">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const TOOL_BASE_PATH = "/audio-proofreader";
+    const textInput = document.getElementById("textInput");
+    const charCount = document.getElementById("charCount");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const speedSelect = document.getElementById("speedSelect");
+    const voiceStatus = document.getElementById("voiceStatus");
+    const voiceDescription = document.getElementById("voiceDescription");
+    const previewBtn = document.getElementById("previewBtn");
+    const applyBtn = document.getElementById("applyBtn");
+    const previewImprovedBtn = document.getElementById("previewImprovedBtn");
+    const messageBox = document.getElementById("messageBox");
+    const audioLoading = document.getElementById("audioLoading");
+    const audioReady = document.getElementById("audioReady");
+    const audioEmpty = document.getElementById("audioEmpty");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const replayBtn = document.getElementById("replayBtn");
+    const audioMeta = document.getElementById("audioMeta");
+    const audioStatusBadge = document.getElementById("audioStatusBadge");
+    const analysisLoading = document.getElementById("analysisLoading");
+    const analysisEmpty = document.getElementById("analysisEmpty");
+    const analysisContent = document.getElementById("analysisContent");
+    const confidenceScore = document.getElementById("confidenceScore");
+    const clarityScore = document.getElementById("clarityScore");
+    const professionalismScore = document.getElementById("professionalismScore");
+    const listeningFlowScore = document.getElementById("listeningFlowScore");
+    const flagsCount = document.getElementById("flagsCount");
+    const flagsList = document.getElementById("flagsList");
+    const suggestionsList = document.getElementById("suggestionsList");
+    const proofreaderForm = document.getElementById("proofreaderForm");
+
+    let availableVoices = [];
+    let currentAnalysis = null;
+    let isPreviewBusy = false;
+    let isApplyBusy = false;
+    let lastPreviewSignature = "";
+    let lastPreviewAt = 0;
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function updateCharCount() {
+      charCount.textContent = textInput.value.length.toString();
+    }
+
+    function setMessage(type, text) {
+      if (!text) {
+        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
+        messageBox.textContent = "";
+        return;
+      }
+      const palette = {
+        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
+        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
+        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
+      };
+      messageBox.className = palette[type] || palette.info;
+      messageBox.textContent = text;
+    }
+
+    function setPreviewBusy(isBusy) {
+      isPreviewBusy = isBusy;
+      previewBtn.disabled = isBusy || !voiceSelect.value;
+      applyBtn.disabled = isBusy || isApplyBusy || !currentAnalysis || !currentAnalysis.improved_text;
+      previewImprovedBtn.disabled = isBusy || isApplyBusy || !currentAnalysis;
+      voiceSelect.disabled = isBusy || !availableVoices.length;
+      speedSelect.disabled = isBusy;
+      textInput.disabled = isApplyBusy;
+    }
+
+    function setApplyBusy(isBusy) {
+      isApplyBusy = isBusy;
+      textInput.disabled = isBusy;
+      previewBtn.disabled = isBusy || isPreviewBusy || !voiceSelect.value;
+      applyBtn.disabled = isBusy || isPreviewBusy || !currentAnalysis || !currentAnalysis.improved_text;
+      previewImprovedBtn.disabled = isBusy || isPreviewBusy || !currentAnalysis;
+    }
+
+    function setAudioLoading(isLoading) {
+      audioLoading.classList.toggle("hidden", !isLoading);
+      if (isLoading) {
+        audioReady.classList.add("hidden");
+        audioEmpty.classList.add("hidden");
+        audioStatusBadge.textContent = "Generating";
+      }
+    }
+
+    function setAnalysisLoading(isLoading) {
+      analysisLoading.classList.toggle("hidden", !isLoading);
+      if (isLoading) {
+        analysisContent.classList.add("hidden");
+        analysisEmpty.classList.add("hidden");
+      }
+    }
+
+    function clearAudioPreview() {
+      audioPlayer.pause();
+      audioPlayer.removeAttribute("src");
+      audioPlayer.load();
+      replayBtn.disabled = true;
+      audioReady.classList.add("hidden");
+      audioLoading.classList.add("hidden");
+      audioEmpty.classList.remove("hidden");
+      audioMeta.textContent = "Your preview will appear here.";
+      audioStatusBadge.textContent = "Waiting";
+    }
+
+    function renderVoiceMeta() {
+      const voice = availableVoices.find((item) => item.id === voiceSelect.value);
+      if (!voice) {
+        voiceDescription.textContent = "Choose a voice to hear your writing aloud.";
+        return;
+      }
+      const meta = [
+        voice.language_name || voice.language || "Unknown language",
+        voice.gender || "unknown",
+        voice.quality || "unknown quality"
+      ];
+      voiceDescription.textContent = `${meta.join(" - ")}${voice.description ? ` - ${voice.description}` : ""}`;
+    }
+
+    function applyVoicePayload(payload) {
+      availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
+      if (!availableVoices.length) {
+        voiceSelect.innerHTML = '<option value="">No voices available</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voices unavailable";
+        voiceDescription.textContent = "The voice service did not return usable options.";
+        previewBtn.disabled = true;
+        return;
+      }
+
+      const grouped = new Map();
+      availableVoices.forEach((voice) => {
+        const key = (voice.language_name || voice.language || "Other").trim();
+        if (!grouped.has(key)) {
+          grouped.set(key, []);
+        }
+        grouped.get(key).push(voice);
+      });
+
+      voiceSelect.innerHTML = Array.from(grouped.entries()).map(([language, voices]) => {
+        const options = voices.map((voice) => (
+          `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}</option>`
+        )).join("");
+        return `<optgroup label="${escapeHtml(language)}">${options}</optgroup>`;
+      }).join("");
+
+      const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
+      voiceSelect.value = defaultVoice.id;
+      voiceSelect.disabled = false;
+      voiceStatus.textContent = `${availableVoices.length} voices ready`;
+      previewBtn.disabled = false;
+      renderVoiceMeta();
+    }
+
+    async function loadVoices() {
+      voiceStatus.textContent = "Loading voices...";
+      voiceDescription.textContent = "Fetching available languages and voices...";
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to load voices.");
+        }
+        applyVoicePayload(data);
+      } catch (error) {
+        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
+        voiceSelect.disabled = true;
+        voiceStatus.textContent = "Voice error";
+        voiceDescription.textContent = error.message || "Unable to load voices right now.";
+        previewBtn.disabled = true;
+      }
+    }
+
+    function renderAnalysis(analysis) {
+      currentAnalysis = analysis;
+      analysisEmpty.classList.add("hidden");
+      analysisLoading.classList.add("hidden");
+      analysisContent.classList.remove("hidden");
+
+      confidenceScore.textContent = `${analysis.confidence_score}%`;
+      clarityScore.textContent = analysis.subscores.clarity;
+      professionalismScore.textContent = analysis.subscores.professionalism;
+      listeningFlowScore.textContent = analysis.subscores.listening_flow;
+
+      const flags = Array.isArray(analysis.flags) ? analysis.flags : [];
+      flagsCount.textContent = `${flags.length} item${flags.length === 1 ? "" : "s"}`;
+      flagsList.innerHTML = flags.length ? flags.map((flag) => `
+        <article class="rounded-3xl border border-amber-200 bg-amber-50 p-4">
+          <div class="flex items-start gap-3">
+            <div class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-amber-500"></div>
+            <p class="text-sm text-slate-700">${escapeHtml(flag)}</p>
+          </div>
+        </article>
+      `).join("") : '<p class="rounded-3xl bg-slate-50 px-4 py-4 text-sm text-slate-600">No major spoken-flow flags found.</p>';
+
+      const suggestions = Array.isArray(analysis.suggestions) ? analysis.suggestions : [];
+      suggestionsList.innerHTML = suggestions.length ? suggestions.map((item) => `
+        <article class="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Original</p>
+          <p class="mt-2 text-sm text-slate-700">${escapeHtml(item.original)}</p>
+          <p class="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Suggested</p>
+          <p class="mt-2 text-sm text-slate-700">${escapeHtml(item.improved)}</p>
+        </article>
+      `).join("") : '<p class="rounded-3xl bg-slate-50 px-4 py-4 text-sm text-slate-600">No sentence-level replacements were needed.</p>';
+
+      applyBtn.disabled = isPreviewBusy || isApplyBusy || !analysis.improved_text;
+      previewImprovedBtn.disabled = isPreviewBusy || isApplyBusy || !analysis.improved_text;
+    }
+
+    async function safeJson(response) {
+      try {
+        return await response.json();
+      } catch (error) {
+        return {};
+      }
+    }
+
+    async function runPreview() {
+      const text = textInput.value.trim();
+      const voice = voiceSelect.value;
+      const speed = Number(speedSelect.value);
+
+      if (!text) {
+        setMessage("error", "Please paste some writing before previewing it.");
+        return;
+      }
+      if (!voice) {
+        setMessage("error", "Please choose a voice before previewing.");
+        return;
+      }
+
+      const signature = `${text}::${voice}::${speed}`;
+      if (signature === lastPreviewSignature && Date.now() - lastPreviewAt < 900) {
+        setMessage("info", "Please wait a moment before requesting the same preview again.");
+        return;
+      }
+      lastPreviewSignature = signature;
+      lastPreviewAt = Date.now();
+
+      setMessage("", "");
+      setPreviewBusy(true);
+      setAudioLoading(true);
+      setAnalysisLoading(true);
+
+      const audioPromise = fetch(`${TOOL_BASE_PATH}/generate-audio`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voice, speed })
+      }).then(async (response) => {
+        const data = await safeJson(response);
+        if (!response.ok) {
+          return { ok: false, error: data.detail || "Unable to generate audio preview." };
+        }
+        return { ok: true, data };
+      }).catch((error) => ({ ok: false, error: error.message || "Audio preview failed." }));
+
+      const analysisPromise = fetch(`${TOOL_BASE_PATH}/analyze-text`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text })
+      }).then(async (response) => {
+        const data = await safeJson(response);
+        if (!response.ok) {
+          return { ok: false, error: data.detail || "Unable to analyze writing." };
+        }
+        return { ok: true, data };
+      }).catch((error) => ({ ok: false, error: error.message || "Analysis failed." }));
+
+      const [audioResult, analysisResult] = await Promise.all([audioPromise, analysisPromise]);
+
+      if (audioResult.ok) {
+        audioPlayer.src = audioResult.data.audio_url;
+        audioReady.classList.remove("hidden");
+        audioEmpty.classList.add("hidden");
+        audioLoading.classList.add("hidden");
+        replayBtn.disabled = false;
+        audioMeta.textContent = `Preview voice: ${audioResult.data.voice} at ${audioResult.data.speed}x speed.`;
+        audioStatusBadge.textContent = "Ready";
+        try {
+          await audioPlayer.play();
+        } catch (error) {
+          audioMeta.textContent = `${audioMeta.textContent} Autoplay was blocked, so press play to listen.`;
+        }
+      } else {
+        clearAudioPreview();
+        audioStatusBadge.textContent = "Error";
+      }
+
+      if (analysisResult.ok) {
+        renderAnalysis(analysisResult.data);
+      } else {
+        analysisLoading.classList.add("hidden");
+        analysisContent.classList.add("hidden");
+        analysisEmpty.classList.remove("hidden");
+        currentAnalysis = null;
+      }
+
+      if (audioResult.ok && analysisResult.ok) {
+        setMessage("success", "Preview ready. Listen to the narration and review the feedback below.");
+      } else if (!audioResult.ok && !analysisResult.ok) {
+        setMessage("error", `${audioResult.error} ${analysisResult.error}`.trim());
+      } else if (!audioResult.ok) {
+        setMessage("error", audioResult.error);
+      } else {
+        setMessage("error", analysisResult.error);
+      }
+
+      setPreviewBusy(false);
+    }
+
+    async function applyImprovements() {
+      if (!currentAnalysis || !currentAnalysis.improved_text) {
+        setMessage("error", "No improved version is available yet.");
+        return;
+      }
+
+      setMessage("", "");
+      setApplyBusy(true);
+      setAnalysisLoading(true);
+
+      const improvedText = currentAnalysis.improved_text;
+      textInput.value = improvedText;
+      updateCharCount();
+
+      try {
+        const response = await fetch(`${TOOL_BASE_PATH}/analyze-text`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: improvedText })
+        });
+        const data = await safeJson(response);
+        if (!response.ok) {
+          throw new Error(data.detail || "Unable to refresh analysis for the improved version.");
+        }
+        renderAnalysis(data);
+        clearAudioPreview();
+        setMessage("success", "Improved version applied.");
+      } catch (error) {
+        setMessage("error", error.message || "Unable to apply improvements right now.");
+      } finally {
+        setApplyBusy(false);
+        analysisLoading.classList.add("hidden");
+      }
+    }
+
+    proofreaderForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await runPreview();
+    });
+
+    applyBtn.addEventListener("click", async () => {
+      await applyImprovements();
+    });
+
+    previewImprovedBtn.addEventListener("click", async () => {
+      await runPreview();
+    });
+
+    replayBtn.addEventListener("click", async () => {
+      if (!audioPlayer.src) {
+        setMessage("error", "No audio preview is ready yet.");
+        return;
+      }
+      try {
+        audioPlayer.currentTime = 0;
+        await audioPlayer.play();
+      } catch (error) {
+        setMessage("error", "Unable to replay audio in this browser right now.");
+      }
+    });
+
+    textInput.addEventListener("input", () => {
+      updateCharCount();
+    });
+
+    voiceSelect.addEventListener("change", () => {
+      renderVoiceMeta();
+      previewBtn.disabled = !voiceSelect.value;
+    });
+
+    updateCharCount();
+    loadVoices();
+  </script>
+</body>
+</html>

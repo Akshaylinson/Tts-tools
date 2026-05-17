@@ -10,6 +10,7 @@ services:
       - ./tools/Text-to-audio/.env
       - ./tools/story_narration_generator/.env
       - ./tools/blog_to_podcast/.env
+      - ./tools/audio_proofreader/.env
     ports:
       - "8010:8010"
     volumes:
@@ -17,4 +18,5 @@ services:
       - ./tools/Text-to-audio/outputs:/app/tools/Text-to-audio/outputs
       - ./tools/story_narration_generator/outputs:/app/tools/story_narration_generator/outputs
       - ./tools/blog_to_podcast/outputs:/app/tools/blog_to_podcast/outputs
+      - ./tools/audio_proofreader/outputs:/app/tools/audio_proofreader/outputs
     restart: unless-stopped

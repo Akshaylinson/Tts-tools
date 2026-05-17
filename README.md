@@ -40,6 +40,15 @@ Adsense Tools Page/
 |       |-- requirements.txt
 |       |-- settings.py
 |       `-- outputs/
+|   `-- audio_proofreader/
+|       |-- .env
+|       |-- .env.example
+|       |-- Dockerfile
+|       |-- audio-proofreader.html
+|       |-- audioproofreader.py
+|       |-- requirements.txt
+|       |-- settings.py
+|       `-- outputs/
 |   `-- blog_to_podcast/
 |       |-- .env
 |       |-- .env.example
@@ -56,6 +65,7 @@ Adsense Tools Page/
 - `tools/pdf_to_audio/` contains all PDF-to-audio-specific code, config, HTML, Docker build files, and outputs.
 - `tools/Text-to-audio/` contains all text-to-audio-specific code, config, HTML, Docker build files, and outputs.
 - `tools/story_narration_generator/` contains the AI story narration generator page, Groq prompt logic, TTS integration, HTML, Docker assets, and outputs.
+- `tools/audio_proofreader/` contains the AI Audio Proofreader page, Groq writing analysis flow, CodeVoice preview generation, env-backed configuration, and outputs.
 - `tools/blog_to_podcast/` contains article extraction, Grok-based podcast script generation, TTS narration, the Tailwind UI, and outputs.
 - The root `docker-compose.yml` builds the whole site using the PDF tool Dockerfile and serves the shared app entrypoint.
 
@@ -66,6 +76,7 @@ cd "Adsense Tools Page"
 pip install -r tools/pdf_to_audio/requirements.txt
 pip install -r tools/Text-to-audio/requirements.txt
 pip install -r tools/story_narration_generator/requirements.txt
+pip install -r tools/audio_proofreader/requirements.txt
 pip install -r tools/blog_to_podcast/requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 8010 --reload
 ```
@@ -84,6 +95,7 @@ The compose file currently reads runtime settings from:
 - `tools/pdf_to_audio/.env`
 - `tools/Text-to-audio/.env`
 - `tools/story_narration_generator/.env`
+- `tools/audio_proofreader/.env`
 - `tools/blog_to_podcast/.env`
 
 ## Adding More Tools

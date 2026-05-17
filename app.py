@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from tools.audio_proofreader.audioproofreader import app as audio_proofreader_app
 from tools.blog_to_podcast.blogtopodcast import app as blog_to_podcast_app
 from tools.pdf_to_audio.pdftoaudio import app as pdf_to_audio_app
 
@@ -86,3 +87,4 @@ app.mount("/pdf-to-audio", pdf_to_audio_app)
 app.mount("/text-to-audio", text_to_audio_app)
 app.mount("/story-narration-generator", story_narration_app)
 app.mount("/blog-to-podcast", blog_to_podcast_app)
+app.mount("/audio-proofreader", audio_proofreader_app)
