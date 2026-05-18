@@ -93,76 +93,87 @@
 
   <main>
     <section class="bg-[radial-gradient(circle_at_top_left,_rgba(20,184,166,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_55%,_#1f2937)] text-white">
-      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:py-24">
-        <div>
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <div class="mx-auto max-w-3xl text-center">
           <p class="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-teal-100">100% Free PDF to Audio Converter</p>
-          <h1 class="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">Free PDF to Audio Converter AI — Natural Voice Narration</h1>
-          <p class="mt-5 max-w-2xl text-lg text-slate-200">Transform any PDF document into natural-sounding audio. Listen to reports, textbooks, articles, and research papers hands-free with professional AI voice technology. No page limits, no subscriptions.</p>
-          <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
+          <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Free PDF to Audio Converter AI — Natural Voice Narration</h1>
+          <p class="mt-5 text-lg text-slate-200">Transform any PDF document into natural-sounding audio. Listen to reports, textbooks, articles, and research papers hands-free with professional AI voice technology. No page limits, no subscriptions.</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3 text-sm text-slate-200">
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Unlimited Conversions</span>
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Natural AI Voice</span>
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Accessibility-First</span>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-900 shadow-card sm:p-6">
-          <div id="dropzone" class="rounded-2xl border-2 border-dashed border-teal-300 bg-teal-50/70 p-6 text-center transition">
-            <p class="text-lg font-semibold text-ink">Drop a PDF here</p>
-            <p class="mt-2 text-sm text-slate-600">or choose a file from your device</p>
-            <input id="fileInput" type="file" accept=".pdf,application/pdf" class="sr-only">
-            <button id="pickFileBtn" type="button" class="mt-5 inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Choose PDF</button>
-            <p class="mt-4 text-xs text-slate-500">Maximum file size: 10MB</p>
+    <section class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-2xl font-semibold text-ink">Upload & Convert</h2>
+            <p class="mt-2 text-sm text-slate-600">Upload your PDF, choose a voice, and generate downloadable audio.</p>
           </div>
-          <div class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-100 px-4 py-3">
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Selected file</p>
-              <p id="fileName" class="mt-1 text-sm font-medium text-slate-700">No file selected</p>
-            </div>
-            <button id="convertBtn" type="button" class="inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-ink transition hover:bg-amber-400">Convert to Audio</button>
+          <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">HTML5 Audio</span>
+        </div>
+
+        <div id="dropzone" class="mt-6 rounded-2xl border-2 border-dashed border-teal-300 bg-teal-50/70 p-8 text-center transition">
+          <p class="text-lg font-semibold text-ink">Drop a PDF here</p>
+          <p class="mt-2 text-sm text-slate-600">or choose a file from your device</p>
+          <input id="fileInput" type="file" accept=".pdf,application/pdf" class="sr-only">
+          <button id="pickFileBtn" type="button" class="mt-5 inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Choose PDF</button>
+          <p class="mt-4 text-xs text-slate-500">Maximum file size: 10MB</p>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-slate-100 px-4 py-3">
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Selected file</p>
+            <p id="fileName" class="mt-1 text-sm font-medium text-slate-700">No file selected</p>
           </div>
-          <div class="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-4">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Language and voice</p>
-                <p class="mt-1 text-sm text-slate-600">Choose the PDF text language first, then pick one of the top live CodeVoice voices for that language.</p>
-              </div>
-              <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
-            </div>
-            <select id="languageSelect" class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+          <button id="convertBtn" type="button" class="inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-ink transition hover:bg-amber-400">Convert to Audio</button>
+        </div>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Language</p>
+            <select id="languageSelect" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
               <option>Loading languages...</option>
             </select>
-            <select id="voiceSelect" class="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
+          </div>
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex items-center justify-between">
+              <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Voice</p>
+              <span id="voiceStatus" class="rounded-full bg-white px-2 py-1 text-xs font-medium text-slate-600">Loading...</span>
+            </div>
+            <select id="voiceSelect" class="mt-3 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
               <option>Loading voices...</option>
             </select>
-            <p id="voiceDescription" class="mt-3 text-sm text-slate-500">Fetching available voices...</p>
           </div>
-          <p id="errorMessage" class="mt-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></p>
-          <div id="progressWrap" class="mt-4 hidden">
-            <div class="flex items-center justify-between text-sm text-slate-600">
-              <span id="progressLabel">Preparing your PDF...</span>
-              <span class="font-medium">Working</span>
-            </div>
-            <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
-              <div id="progressBar" class="h-full w-1/5 rounded-full bg-brand transition-all duration-300"></div>
-            </div>
+        </div>
+        <p id="voiceDescription" class="mt-3 text-sm text-slate-500">Fetching available voices...</p>
+
+        <p id="errorMessage" class="mt-4 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></p>
+        <div id="progressWrap" class="mt-4 hidden">
+          <div class="flex items-center justify-between text-sm text-slate-600">
+            <span id="progressLabel">Preparing your PDF...</span>
+            <span class="font-medium">Working</span>
           </div>
-          <div class="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
-            <div class="flex items-center justify-between gap-3">
-              <div>
-                <h2 class="text-lg font-semibold text-ink">Tool Interface</h2>
-                <p class="text-sm text-slate-600">Play your result, download the MP3, or save it to local history.</p>
-              </div>
-              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">HTML5 Audio</span>
-            </div>
-            <audio id="audioPlayer" class="mt-4 w-full" controls preload="none"></audio>
-            <div class="mt-4 grid gap-3 sm:grid-cols-4">
-              <button id="playBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Play</button>
-              <a id="downloadBtn" href="#" download class="pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
-              <button id="saveBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Save</button>
-              <button id="clearBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear</button>
-            </div>
-            <p id="successMeta" class="mt-3 text-sm text-slate-500"></p>
+          <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
+            <div id="progressBar" class="h-full w-1/5 rounded-full bg-brand transition-all duration-300"></div>
           </div>
+        </div>
+
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <h3 class="text-lg font-semibold text-ink">Audio Output</h3>
+          <p class="text-sm text-slate-600">Play your result, download the MP3, or save it to local history.</p>
+          <audio id="audioPlayer" class="mt-4 w-full" controls preload="none"></audio>
+          <div class="mt-4 grid gap-3 sm:grid-cols-4">
+            <button id="playBtn" type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Play</button>
+            <a id="downloadBtn" href="#" download class="pointer-events-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
+            <button id="saveBtn" type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Save</button>
+            <button id="clearBtn" type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear</button>
+          </div>
+          <p id="successMeta" class="mt-3 text-sm text-slate-500"></p>
         </div>
       </div>
     </section>
@@ -181,30 +192,64 @@
     </section>
 
     <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div class="mb-8 max-w-2xl">
+      <div class="mb-8 text-center">
         <h2 class="text-3xl font-bold tracking-tight text-ink">Built for fast everyday listening</h2>
-        <p class="mt-3 text-slate-600">Everything on this page is focused on practical PDF listening, light UI overhead, and a simple path from upload to MP3.</p>
+        <p class="mx-auto mt-3 max-w-2xl text-slate-600">Everything on this page is focused on practical PDF listening, light UI overhead, and a simple path from upload to MP3.</p>
       </div>
-      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Fast conversion</h3>
-          <p class="mt-2 text-sm text-slate-600">Extracts text, cleans it, and sends it to speech generation with a minimal wait state.</p>
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Fast conversion</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Extracts text, cleans it, and sends it to speech generation with a minimal wait state.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">No signup required</h3>
-          <p class="mt-2 text-sm text-slate-600">Open the page, upload a PDF, and convert it immediately without account friction.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">No signup required</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Open the page, upload a PDF, and convert it immediately without account friction.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">High-quality audio</h3>
-          <p class="mt-2 text-sm text-slate-600">Returns downloadable MP3 audio designed for browser playback and offline listening.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">High-quality audio</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Returns downloadable MP3 audio designed for browser playback and offline listening.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Works on mobile</h3>
-          <p class="mt-2 text-sm text-slate-600">Responsive layout keeps the upload, playback, and download flow easy on phones and tablets.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Works on mobile</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Responsive layout keeps the upload, playback, and download flow easy on phones and tablets.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Supports large PDFs</h3>
-          <p class="mt-2 text-sm text-slate-600">Handles files up to 10MB and breaks long text into manageable audio-generation chunks.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Supports large PDFs</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Handles files up to 10MB and breaks long text into manageable audio-generation chunks.</p>
+        </article>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-teal-100/50">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Browser-based processing</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">No desktop software needed. Upload, convert, and download entirely in your browser.</p>
         </article>
       </div>
     </section>
