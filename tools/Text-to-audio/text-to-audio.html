@@ -100,28 +100,15 @@
 
   <main>
     <section class="bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_52%,_#1f2937)] text-white">
-      <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
-        <div>
+      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+        <div class="mx-auto max-w-3xl text-center">
           <p class="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-amber-100">100% Free AI Speech Generator</p>
-          <h1 class="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">Free Text to Audio Converter AI — Generate Speech Instantly</h1>
-          <p class="mt-5 max-w-2xl text-lg text-slate-200">Transform any text into natural AI voice narration. Professional speech generation for scripts, notes, and content. No limits, no subscriptions, completely free.</p>
-          <div class="mt-8 flex flex-wrap gap-3 text-sm text-slate-200">
+          <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Free Text to Audio Converter AI — Generate Speech Instantly</h1>
+          <p class="mt-5 text-lg text-slate-200">Transform any text into natural AI voice narration. Professional speech generation for scripts, notes, and content. No limits, no subscriptions, completely free.</p>
+          <div class="mt-8 flex flex-wrap justify-center gap-3 text-sm text-slate-200">
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Unlimited Conversions</span>
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Natural AI Voice</span>
             <span class="rounded-full border border-white/20 px-3 py-1">✓ Instant MP3 Download</span>
-          </div>
-        </div>
-
-        <div class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-900 shadow-card sm:p-6">
-          <div class="rounded-2xl bg-[linear-gradient(135deg,_rgba(15,118,110,0.08),_rgba(234,88,12,0.08))] p-5">
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Hero input</p>
-            <h2 class="mt-2 text-2xl font-semibold text-ink">Turn text into audio instantly</h2>
-            <p class="mt-2 text-sm text-slate-600">Paste a few lines or a long block of text, then generate audio with the live CodeVoice engine.</p>
-            <textarea id="heroTextInput" rows="8" class="mt-4 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="Paste or type your text here..."></textarea>
-            <div class="mt-3 flex items-center justify-between gap-3 text-sm text-slate-500">
-              <span id="heroCounter">0 / 5000</span>
-              <button id="heroConvertBtn" type="button" class="inline-flex rounded-full bg-accent px-5 py-3 font-semibold text-ink transition hover:bg-amber-400">Convert to Audio</button>
-            </div>
           </div>
         </div>
       </div>
@@ -230,34 +217,64 @@
     </section>
 
     <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div class="mb-8 max-w-2xl">
+      <div class="mb-8 text-center">
         <h2 class="text-3xl font-bold tracking-tight text-ink">Built for speed and practical listening</h2>
-        <p class="mt-3 text-slate-600">This text to audio converter is designed to help users move from raw text to usable spoken output with minimal friction.</p>
+        <p class="mx-auto mt-3 max-w-2xl text-slate-600">This text to audio converter is designed to help users move from raw text to usable spoken output with minimal friction.</p>
       </div>
-      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Instant conversion</h3>
-          <p class="mt-2 text-sm text-slate-600">Paste text and generate audio quickly with a streamlined browser workflow.</p>
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Instant conversion</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Paste text and generate audio quickly with a streamlined browser workflow.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">High-quality voice output</h3>
-          <p class="mt-2 text-sm text-slate-600">Uses the live CodeVoice engine for natural-sounding speech output.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">High-quality voice output</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Uses the live CodeVoice engine for natural-sounding speech output.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">No signup required</h3>
-          <p class="mt-2 text-sm text-slate-600">Open the page, paste text, and start converting without account friction.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">No signup required</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Open the page, paste text, and start converting without account friction.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Works on mobile</h3>
-          <p class="mt-2 text-sm text-slate-600">Responsive layout keeps input, playback, and download easy on smaller screens.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Works on mobile</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Responsive layout keeps input, playback, and download easy on smaller screens.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Supports long text input</h3>
-          <p class="mt-2 text-sm text-slate-600">Longer input is split into audio chunks to keep playback reliable.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Supports long text input</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Longer input is split into audio chunks to keep playback reliable.</p>
         </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-5 shadow-card">
-          <h3 class="font-semibold text-ink">Fast processing</h3>
-          <p class="mt-2 text-sm text-slate-600">Optimized for short wait times and immediate MP3 download once ready.</p>
+        <article class="group relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-6 shadow-card transition-all hover:shadow-xl hover:border-brand/30">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand/10 to-accent/10">
+            <svg class="h-6 w-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-ink">Fast processing</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-600">Optimized for short wait times and immediate MP3 download once ready.</p>
         </article>
       </div>
     </section>
@@ -370,9 +387,7 @@
     const MAX_CHARS = 5000;
     const HISTORY_KEY = "textAudioHistory";
 
-    const heroTextInput = document.getElementById("heroTextInput");
-    const heroCounter = document.getElementById("heroCounter");
-    const heroConvertBtn = document.getElementById("heroConvertBtn");
+
     const textInput = document.getElementById("textInput");
     const charCounter = document.getElementById("charCounter");
     const languageSelect = document.getElementById("languageSelect");
@@ -430,19 +445,9 @@
     function updateCounter(value) {
       const count = value.length;
       charCounter.textContent = `${count.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
-      heroCounter.textContent = `${count.toLocaleString()} / ${MAX_CHARS.toLocaleString()}`;
     }
 
-    function syncTextInputs(source) {
-      const value = source.value;
-      if (source !== textInput) {
-        textInput.value = value;
-      }
-      if (source !== heroTextInput) {
-        heroTextInput.value = value;
-      }
-      updateCounter(value);
-    }
+
 
     function getHistory() {
       try {
@@ -622,7 +627,6 @@
       downloadBtn.href = "#";
       downloadBtn.classList.add("pointer-events-none", "text-slate-400");
       if (clearText) {
-        heroTextInput.value = "";
         textInput.value = "";
         updateCounter("");
       }
@@ -654,9 +658,7 @@
       setError("");
       setProgress(true, `Sending text to ${voiceSelect.value}...`, "22%");
       convertBtn.disabled = true;
-      heroConvertBtn.disabled = true;
       convertBtn.classList.add("opacity-60", "cursor-not-allowed");
-      heroConvertBtn.classList.add("opacity-60", "cursor-not-allowed");
       debugLog(`Sending request to ${TOOL_BASE_PATH}/convert-text`, {
         chars: value.trim().length,
         voice: voiceSelect.value
@@ -715,18 +717,13 @@
       } finally {
         window.clearInterval(timer);
         convertBtn.disabled = false;
-        heroConvertBtn.disabled = false;
         convertBtn.classList.remove("opacity-60", "cursor-not-allowed");
-        heroConvertBtn.classList.remove("opacity-60", "cursor-not-allowed");
       }
     }
 
-    heroTextInput.addEventListener("input", () => syncTextInputs(heroTextInput));
-    textInput.addEventListener("input", () => syncTextInputs(textInput));
-    heroConvertBtn.addEventListener("click", convertText);
+    textInput.addEventListener("input", () => updateCounter(textInput.value));
     convertBtn.addEventListener("click", convertText);
     clearTextBtn.addEventListener("click", () => {
-      heroTextInput.value = "";
       textInput.value = "";
       updateCounter("");
       setError("");
