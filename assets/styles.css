@@ -2280,3 +2280,54 @@ body.tool-page #historySection .bg-white:hover{
     width: 100%;
   }
 }
+
+
+/* ========================================
+   ICON SYSTEM - SVG ICONS
+   ======================================== */
+
+.capability-icon svg,
+.workflow-icon svg {
+  color: var(--site-brand);
+  stroke-width: 2;
+}
+
+.capability-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(58, 109, 240, 0.08), rgba(124, 168, 255, 0.05));
+  border: 1px solid rgba(58, 109, 240, 0.1);
+}
+
+.capability-card-large .capability-icon {
+  width: 72px;
+  height: 72px;
+}
+
+.workflow-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(58, 109, 240, 0.08), rgba(124, 168, 255, 0.05));
+  border: 1px solid rgba(58, 109, 240, 0.1);
+}
+
+.icon-audio,
+.icon-edit,
+.icon-sparkles {
+  transition: transform 0.3s ease;
+}
+
+.capability-card:hover .icon-audio,
+.capability-card:hover .icon-edit,
+.capability-card:hover .icon-sparkles,
+.workflow-card:hover svg {
+  transform: scale(1.1);
+}
