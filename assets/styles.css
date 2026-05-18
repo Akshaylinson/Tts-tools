@@ -2137,6 +2137,7 @@ body.tool-page #historySection .bg-white:hover{
 .home-hero {
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #1a1f36 0%, #0f1419 100%);
 }
 
 /* Hero Content Container */
@@ -2151,15 +2152,16 @@ body.tool-page #historySection .bg-white:hover{
   display: inline-flex;
   align-items: center;
   padding: 0.65rem 1.25rem;
-  border: 1px solid rgba(58, 109, 240, 0.2);
+  border: 1px solid rgba(124, 168, 255, 0.3);
   border-radius: 9999px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(237, 244, 255, 0.95));
-  color: var(--site-brand);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.95);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  box-shadow: 0 8px 24px rgba(58, 109, 240, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   margin-bottom: 2rem;
 }
 
@@ -2168,7 +2170,7 @@ body.tool-page #historySection .bg-white:hover{
   font-size: clamp(3rem, 8vw, 6.5rem);
   line-height: 0.95;
   font-weight: 800;
-  color: var(--site-ink);
+  color: #ffffff;
   letter-spacing: -0.05em;
   margin: 0 auto;
   max-width: 20ch;
@@ -2180,7 +2182,7 @@ body.tool-page #historySection .bg-white:hover{
   max-width: 42rem;
   font-size: 1.2rem;
   line-height: 1.75;
-  color: var(--site-ink-soft);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Hero Actions */
