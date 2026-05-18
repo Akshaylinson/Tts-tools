@@ -32,7 +32,7 @@ body.site-page,body.tool-page,body.legal-page{
 body.site-page h1,body.site-page h2,body.site-page h3,
 body.tool-page h1,body.tool-page h2,body.tool-page h3,
 body.legal-page h1,body.legal-page h2,body.legal-page h3{
-  font-family:"Fraunces",Georgia,serif;
+  font-family:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;
   letter-spacing:-.035em;
 }
 body.tool-page p,body.site-page p,body.legal-page p{
@@ -1582,6 +1582,7 @@ body.tool-page #historySection .bg-white:hover{
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--site-brand);
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 .section-heading {
@@ -1590,12 +1591,14 @@ body.tool-page #historySection .bg-white:hover{
   line-height: 1.05;
   font-weight: 800;
   letter-spacing: -0.04em;
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 .section-copy {
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--site-ink-soft);
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Capability Grid */
@@ -2174,6 +2177,7 @@ body.tool-page #historySection .bg-white:hover{
   letter-spacing: -0.05em;
   margin: 0 auto;
   max-width: 20ch;
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Hero Description */
