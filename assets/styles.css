@@ -49,11 +49,11 @@ body.tool-page p,body.site-page p,body.legal-page p{
 }
 .site-header .mx-auto{
   max-width:74rem;
-  border:1px solid rgba(219,228,240,.9);
-  background:rgba(255,255,255,.95);
+  border:1px solid rgba(124,168,255,.3);
+  background:rgba(26,31,54,.85);
   backdrop-filter:blur(18px);
   border-radius:9999px;
-  box-shadow:0 8px 32px rgba(27,45,78,.12);
+  box-shadow:0 8px 32px rgba(0,0,0,.3);
   padding:0.75rem 1.5rem;
 }
 .site-header nav{
@@ -62,13 +62,13 @@ body.tool-page p,body.site-page p,body.legal-page p{
 }
 .site-header a{
   transition:color .18s ease,opacity .18s ease;
-  color:var(--site-ink)!important;
+  color:rgba(255,255,255,.95)!important;
 }
 .site-header nav a{
-  color:var(--site-ink-soft)!important;
+  color:rgba(255,255,255,.75)!important;
 }
 .site-header a:hover{
-  color:var(--site-brand)!important;
+  color:rgba(124,168,255,1)!important;
 }
 .site-footer{
   background:rgba(5,10,25,.72);
@@ -1597,10 +1597,10 @@ body.tool-page #historySection .bg-white:hover{
 
 .section-heading {
   max-width: 20ch;
-  font-size: clamp(2.5rem, 5vw, 4.2rem);
-  line-height: 1.05;
-  font-weight: 800;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -2180,11 +2180,11 @@ body.tool-page #historySection .bg-white:hover{
 
 /* Hero Title */
 .hero-title {
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  line-height: 0.95;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.1;
   font-weight: 800;
   color: #ffffff;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.04em;
   margin: 0 auto;
   max-width: 20ch;
   font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
