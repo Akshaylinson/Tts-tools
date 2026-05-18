@@ -42,23 +42,33 @@ body.tool-page p,body.site-page p,body.legal-page p{
   position:sticky;
   top:0;
   z-index:40;
-  backdrop-filter:blur(18px);
-  background:linear-gradient(180deg,rgba(3,7,18,.92),rgba(3,7,18,.68));
-  border-bottom:1px solid rgba(129,140,248,.12);
-  box-shadow:0 16px 45px rgba(2,6,23,.28);
+  padding:1rem 0;
+  background:transparent!important;
+  border-bottom:none!important;
+  box-shadow:none!important;
 }
-.site-header .mx-auto,.site-footer .mx-auto{
+.site-header .mx-auto{
   max-width:74rem;
+  border:1px solid rgba(219,228,240,.9);
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(18px);
+  border-radius:9999px;
+  box-shadow:0 8px 32px rgba(27,45,78,.12);
+  padding:0.75rem 1.5rem;
 }
 .site-header nav{
   flex-wrap:wrap;
   row-gap:.5rem;
 }
 .site-header a{
-  transition:color .18s ease,opacity .18s ease,text-shadow .18s ease;
+  transition:color .18s ease,opacity .18s ease;
+  color:var(--site-ink)!important;
+}
+.site-header nav a{
+  color:var(--site-ink-soft)!important;
 }
 .site-header a:hover{
-  text-shadow:0 0 16px rgba(103,232,249,.35);
+  color:var(--site-brand)!important;
 }
 .site-footer{
   background:rgba(5,10,25,.72);
