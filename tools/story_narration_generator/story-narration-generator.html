@@ -13,14 +13,474 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#0f172a",
+            slatewarm: "#f8fafc",
+            brand: "#0f766e",
+            branddeep: "#134e4a",
+            accent: "#f59e0b",
+            coral: "#ea580c"
+          },
+          boxShadow: {
+            card: "0 20px 60px rgba(15, 23, 42, 0.08)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Custom Select Dropdown Styling */
+    .custom-select-wrapper {
+      position: relative;
+      z-index: auto;
+    }
+    
+    .custom-select-wrapper.active {
+      z-index: 9999;
+      position: relative;
+    }
+    
+    .custom-select-trigger {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%233a6df0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+      padding-right: 2.75rem;
+      cursor: pointer;
+      min-height: 3.5rem;
+    }
+    
+    .custom-select-trigger:hover {
+      border-color: #3a6df0;
+      box-shadow: 0 0 0 3px rgba(58, 109, 240, 0.1);
+    }
+    
+    .custom-select-trigger.active {
+      border-color: #3a6df0;
+      box-shadow: 0 0 0 4px rgba(58, 109, 240, 0.15);
+    }
+    
+    .custom-select-trigger:disabled {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .custom-dropdown {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: white;
+      border: 2px solid #3a6df0;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+      max-height: 450px;
+      overflow: hidden;
+      z-index: 99999;
+      display: none;
+    }
+    
+    @media (max-width: 640px) {
+      .custom-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 1rem;
+        box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.3);
+      }
+    }
+    
+    .custom-dropdown.active {
+      display: block;
+      animation: dropdownSlide 0.2s ease-out;
+    }
+    
+    @keyframes dropdownSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .dropdown-search {
+      padding: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    .dropdown-search input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.75rem center;
+      background-size: 1.125rem;
+    }
+    
+    .dropdown-search input:focus {
+      border-color: #3a6df0;
+      box-shadow: 0 0 0 3px rgba(58, 109, 240, 0.1);
+    }
+    
+    .dropdown-options {
+      max-height: 370px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+    
+    .dropdown-options::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .dropdown-option {
+      padding: 0.875rem 1rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #334155;
+    }
+    
+    .dropdown-option:hover {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      color: #2563eb;
+      transform: translateX(4px);
+    }
+    
+    .dropdown-option.selected {
+      background: linear-gradient(135deg, #3a6df0 0%, #2563eb 100%);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .dropdown-option.selected:hover {
+      transform: translateX(0);
+    }
+    
+    .dropdown-option-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .dropdown-option-text {
+      flex: 1;
+    }
+    
+    .dropdown-option-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      background: #e2e8f0;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    
+    .dropdown-option.selected .dropdown-option-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    .no-results {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+    
+    .select-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .select-icon {
+      width: 1rem;
+      height: 1rem;
+      color: #3a6df0;
+    }
+
+    /* Custom Audio Player Styling */
+    .custom-audio-player {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .audio-progress-container {
+      position: relative;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 9999px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    
+    .audio-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      transition: width 0.1s linear;
+    }
+    
+    .audio-time {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    
+    .audio-play-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3a6df0 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      box-shadow: 0 4px 12px rgba(58, 109, 240, 0.3);
+    }
+    
+    .audio-play-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(58, 109, 240, 0.4);
+    }
+    
+    .audio-play-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .audio-volume-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .audio-volume-slider {
+      width: 80px;
+      height: 4px;
+      border-radius: 9999px;
+      background: #cbd5e1;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    
+    .audio-volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #3a6df0;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .audio-volume-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #3a6df0;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Loading Animation */
+    .audio-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      gap: 1.5rem;
+    }
+    
+    .audio-loading-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 60px;
+    }
+    
+    .audio-loading-bar {
+      width: 6px;
+      background: linear-gradient(180deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      animation: audioWave 1.2s ease-in-out infinite;
+    }
+    
+    .audio-loading-bar:nth-child(1) {
+      height: 20px;
+      animation-delay: 0s;
+    }
+    
+    .audio-loading-bar:nth-child(2) {
+      height: 35px;
+      animation-delay: 0.1s;
+    }
+    
+    .audio-loading-bar:nth-child(3) {
+      height: 50px;
+      animation-delay: 0.2s;
+    }
+    
+    .audio-loading-bar:nth-child(4) {
+      height: 35px;
+      animation-delay: 0.3s;
+    }
+    
+    .audio-loading-bar:nth-child(5) {
+      height: 20px;
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes audioWave {
+      0%, 100% {
+        transform: scaleY(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scaleY(1.5);
+        opacity: 1;
+      }
+    }
+    
+    .audio-loading-text {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1e293b;
+      text-align: center;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 50%, #3a6df0 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 2s linear infinite;
+    }
+    
+    @keyframes shimmer {
+      to {
+        background-position: 200% center;
+      }
+    }
+    
+    .audio-loading-subtext {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .audio-loading-progress {
+      width: 100%;
+      max-width: 300px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .audio-loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      animation: progressFlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressFlow {
+      0% {
+        width: 20%;
+        transform: translateX(0);
+      }
+      50% {
+        width: 60%;
+        transform: translateX(50%);
+      }
+      100% {
+        width: 20%;
+        transform: translateX(200%);
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
-<body class="tool-page bg-mist text-slate-900 antialiased">
-  <header class="site-header border-b border-white/10 bg-ink text-white">
+<body class="tool-page bg-slatewarm text-slate-900 antialiased">
+  <header class="site-header bg-ink text-white">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
       <a href="/" class="text-lg font-semibold tracking-tight">VoxFlow</a>
       <nav class="flex items-center gap-4 text-sm text-slate-300">
         <a href="#tool" class="hover:text-white">Tool</a>
-        <a href="#features" class="hover:text-white">Features</a>
+        <a href="#how-to-use" class="hover:text-white">How to Use</a>
         <a href="#faq" class="hover:text-white">FAQ</a>
       </nav>
     </div>
@@ -39,68 +499,108 @@
       </div>
     </section>
 
-    <section id="tool" class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
-          <div class="flex flex-wrap items-start justify-between gap-4">
+    <section class="mx-auto w-full max-w-[98%] px-2 py-16 sm:px-3 sm:py-20 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-[2rem] border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-8 lg:p-10 xl:p-12">
+        <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]" style="position: relative;">
+        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 1;">
+          <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Core tool</p>
-              <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Build your story and narration</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">Enter an idea, choose the story style, and generate a clean narration script before turning it into MP3 audio.</p>
+              <h2 class="text-2xl font-semibold text-ink">Story Generator</h2>
+              <p class="mt-2 text-sm text-slate-600">Enter an idea, choose settings, and generate a structured narration script before converting to audio.</p>
             </div>
             <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
           </div>
 
-          <form id="storyForm" class="mt-8 space-y-5">
+          <form id="storyForm" class="mt-6 space-y-5">
             <div>
-              <label for="ideaInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Enter your idea</label>
-              <textarea id="ideaInput" rows="6" maxlength="1200" required class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base text-slate-900 outline-none transition focus:border-brand focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="Example: A shy child finds a lantern that tells stories about courage and helps her speak up during a school talent show."></textarea>
+              <label for="ideaInput" class="text-sm font-semibold text-ink">Story idea</label>
+              <textarea id="ideaInput" rows="6" maxlength="1200" required class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="Example: A shy child finds a lantern that tells stories about courage and helps her speak up during a school talent show."></textarea>
               <p class="mt-2 text-sm text-slate-500">Keep it rough. The tool will turn it into a title, intro, main story, ending, and moral.</p>
             </div>
 
-            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div>
-                <label for="storyTypeSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Story Type</label>
-                <select id="storyTypeSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100">
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Story Type</p>
+                </div>
+                <select id="storyTypeSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-brand focus:ring-2 focus:ring-teal-100">
                   <option value="kids">Kids</option>
                   <option value="horror">Horror</option>
                   <option value="motivational">Motivational</option>
                   <option value="general" selected>General</option>
                 </select>
               </div>
-              <div>
-                <label for="durationSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Duration</label>
-                <select id="durationSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100">
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Duration</p>
+                </div>
+                <select id="durationSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-brand focus:ring-2 focus:ring-teal-100">
                   <option value="1 min">1 min</option>
                   <option value="3 min" selected>3 min</option>
                   <option value="5 min">5 min</option>
                 </select>
               </div>
-              <div>
-                <label for="languageSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Language</label>
-                <select id="languageSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100" disabled>
-                  <option value="">Loading languages...</option>
-                </select>
-              </div>
-              <div>
-                <label for="voiceSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Voice Model</label>
-                <select id="voiceSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-emerald-100" disabled>
-                  <option value="">Loading voices...</option>
-                </select>
-              </div>
             </div>
 
-            <p id="voiceDescription" class="text-sm text-slate-500">Fetching available languages and voices...</p>
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Language</p>
+                </div>
+                <div class="custom-select-wrapper mt-4">
+                  <div id="languageTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                    <span id="languageSelected">Loading languages...</span>
+                  </div>
+                  <div id="languageDropdown" class="custom-dropdown">
+                    <div class="dropdown-search">
+                      <input type="text" id="languageSearch" placeholder="Search languages..." autocomplete="off">
+                    </div>
+                    <div id="languageOptions" class="dropdown-options"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Voice</p>
+                </div>
+                <div class="custom-select-wrapper mt-4">
+                  <div id="voiceTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                    <span id="voiceSelected">Loading voices...</span>
+                  </div>
+                  <div id="voiceDropdown" class="custom-dropdown">
+                    <div class="dropdown-search">
+                      <input type="text" id="voiceSearch" placeholder="Search voices..." autocomplete="off">
+                    </div>
+                    <div id="voiceOptions" class="dropdown-options"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <select id="languageSelect" class="hidden"></select>
+            <select id="voiceSelect" class="hidden"></select>
+            <p id="voiceDescription" class="text-sm text-slate-500">Fetching available voices...</p>
 
-            <div class="flex flex-wrap gap-3">
-              <button id="generateStoryBtn" type="submit" class="inline-flex items-center rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep disabled:cursor-not-allowed disabled:opacity-60">Generate Story</button>
-              <button id="generateAudioBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Convert to Audio</button>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <button id="generateStoryBtn" type="submit" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Generate Story</button>
+              <button id="generateAudioBtn" type="button" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50" disabled>Convert to Audio</button>
             </div>
           </form>
 
-          <div id="progressBox" class="mt-6 hidden rounded-3xl border border-emerald-100 bg-emerald-50 px-4 py-4">
+          <div id="progressBox" class="mt-6 hidden rounded-2xl border-2 border-teal-100 bg-teal-50 px-4 py-4">
             <div class="flex items-center gap-3">
-              <div class="h-5 w-5 animate-spin rounded-full border-2 border-emerald-200 border-t-brand"></div>
+              <div class="h-5 w-5 animate-spin rounded-full border-2 border-teal-200 border-t-brand"></div>
               <div>
                 <p id="progressLabel" class="font-semibold text-ink">Generating story...</p>
                 <p id="progressMeta" class="text-sm text-slate-600">Please wait a few seconds.</p>
@@ -108,15 +608,61 @@
             </div>
           </div>
 
-          <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
-        </article>
+          <p id="messageBox" class="mt-4 hidden rounded-xl px-4 py-3 text-sm"></p>
+        </div>
 
-        <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Output</p>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Preview and listen</h2>
-          <p class="mt-3 text-slate-600">Your story appears here first, then the audio player activates after narration is generated.</p>
+        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 0;">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-semibold text-ink">Story output</h2>
+              <p class="mt-2 text-sm text-slate-600">Preview your story, then play or download the audio narration.</p>
+            </div>
+            <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+          </div>
 
-          <details id="storyPreviewCard" class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" open>
+          <!-- How to Use - Initial State -->
+          <div id="howToUseState" class="mt-6">
+            <div class="rounded-2xl border-2 border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="text-xl font-bold text-ink">How to use</h3>
+              </div>
+              <div class="space-y-4">
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">1</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Enter your story idea</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Type a rough concept or plot in the idea box</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">2</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Choose settings</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Select story type, duration, language, and voice</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">3</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Generate & convert</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Create the story, then convert it to audio</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Story Preview -->
+          <details id="storyPreviewCard" class="mt-6 rounded-2xl border-2 border-slate-200 bg-slate-50 p-5 hidden" open>
             <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Story preview</summary>
             <div id="storyPreviewEmpty" class="mt-4 text-sm text-slate-500">Generate a story to preview the title, intro, main section, ending, and moral.</div>
             <div id="storyPreviewContent" class="mt-4 hidden space-y-4">
@@ -143,32 +689,81 @@
             </div>
           </details>
 
-          <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h3 class="text-lg font-semibold text-ink">Audio player</h3>
-                <p id="audioMeta" class="mt-2 text-sm text-slate-500">Generate a story first, then convert it to audio.</p>
-              </div>
-              <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+          <!-- Loading State -->
+          <div id="audioLoadingState" class="audio-loading hidden">
+            <div class="audio-loading-wave">
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
             </div>
-            <audio id="audioPlayer" class="mt-4 hidden w-full" controls preload="none"></audio>
-            <div class="mt-5 flex flex-wrap gap-3">
-              <button id="playBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Play</button>
-              <a id="downloadLink" href="#" class="pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400">Download MP3</a>
-              <button id="regenerateBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Regenerate Story</button>
-              <button id="clearBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</button>
+            <div class="audio-loading-text" id="audioLoadingText">Converting to audio...</div>
+            <div class="audio-loading-subtext" id="audioLoadingSubtext">This may take a few moments</div>
+            <div class="audio-loading-progress">
+              <div class="audio-loading-progress-bar"></div>
             </div>
           </div>
-        </aside>
+
+          <!-- Audio Player State -->
+          <div id="audioPlayerState" class="hidden">
+            <!-- Custom Audio Player -->
+            <div class="custom-audio-player mt-6">
+              <div class="audio-controls mb-4">
+                <button id="customPlayBtn" class="audio-play-btn" type="button">
+                  <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <div class="audio-progress-container" id="audioProgressContainer">
+                    <div class="audio-progress-bar" id="audioProgressBar"></div>
+                  </div>
+                  <div class="flex justify-between mt-2">
+                    <span class="audio-time" id="currentTime">0:00</span>
+                    <span class="audio-time" id="duration">0:00</span>
+                  </div>
+                </div>
+                <div class="audio-volume-control">
+                  <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                  </svg>
+                  <input type="range" id="volumeSlider" class="audio-volume-slider" min="0" max="100" value="100">
+                </div>
+              </div>
+            </div>
+            
+            <audio id="audioPlayer" class="hidden" preload="none"></audio>
+            
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <a id="downloadLink" href="#" download class="pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
+              <button id="regenerateBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Regenerate Story</button>
+            </div>
+            <p id="audioMeta" class="mt-3 text-sm text-slate-500"></p>
+          </div>
+
+          <!-- Quick Tips - Always Visible -->
+          <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <h3 class="text-lg font-semibold text-ink">Quick tips</h3>
+            <ul class="mt-3 space-y-2 text-sm text-slate-600">
+              <li>• Keep your idea concise for better story structure.</li>
+              <li>• Choose the right duration for your target audience.</li>
+              <li>• Preview the story before converting to audio.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="historySection" class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
+    <section id="historySection" class="mx-auto w-full max-w-[98%] px-2 py-10 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-3xl border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)]">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Recent history</p>
-            <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Last 3 generations on this device</h2>
+            <h2 class="text-2xl font-semibold text-ink">Recent conversions</h2>
+            <p class="text-sm text-slate-600">Your last 3 story narrations are stored in this browser for quick replay.</p>
           </div>
           <button id="clearHistoryBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear history</button>
         </div>
@@ -176,51 +771,30 @@
       </div>
     </section>
 
-    <section id="features" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
-        <article class="rounded-3xl bg-white p-5 shadow-card">
-          <h2 class="text-lg font-semibold text-ink">AI-generated stories</h2>
-          <p class="mt-2 text-sm text-slate-600">Turn a rough prompt into a structured script with a title, intro, narrative arc, ending, and moral.</p>
-        </article>
-        <article class="rounded-3xl bg-white p-5 shadow-card">
-          <h2 class="text-lg font-semibold text-ink">Natural voice narration</h2>
-          <p class="mt-2 text-sm text-slate-600">Convert the finished story into spoken audio with a live voice model and downloadable MP3 output.</p>
-        </article>
-        <article class="rounded-3xl bg-white p-5 shadow-card">
-          <h2 class="text-lg font-semibold text-ink">Multiple languages</h2>
-          <p class="mt-2 text-sm text-slate-600">Language choices come from the connected voice inventory so the spoken output stays consistent.</p>
-        </article>
-        <article class="rounded-3xl bg-white p-5 shadow-card">
-          <h2 class="text-lg font-semibold text-ink">Fast processing</h2>
-          <p class="mt-2 text-sm text-slate-600">The workflow is streamlined for quick generation, short waits, and clear progress messaging.</p>
-        </article>
-        <article class="rounded-3xl bg-white p-5 shadow-card">
-          <h2 class="text-lg font-semibold text-ink">No signup required</h2>
-          <p class="mt-2 text-sm text-slate-600">Open the page, write the idea, and get story plus audio without creating an account.</p>
-        </article>
-      </div>
-    </section>
+    <!-- Divider -->
+    <div class="w-full">
+      <div class="border-t border-slate-200"></div>
+    </div>
 
-    <section class="bg-white">
+    <section id="how-to-use" class="bg-white">
       <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6">
         <div class="max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">How it works</p>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">From idea to narrated story in four steps</h2>
+          <h2 class="text-3xl font-bold tracking-tight text-ink">From idea to narrated story in four steps</h2>
         </div>
         <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <article class="rounded-3xl bg-mist p-6">
+          <article class="rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-card">
             <p class="text-sm font-semibold text-brand">1. Enter your idea</p>
             <p class="mt-3 text-slate-600">Paste a short concept, plot seed, or character setup in the idea box.</p>
           </article>
-          <article class="rounded-3xl bg-mist p-6">
+          <article class="rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-card">
             <p class="text-sm font-semibold text-brand">2. Choose story settings</p>
             <p class="mt-3 text-slate-600">Pick the story type, target duration, language, and the voice model you want to use.</p>
           </article>
-          <article class="rounded-3xl bg-mist p-6">
+          <article class="rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-card">
             <p class="text-sm font-semibold text-brand">3. Generate story</p>
             <p class="mt-3 text-slate-600">The tool structures the narration into title, intro, story, ending, and moral.</p>
           </article>
-          <article class="rounded-3xl bg-mist p-6">
+          <article class="rounded-3xl border-2 border-slate-200 bg-white p-6 shadow-card">
             <p class="text-sm font-semibold text-brand">4. Listen or download</p>
             <p class="mt-3 text-slate-600">Convert the story to audio, play it in the browser, or save the MP3 for later.</p>
           </article>
@@ -228,10 +802,9 @@
       </div>
     </section>
 
-    <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
-      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-brand">SEO content</p>
-      <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">What is AI story narration?</h2>
-      <div class="seo-copy mt-6 space-y-4 text-slate-700">
+    <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6 bg-white">
+      <h2 class="text-3xl font-bold tracking-tight text-ink">What is AI story narration?</h2>
+      <div class="seo-copy mt-6 space-y-5 text-[1.05rem] leading-8 text-slate-700">
         <p>An AI story generator with voice helps users turn rough concepts into polished spoken content without building every sentence manually. Instead of starting with a blank page, you can enter a simple idea, choose a story style, and let the tool produce a structured narration with a title, introduction, main story, ending, and moral. That makes the workflow useful for people who want both creative support and a fast path to audio. A story narration generator is especially practical when the final goal is listening, sharing, or testing how a story sounds out loud rather than just reading it silently on a screen.</p>
         <p>One of the strongest use cases is kids storytelling. Parents, teachers, and caregivers often need fresh short stories for bedtime, class activities, or language practice. With an AI story generator with voice, they can start from a small prompt such as a brave rabbit, a lost key, or a magical train ride and quickly receive a complete spoken story. The audio format also helps children stay engaged, because listening can feel lighter and more playful than reading a long paragraph block. For educators, the same workflow can support pronunciation, comprehension, and guided listening exercises.</p>
         <p>Content creators can also benefit from a story narration generator when drafting scripts for videos, shorts, reels, or podcasts. A rough premise can become a more coherent arc in seconds, which saves time during ideation. Once the script is ready, a text to speech story tool makes it possible to hear pacing, transitions, and emotional flow before recording a final human version. That is valuable for script editing because weak sections often become obvious when heard aloud. Creators can iterate faster, compare tones, and test different languages or voices from one browser-based workflow.</p>
@@ -239,29 +812,31 @@
       </div>
     </section>
 
-    <section id="faq" class="mx-auto max-w-4xl px-4 py-4 pb-16 sm:px-6">
-      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
-      <div class="mt-8 space-y-4">
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
-          <p class="mt-2 text-slate-600">Yes. It is built as an accessible browser-based storytelling workflow for generating a story and converting it into narrated audio.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Can I choose voices?</h3>
-          <p class="mt-2 text-slate-600">Yes. The voice model list updates dynamically from the connected speech service and is filtered by language.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">What languages are supported?</h3>
-          <p class="mt-2 text-slate-600">Supported languages depend on the live voice inventory returned by the current TTS provider. The language dropdown reflects what is available.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
-          <p class="mt-2 text-slate-600">Yes. After audio is generated, you can download the narration as an MP3 file.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
-          <h3 class="text-lg font-semibold text-ink">How long does generation take?</h3>
-          <p class="mt-2 text-slate-600">Story generation usually completes within a few seconds, while audio time depends on narration length and TTS queue speed.</p>
-        </article>
+    <section id="faq" class="mx-auto w-full max-w-[98%] px-2 py-16 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-3xl border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-8">
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Frequently asked questions</h2>
+        <div class="mt-8 space-y-4">
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
+            <p class="mt-2 text-slate-600">Yes. It is built as an accessible browser-based storytelling workflow for generating a story and converting it into narrated audio.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Can I choose voices?</h3>
+            <p class="mt-2 text-slate-600">Yes. The voice model list updates dynamically from the connected speech service and is filtered by language.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">What languages are supported?</h3>
+            <p class="mt-2 text-slate-600">Supported languages depend on the live voice inventory returned by the current TTS provider. The language dropdown reflects what is available.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
+            <p class="mt-2 text-slate-600">Yes. After audio is generated, you can download the narration as an MP3 file.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">How long does generation take?</h3>
+            <p class="mt-2 text-slate-600">Story generation usually completes within a few seconds, while audio time depends on narration length and TTS queue speed.</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -287,6 +862,16 @@
     const durationSelect = document.getElementById("durationSelect");
     const languageSelect = document.getElementById("languageSelect");
     const voiceSelect = document.getElementById("voiceSelect");
+    const languageTrigger = document.getElementById("languageTrigger");
+    const voiceTrigger = document.getElementById("voiceTrigger");
+    const languageDropdown = document.getElementById("languageDropdown");
+    const voiceDropdown = document.getElementById("voiceDropdown");
+    const languageSearch = document.getElementById("languageSearch");
+    const voiceSearch = document.getElementById("voiceSearch");
+    const languageOptions = document.getElementById("languageOptions");
+    const voiceOptions = document.getElementById("voiceOptions");
+    const languageSelected = document.getElementById("languageSelected");
+    const voiceSelected = document.getElementById("voiceSelected");
     const generateStoryBtn = document.getElementById("generateStoryBtn");
     const generateAudioBtn = document.getElementById("generateAudioBtn");
     const voiceStatus = document.getElementById("voiceStatus");
@@ -295,6 +880,8 @@
     const progressLabel = document.getElementById("progressLabel");
     const progressMeta = document.getElementById("progressMeta");
     const messageBox = document.getElementById("messageBox");
+    const howToUseState = document.getElementById("howToUseState");
+    const storyPreviewCard = document.getElementById("storyPreviewCard");
     const storyPreviewEmpty = document.getElementById("storyPreviewEmpty");
     const storyPreviewContent = document.getElementById("storyPreviewContent");
     const storyTitle = document.getElementById("storyTitle");
@@ -305,10 +892,20 @@
     const audioPlayer = document.getElementById("audioPlayer");
     const audioMeta = document.getElementById("audioMeta");
     const audioStatus = document.getElementById("audioStatus");
-    const playBtn = document.getElementById("playBtn");
+    const customPlayBtn = document.getElementById("customPlayBtn");
+    const playIcon = document.getElementById("playIcon");
+    const pauseIcon = document.getElementById("pauseIcon");
     const downloadLink = document.getElementById("downloadLink");
     const regenerateBtn = document.getElementById("regenerateBtn");
-    const clearBtn = document.getElementById("clearBtn");
+    const audioProgressContainer = document.getElementById("audioProgressContainer");
+    const audioProgressBar = document.getElementById("audioProgressBar");
+    const currentTimeEl = document.getElementById("currentTime");
+    const durationEl = document.getElementById("duration");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const audioLoadingState = document.getElementById("audioLoadingState");
+    const audioPlayerState = document.getElementById("audioPlayerState");
+    const audioLoadingText = document.getElementById("audioLoadingText");
+    const audioLoadingSubtext = document.getElementById("audioLoadingSubtext");
     const historyList = document.getElementById("historyList");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
@@ -316,6 +913,161 @@
     let filteredVoices = [];
     let currentStory = null;
     let currentAudio = null;
+    let allLanguages = [];
+    let selectedLanguageKey = "";
+    let selectedVoiceId = "";
+
+    // Custom Dropdown Functions
+    function toggleDropdown(dropdown, trigger) {
+      const isActive = dropdown.classList.contains("active");
+      closeAllDropdowns();
+      if (!isActive && !trigger.classList.contains("custom-select-trigger") || !trigger.hasAttribute("disabled")) {
+        dropdown.classList.add("active");
+        trigger.classList.add("active");
+        trigger.closest(".custom-select-wrapper").classList.add("active");
+      }
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll(".custom-dropdown").forEach(d => d.classList.remove("active"));
+      document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".custom-select-wrapper").forEach(w => w.classList.remove("active"));
+    }
+
+    function renderLanguageDropdown(searchTerm = "") {
+      const filtered = allLanguages.filter(lang => 
+        lang.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      if (!filtered.length) {
+        languageOptions.innerHTML = '<div class="no-results">No languages found</div>';
+        return;
+      }
+
+      languageOptions.innerHTML = filtered.map(lang => `
+        <div class="dropdown-option ${lang.key === selectedLanguageKey ? 'selected' : ''}" data-value="${escapeHtml(lang.key)}">
+          <svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+          </svg>
+          <span class="dropdown-option-text">${escapeHtml(lang.label)}</span>
+        </div>
+      `).join("");
+
+      languageOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedLanguageKey = option.dataset.value;
+          const lang = allLanguages.find(l => l.key === selectedLanguageKey);
+          languageSelected.textContent = lang.label;
+          languageSelect.value = selectedLanguageKey;
+          closeAllDropdowns();
+          renderFilteredVoices();
+          setMessage("", "");
+        });
+      });
+    }
+
+    function renderVoiceOptions(searchTerm = "") {
+      const filtered = filteredVoices.filter(voice => 
+        voice.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (voice.gender && voice.gender.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+
+      if (!filtered.length) {
+        voiceOptions.innerHTML = '<div class="no-results">No voices found</div>';
+        return;
+      }
+
+      voiceOptions.innerHTML = filtered.map(voice => `
+        <div class="dropdown-option ${voice.id === selectedVoiceId ? 'selected' : ''}" data-value="${escapeHtml(voice.id)}">
+          <svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+          </svg>
+          <span class="dropdown-option-text">${escapeHtml(voice.label)}</span>
+          ${voice.gender ? `<span class="dropdown-option-badge">${escapeHtml(voice.gender)}</span>` : ''}
+        </div>
+      `).join("");
+
+      voiceOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedVoiceId = option.dataset.value;
+          const voice = filteredVoices.find(v => v.id === selectedVoiceId);
+          voiceSelected.textContent = voice.label;
+          voiceSelect.value = selectedVoiceId;
+          closeAllDropdowns();
+          renderSelectedVoiceMeta();
+        });
+      });
+    }
+
+    // Custom Audio Player Functions
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateProgress() {
+      const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      audioProgressBar.style.width = `${progress}%`;
+      currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+    }
+
+    function togglePlayPause() {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+      } else {
+        audioPlayer.pause();
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+      }
+    }
+
+    function showLoadingState(text = "Converting to audio...", subtext = "This may take a few moments") {
+      audioLoadingText.textContent = text;
+      audioLoadingSubtext.textContent = subtext;
+      howToUseState.classList.add('hidden');
+      storyPreviewCard.classList.add('hidden');
+      audioLoadingState.classList.remove('hidden');
+      audioPlayerState.classList.add('hidden');
+    }
+
+    function showPlayerState() {
+      howToUseState.classList.add('hidden');
+      storyPreviewCard.classList.remove('hidden');
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.remove('hidden');
+      audioPlayerState.classList.add('fade-in');
+    }
+
+    // Audio Player Event Listeners
+    customPlayBtn.addEventListener('click', togglePlayPause);
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audioPlayer.duration);
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    audioPlayer.addEventListener('timeupdate', updateProgress);
+
+    audioPlayer.addEventListener('ended', () => {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    audioProgressContainer.addEventListener('click', (e) => {
+      const rect = audioProgressContainer.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+
+    volumeSlider.addEventListener('input', (e) => {
+      audioPlayer.volume = e.target.value / 100;
+    });
 
     function escapeHtml(value) {
       return String(value || "")
@@ -339,14 +1091,14 @@
 
     function setMessage(type, text) {
       if (!text) {
-        messageBox.className = "mt-6 hidden rounded-3xl px-4 py-4 text-sm";
+        messageBox.className = "mt-4 hidden rounded-xl px-4 py-3 text-sm";
         messageBox.textContent = "";
         return;
       }
       const palette = {
-        error: "mt-6 rounded-3xl border border-rose-200 bg-rose-50 px-4 py-4 text-sm text-rose-700",
-        success: "mt-6 rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-700",
-        info: "mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-700"
+        error: "mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700",
+        success: "mt-4 rounded-xl border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-700",
+        info: "mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"
       };
       messageBox.className = palette[type] || palette.info;
       messageBox.textContent = text;
@@ -357,15 +1109,21 @@
       audioPlayer.pause();
       audioPlayer.removeAttribute("src");
       audioPlayer.load();
-      audioPlayer.classList.add("hidden");
-      playBtn.disabled = true;
       downloadLink.href = "#";
-      downloadLink.className = "pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400";
-      audioMeta.textContent = "Generate a story first, then convert it to audio.";
+      downloadLink.className = "pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400";
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = '0:00';
+      durationEl.textContent = '0:00';
+      audioMeta.textContent = "";
       audioStatus.textContent = "Waiting";
+      audioPlayerState.classList.add('hidden');
+      audioLoadingState.classList.add('hidden');
     }
 
     function renderStory(story) {
+      storyPreviewCard.classList.remove('hidden');
       storyPreviewEmpty.classList.add("hidden");
       storyPreviewContent.classList.remove("hidden");
       storyTitle.textContent = story.title;
@@ -389,8 +1147,13 @@
       voices.forEach((voice) => {
         const key = getVoiceLanguageKey(voice);
         if (!map.has(key)) {
-          map.set(key, { key, label: getVoiceLanguageLabel(voice) });
+          map.set(key, { 
+            key, 
+            label: getVoiceLanguageLabel(voice),
+            count: 0
+          });
         }
+        map.get(key).count += 1;
       });
       return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
     }
@@ -414,23 +1177,27 @@
       filteredVoices = availableVoices.filter((voice) => getVoiceLanguageKey(voice) === selectedLanguage);
 
       if (!filteredVoices.length) {
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
-        voiceSelect.disabled = true;
+        voiceSelected.textContent = "No voices available";
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "No voices";
         voiceDescription.textContent = "No voice models are currently available for this language.";
         generateAudioBtn.disabled = true;
         return;
       }
 
-      voiceSelect.innerHTML = filteredVoices.map((voice) => {
-        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
-        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
-      }).join("");
-
       const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
+      selectedVoiceId = preferredVoice.id;
+      
+      voiceSelected.textContent = preferredVoice.label;
+      voiceTrigger.removeAttribute("disabled");
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"}`;
+      
+      voiceSelect.innerHTML = filteredVoices.map(voice => 
+        `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}</option>`
+      ).join("");
       voiceSelect.value = preferredVoice.id;
-      voiceSelect.disabled = false;
-      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} ready`;
+      
+      renderVoiceOptions();
       renderSelectedVoiceMeta();
       generateAudioBtn.disabled = !currentStory;
     }
@@ -438,31 +1205,39 @@
     function applyVoicePayload(payload) {
       availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
       if (!availableVoices.length) {
-        languageSelect.innerHTML = '<option value="">No languages available</option>';
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
-        languageSelect.disabled = true;
-        voiceSelect.disabled = true;
+        languageSelected.textContent = "No languages available";
+        voiceSelected.textContent = "No voices available";
+        languageTrigger.setAttribute("disabled", "true");
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "Voices unavailable";
         voiceDescription.textContent = "The speech service did not return usable voice options.";
         return;
       }
 
-      const languages = getAvailableLanguages(availableVoices);
-      languageSelect.innerHTML = languages.map((language) => (
-        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)}</option>`
-      )).join("");
-      languageSelect.disabled = false;
-
+      allLanguages = getAvailableLanguages(availableVoices);
       const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
-      languageSelect.value = getVoiceLanguageKey(defaultVoice);
+      selectedLanguageKey = getVoiceLanguageKey(defaultVoice);
+      const selectedLang = allLanguages.find(l => l.key === selectedLanguageKey);
+      
+      languageSelected.textContent = selectedLang.label;
+      languageTrigger.removeAttribute("disabled");
+      
+      languageSelect.innerHTML = allLanguages.map(lang => 
+        `<option value="${escapeHtml(lang.key)}">${escapeHtml(lang.label)}</option>`
+      ).join("");
+      languageSelect.value = selectedLanguageKey;
+      
+      renderLanguageDropdown();
       renderFilteredVoices(defaultVoice.id);
     }
 
     async function loadVoices() {
+      languageTrigger.setAttribute("disabled", "true");
+      voiceTrigger.setAttribute("disabled", "true");
+      languageSelected.textContent = "Loading languages...";
+      voiceSelected.textContent = "Loading voices...";
       voiceStatus.textContent = "Loading voices...";
       voiceDescription.textContent = "Fetching available languages and voices...";
-      voiceSelect.disabled = true;
-      languageSelect.disabled = true;
 
       try {
         const response = await fetch(`${TOOL_BASE_PATH}/api/voices`);
@@ -472,10 +1247,10 @@
         }
         applyVoicePayload(data);
       } catch (error) {
-        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
-        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
-        voiceSelect.disabled = true;
-        languageSelect.disabled = true;
+        languageSelected.textContent = "Language loading failed";
+        voiceSelected.textContent = "Voice loading failed";
+        languageTrigger.setAttribute("disabled", "true");
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "Voice error";
         voiceDescription.textContent = error.message || "Unable to load voices right now.";
       }
@@ -509,27 +1284,32 @@
 
       items.forEach((item) => {
         const card = document.createElement("article");
-        card.className = "rounded-3xl border border-slate-200 bg-slate-50 p-4";
+        card.className = "flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 sm:flex-row sm:items-center sm:justify-between";
         card.innerHTML = `
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p class="text-sm font-semibold text-ink">${escapeHtml(item.title || "Untitled story")}</p>
-              <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.ideaPreview || "")}</p>
-              <p class="mt-1 text-xs text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
-            </div>
-            <button type="button" class="inline-flex rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white">Replay audio</button>
+          <div>
+            <p class="font-semibold text-ink">${escapeHtml(item.title || "Untitled story")}</p>
+            <p class="text-sm text-slate-500">${escapeHtml(item.createdAt)}${item.voice ? ` - ${escapeHtml(item.voice)}` : ""}</p>
+          </div>
+          <div class="flex gap-3">
+            <button type="button" class="replay-btn rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Replay</button>
+            <a href="${item.downloadUrl || item.audioUrl}" download class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Download</a>
           </div>
         `;
-        const replayBtn = card.querySelector("button");
+        const replayBtn = card.querySelector(".replay-btn");
         replayBtn.addEventListener("click", () => {
           currentAudio = item;
           audioPlayer.src = item.audioUrl;
-          audioPlayer.classList.remove("hidden");
+          showPlayerState();
           audioMeta.textContent = `${item.title || "Story"} loaded from local history.`;
           audioStatus.textContent = "History";
-          playBtn.disabled = false;
           downloadLink.href = item.downloadUrl || item.audioUrl;
-          downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+          downloadLink.className = "rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+          setTimeout(() => {
+            audioPlayer.play().then(() => {
+              playIcon.classList.add('hidden');
+              pauseIcon.classList.remove('hidden');
+            }).catch(err => console.log("Auto-play failed", err));
+          }, 300);
           setMessage("info", `Loaded "${item.title || "story"}" from local history.`);
         });
         historyList.appendChild(card);
@@ -593,7 +1373,22 @@
       }
 
       setMessage("", "");
+      showLoadingState("Preparing your story...", "Sending to speech engine");
       setBusy(true, "Converting to audio...", `Sending narration to ${voiceSelect.value}.`);
+
+      const stagedProgress = [
+        ["Analyzing story structure...", "Processing your content"],
+        ["Generating audio...", "Converting to natural speech"],
+        ["Finalizing your MP3...", "Almost ready"]
+      ];
+      let progressIndex = 0;
+      const timer = window.setInterval(() => {
+        if (progressIndex < stagedProgress.length) {
+          const [label, subtext] = stagedProgress[progressIndex];
+          showLoadingState(label, subtext);
+          progressIndex += 1;
+        }
+      }, 2200);
 
       try {
         const response = await fetch(`${TOOL_BASE_PATH}/generate-audio`, {
@@ -611,12 +1406,19 @@
 
         currentAudio = data;
         audioPlayer.src = data.audio_url;
-        audioPlayer.classList.remove("hidden");
-        playBtn.disabled = false;
         downloadLink.href = `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`;
-        downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+        downloadLink.className = "rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
         audioMeta.textContent = `${data.extracted_characters.toLocaleString()} characters voiced across ${data.chunks_processed} audio chunk(s).`;
         audioStatus.textContent = "Ready";
+        
+        showPlayerState();
+        setTimeout(() => {
+          audioPlayer.play().then(() => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+          }).catch(err => console.log("Auto-play failed", err));
+        }, 300);
+
         addToHistory({
           title: currentStory.title,
           ideaPreview: ideaInput.value.trim().slice(0, 110),
@@ -627,8 +1429,10 @@
         });
         setMessage("success", `Audio ready in ${data.voice}. You can play it now or download the MP3.`);
       } catch (error) {
+        audioLoadingState.classList.add('hidden');
         setMessage("error", error.message || "Audio generation failed.");
       } finally {
+        window.clearInterval(timer);
         setBusy(false);
       }
     }
@@ -636,18 +1440,55 @@
     function clearAll() {
       storyForm.reset();
       currentStory = null;
+      storyPreviewCard.classList.add('hidden');
       storyPreviewEmpty.classList.remove("hidden");
       storyPreviewContent.classList.add("hidden");
+      howToUseState.classList.remove('hidden');
       generateAudioBtn.disabled = true;
       regenerateBtn.disabled = true;
       setMessage("", "");
       resetAudioState();
       if (availableVoices.length) {
         const defaultVoice = availableVoices[0];
-        languageSelect.value = getVoiceLanguageKey(defaultVoice);
+        selectedLanguageKey = getVoiceLanguageKey(defaultVoice);
+        const selectedLang = allLanguages.find(l => l.key === selectedLanguageKey);
+        languageSelected.textContent = selectedLang.label;
+        languageSelect.value = selectedLanguageKey;
         renderFilteredVoices(defaultVoice.id);
       }
     }
+
+    // Dropdown event listeners
+    languageTrigger.addEventListener("click", () => toggleDropdown(languageDropdown, languageTrigger));
+    voiceTrigger.addEventListener("click", () => toggleDropdown(voiceDropdown, voiceTrigger));
+    
+    languageSearch.addEventListener("input", (e) => {
+      renderLanguageDropdown(e.target.value);
+    });
+    
+    voiceSearch.addEventListener("input", (e) => {
+      renderVoiceOptions(e.target.value);
+    });
+    
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".custom-select-wrapper")) {
+        closeAllDropdowns();
+      }
+    });
+    
+    languageTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(languageDropdown, languageTrigger);
+      }
+    });
+    
+    voiceTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(voiceDropdown, voiceTrigger);
+      }
+    });
 
     storyForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -660,16 +1501,6 @@
 
     regenerateBtn.addEventListener("click", async () => {
       await generateStory();
-    });
-
-    clearBtn.addEventListener("click", clearAll);
-
-    playBtn.addEventListener("click", () => {
-      if (!audioPlayer.src) {
-        setMessage("error", "No audio is ready yet.");
-        return;
-      }
-      audioPlayer.play();
     });
 
     languageSelect.addEventListener("change", () => {
