@@ -620,6 +620,47 @@
             <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
           </div>
 
+          <!-- How to Use - Initial State -->
+          <div id="howToUseState" class="mt-6">
+            <div class="rounded-2xl border-2 border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="text-xl font-bold text-ink">How to use</h3>
+              </div>
+              <div class="space-y-4">
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">1</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Enter your text</h4>
+                    <p class="text-sm text-slate-600 mt-1">Type or paste your text in the input box above</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">2</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Choose language & voice</h4>
+                    <p class="text-sm text-slate-600 mt-1">Select your preferred language and voice style</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">3</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Click "Convert to Audio"</h4>
+                    <p class="text-sm text-slate-600 mt-1">Your audio will generate and play automatically here</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Loading State -->
           <div id="audioLoadingState" class="audio-loading hidden">
             <div class="audio-loading-wave">
@@ -824,6 +865,7 @@
     const volumeSlider = document.getElementById("volumeSlider");
     const audioLoadingState = document.getElementById("audioLoadingState");
     const audioPlayerState = document.getElementById("audioPlayerState");
+    const howToUseState = document.getElementById("howToUseState");
     const audioLoadingText = document.getElementById("audioLoadingText");
     const audioLoadingSubtext = document.getElementById("audioLoadingSubtext");
     const errorMessage = document.getElementById("errorMessage");
@@ -948,11 +990,13 @@
     function showLoadingState(text = "Generating your audio...", subtext = "This may take a few moments") {
       audioLoadingText.textContent = text;
       audioLoadingSubtext.textContent = subtext;
+      howToUseState.classList.add('hidden');
       audioLoadingState.classList.remove('hidden');
       audioPlayerState.classList.add('hidden');
     }
 
     function showPlayerState() {
+      howToUseState.classList.add('hidden');
       audioLoadingState.classList.add('hidden');
       audioPlayerState.classList.remove('hidden');
       audioPlayerState.classList.add('fade-in');
@@ -1207,6 +1251,7 @@
       audioProgressBar.style.width = '0%';
       currentTimeEl.textContent = '0:00';
       durationEl.textContent = '0:00';
+      howToUseState.classList.remove('hidden');
       audioPlayerState.classList.add('hidden');
       audioLoadingState.classList.add('hidden');
       if (clearText) {
