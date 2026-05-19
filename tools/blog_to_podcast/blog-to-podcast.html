@@ -24,15 +24,458 @@
             tealbright: "#0f766e",
             sand: "#f3efe5",
             mist: "#f8fafc",
-            coral: "#f97316"
+            coral: "#f97316",
+            brand: "#0f766e",
+            branddeep: "#134e4a"
           },
           boxShadow: {
-            soft: "0 20px 60px rgba(15, 23, 42, 0.08)"
+            soft: "0 20px 60px rgba(15, 23, 42, 0.08)",
+            card: "0 20px 60px rgba(15, 23, 42, 0.08)"
           }
         }
       }
     };
   </script>
+  <style>
+    /* Custom Audio Player Styling */
+    .custom-audio-player {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .audio-progress-container {
+      position: relative;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 9999px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    
+    .audio-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #0f766e 0%, #134e4a 100%);
+      border-radius: 9999px;
+      transition: width 0.1s linear;
+    }
+    
+    .audio-time {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    
+    .audio-play-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+    }
+    
+    .audio-play-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(15, 118, 110, 0.4);
+    }
+    
+    .audio-play-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .audio-volume-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .audio-volume-slider {
+      width: 80px;
+      height: 4px;
+      border-radius: 9999px;
+      background: #cbd5e1;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    
+    .audio-volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0f766e;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .audio-volume-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #0f766e;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Loading Animation */
+    .audio-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      gap: 1.5rem;
+    }
+    
+    .audio-loading-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 60px;
+    }
+    
+    .audio-loading-bar {
+      width: 6px;
+      background: linear-gradient(180deg, #0f766e 0%, #134e4a 100%);
+      border-radius: 9999px;
+      animation: audioWave 1.2s ease-in-out infinite;
+    }
+    
+    .audio-loading-bar:nth-child(1) {
+      height: 20px;
+      animation-delay: 0s;
+    }
+    
+    .audio-loading-bar:nth-child(2) {
+      height: 35px;
+      animation-delay: 0.1s;
+    }
+    
+    .audio-loading-bar:nth-child(3) {
+      height: 50px;
+      animation-delay: 0.2s;
+    }
+    
+    .audio-loading-bar:nth-child(4) {
+      height: 35px;
+      animation-delay: 0.3s;
+    }
+    
+    .audio-loading-bar:nth-child(5) {
+      height: 20px;
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes audioWave {
+      0%, 100% {
+        transform: scaleY(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scaleY(1.5);
+        opacity: 1;
+      }
+    }
+    
+    .audio-loading-text {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1e293b;
+      text-align: center;
+      background: linear-gradient(90deg, #0f766e 0%, #134e4a 50%, #0f766e 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 2s linear infinite;
+    }
+    
+    @keyframes shimmer {
+      to {
+        background-position: 200% center;
+      }
+    }
+    
+    .audio-loading-subtext {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .audio-loading-progress {
+      width: 100%;
+      max-width: 300px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .audio-loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #0f766e 0%, #134e4a 100%);
+      border-radius: 9999px;
+      animation: progressFlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressFlow {
+      0% {
+        width: 20%;
+        transform: translateX(0);
+      }
+      50% {
+        width: 60%;
+        transform: translateX(50%);
+      }
+      100% {
+        width: 20%;
+        transform: translateX(200%);
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Custom Select Dropdown Styling */
+    .custom-select-wrapper {
+      position: relative;
+      z-index: auto;
+    }
+    
+    .custom-select-wrapper.active {
+      z-index: 9999;
+      position: relative;
+    }
+    
+    .custom-select-trigger {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230f766e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+      padding-right: 2.75rem;
+      cursor: pointer;
+      min-height: 3.5rem;
+    }
+    
+    .custom-select-trigger:hover {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+    
+    .custom-select-trigger.active {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.15);
+    }
+    
+    .custom-select-trigger:disabled {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .custom-dropdown {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      left: 0;
+      right: 0;
+      width: 100%;
+      background: white;
+      border: 2px solid #0f766e;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+      max-height: 450px;
+      overflow: hidden;
+      z-index: 99999;
+      display: none;
+    }
+    
+    @media (max-width: 640px) {
+      .custom-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 1rem 1rem 0 0;
+        box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.3);
+      }
+    }
+    
+    .custom-dropdown.active {
+      display: block;
+      animation: dropdownSlide 0.2s ease-out;
+    }
+    
+    @keyframes dropdownSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .dropdown-search {
+      padding: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    .dropdown-search input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.75rem center;
+      background-size: 1.125rem;
+    }
+    
+    .dropdown-search input:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+    
+    .dropdown-options {
+      max-height: 370px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+    
+    .dropdown-options::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .dropdown-option {
+      padding: 0.875rem 1rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #334155;
+    }
+    
+    .dropdown-option:hover {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: #065f46;
+      transform: translateX(4px);
+    }
+    
+    .dropdown-option.selected {
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .dropdown-option.selected:hover {
+      transform: translateX(0);
+    }
+    
+    .dropdown-option-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .dropdown-option-text {
+      flex: 1;
+    }
+    
+    .dropdown-option-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      background: #e2e8f0;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    
+    .dropdown-option.selected .dropdown-option-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    .no-results {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+    
+    .select-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .select-icon {
+      width: 1rem;
+      height: 1rem;
+      color: #0f766e;
+    }
+  </style>
 </head>
 <body class="tool-page bg-sand text-slate-900 antialiased">
   <header class="site-header border-b border-white/10 bg-ink text-white">
@@ -59,21 +502,21 @@
       </div>
     </section>
 
-    <section id="tool" class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div class="grid gap-6 lg:grid-cols-[1.18fr_0.82fr]">
-        <article class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-          <div class="flex flex-wrap items-start justify-between gap-4">
+    <section id="tool" class="mx-auto w-full max-w-[98%] px-2 py-16 sm:px-3 sm:py-20 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-[2rem] border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-8 lg:p-10 xl:p-12">
+        <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]" style="position: relative;">
+        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 1;">
+          <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Core tool</p>
-              <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Build your podcast from a blog or article</h2>
-              <p class="mt-3 max-w-2xl text-slate-600">Choose a source, select solo or multi-speaker mode, and generate a podcast-ready script before sending it to audio.</p>
+              <h2 class="text-2xl font-semibold text-ink">Blog to Podcast</h2>
+              <p class="mt-2 text-sm text-slate-600">Choose a source, select solo or multi-speaker mode, and generate a podcast-ready script before sending it to audio.</p>
             </div>
             <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
           </div>
 
           <form id="podcastForm" class="mt-8 space-y-6">
             <div>
-              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Choose input type</p>
+              <label class="text-sm font-semibold text-ink">Choose input type</label>
               <div class="mt-3 inline-flex rounded-full bg-slate-100 p-1">
                 <button id="urlModeBtn" type="button" class="rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm">Enter URL</button>
                 <button id="textModeBtn" type="button" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600">Paste Text</button>
@@ -81,37 +524,52 @@
             </div>
 
             <div id="urlInputWrap">
-              <label for="urlInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Article URL</label>
-              <input id="urlInput" type="url" class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base outline-none transition focus:border-tealbright focus:bg-white focus:ring-2 focus:ring-teal-100" placeholder="https://example.com/blog-post">
+              <label for="urlInput" class="text-sm font-semibold text-ink">Article URL</label>
+              <input id="urlInput" type="url" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="https://example.com/blog-post">
               <p class="mt-2 text-sm text-slate-500">Use a public blog or article page with readable content.</p>
             </div>
 
             <div id="textInputWrap" class="hidden">
-              <label for="textInput" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Paste article text</label>
-              <textarea id="textInput" rows="9" maxlength="18000" class="mt-3 w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-4 text-base outline-none transition focus:border-tealbright focus:bg-white focus:ring-2 focus:ring-teal-100" placeholder="Paste the article text you want to convert into a podcast-style narration."></textarea>
+              <label for="textInput" class="text-sm font-semibold text-ink">Paste article text</label>
+              <textarea id="textInput" rows="9" maxlength="18000" class="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-4 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100" placeholder="Paste the article text you want to convert into a podcast-style narration."></textarea>
               <p class="mt-2 text-sm text-slate-500">Best for copied blog posts, notes, newsletters, and long-form article drafts.</p>
             </div>
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div>
-                <label for="modeSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Mode</label>
-                <select id="modeSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100">
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Mode</p>
+                </div>
+                <select id="modeSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100">
                   <option value="solo" selected>Solo</option>
                   <option value="two">2 Speakers</option>
                   <option value="three">3 Speakers</option>
                 </select>
               </div>
-              <div>
-                <label for="lengthSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Podcast length</label>
-                <select id="lengthSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100">
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Podcast length</p>
+                </div>
+                <select id="lengthSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100">
                   <option value="full">Full article</option>
                   <option value="short">Short (1-2 min summary)</option>
                   <option value="medium" selected>Medium (3-5 min)</option>
                 </select>
               </div>
-              <div>
-                <label for="languageSelect" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Language</label>
-                <select id="languageSelect" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+              <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Language</p>
+                </div>
+                <select id="languageSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
                   <option value="">Loading languages...</option>
                 </select>
               </div>
@@ -121,23 +579,38 @@
             </div>
 
             <div id="voiceFields" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              <div id="speaker1Wrap">
-                <label for="speaker1Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 1 Voice</label>
-                <select id="speaker1Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+              <div id="speaker1Wrap" class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Speaker 1 Voice</p>
+                </div>
+                <select id="speaker1Select" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
                   <option value="">Loading voices...</option>
                 </select>
                 <p id="speaker1Meta" class="mt-2 text-xs text-slate-500">Primary narration voice.</p>
               </div>
-              <div id="speaker2Wrap" class="hidden">
-                <label for="speaker2Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 2 Voice</label>
-                <select id="speaker2Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+              <div id="speaker2Wrap" class="hidden rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Speaker 2 Voice</p>
+                </div>
+                <select id="speaker2Select" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
                   <option value="">Loading voices...</option>
                 </select>
                 <p id="speaker2Meta" class="mt-2 text-xs text-slate-500">Reaction and supporting insight voice.</p>
               </div>
-              <div id="speaker3Wrap" class="hidden">
-                <label for="speaker3Select" class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Speaker 3 Voice</label>
-                <select id="speaker3Select" class="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none transition focus:border-tealbright focus:ring-2 focus:ring-teal-100" disabled>
+              <div id="speaker3Wrap" class="hidden rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
+                <div class="select-label">
+                  <svg class="select-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                  </svg>
+                  <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Speaker 3 Voice</p>
+                </div>
+                <select id="speaker3Select" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all hover:border-brand hover:shadow-sm focus:border-brand focus:ring-2 focus:ring-teal-100" disabled>
                   <option value="">Loading voices...</option>
                 </select>
                 <p id="speaker3Meta" class="mt-2 text-xs text-slate-500">Beginner or question-asking voice.</p>
@@ -150,8 +623,8 @@
             </div>
 
             <div class="flex flex-wrap gap-3">
-              <button id="generateScriptBtn" type="submit" class="inline-flex items-center rounded-full bg-tealbright px-5 py-3 font-semibold text-white transition hover:bg-pine disabled:cursor-not-allowed disabled:opacity-60">Generate Podcast Script</button>
-              <button id="generateAudioBtn" type="button" class="inline-flex items-center rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Convert to Audio</button>
+              <button id="generateScriptBtn" type="submit" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep disabled:cursor-not-allowed disabled:opacity-60">Generate Podcast Script</button>
+              <button id="generateAudioBtn" type="button" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Convert to Audio</button>
             </div>
           </form>
 
@@ -165,13 +638,17 @@
             </div>
           </div>
 
-          <div id="messageBox" class="mt-6 hidden rounded-3xl px-4 py-4 text-sm"></div>
-        </article>
+          <p id="messageBox" class="mt-6 hidden rounded-xl px-4 py-3 text-sm"></p>
+        </div>
 
-        <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Output</p>
-          <h2 class="mt-2 text-3xl font-bold tracking-tight text-ink">Preview, listen, and download</h2>
-          <p class="mt-3 text-slate-600">Your podcast script appears first. Audio playback unlocks after narration is generated.</p>
+        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 0;">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-2xl font-semibold text-ink">Audio output</h2>
+              <p class="mt-2 text-sm text-slate-600">Your podcast script appears first. Audio playback unlocks after narration is generated.</p>
+            </div>
+            <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+          </div>
 
           <details class="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5" open>
             <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Podcast script</summary>
@@ -200,42 +677,125 @@
             </div>
           </details>
 
-          <div class="mt-6 rounded-3xl border border-slate-200 bg-white p-5">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <h3 class="text-lg font-semibold text-ink">Audio player</h3>
-                <p id="audioMeta" class="mt-2 text-sm text-slate-500">Generate a script first, then convert it to audio.</p>
+          <!-- Custom Audio Player -->
+          <div class="mt-6">
+            <div id="audioPlayerState" class="hidden">
+              <div class="custom-audio-player">
+                <div class="audio-controls mb-4">
+                  <button id="customPlayBtn" class="audio-play-btn" type="button">
+                    <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                    </svg>
+                  </button>
+                  <div class="flex-1">
+                    <div class="audio-progress-container" id="audioProgressContainer">
+                      <div class="audio-progress-bar" id="audioProgressBar"></div>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                      <span class="audio-time" id="currentTime">0:00</span>
+                      <span class="audio-time" id="duration">0:00</span>
+                    </div>
+                  </div>
+                  <div class="audio-volume-control">
+                    <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                    </svg>
+                    <input type="range" id="volumeSlider" class="audio-volume-slider" min="0" max="100" value="100">
+                  </div>
+                </div>
               </div>
-              <span id="audioStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Waiting</span>
+              
+              <audio id="audioPlayer" class="hidden" preload="none"></audio>
+              
+              <div class="mt-4 flex items-center gap-3">
+                <label for="speedSelect" class="text-sm font-medium text-slate-600">Speed</label>
+                <select id="speedSelect" class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700">
+                  <option value="0.8">0.8x</option>
+                  <option value="1" selected>1x</option>
+                  <option value="1.2">1.2x</option>
+                  <option value="1.5">1.5x</option>
+                </select>
+              </div>
+              
+              <p id="audioMeta" class="mt-3 text-sm text-slate-500"></p>
             </div>
-            <audio id="audioPlayer" class="mt-4 hidden w-full" controls preload="none"></audio>
-            <div class="mt-4 flex items-center gap-3">
-              <label for="speedSelect" class="text-sm font-medium text-slate-600">Speed</label>
-              <select id="speedSelect" class="rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700">
-                <option value="0.8">0.8x</option>
-                <option value="1" selected>1x</option>
-                <option value="1.2">1.2x</option>
-                <option value="1.5">1.5x</option>
-              </select>
+            
+            <!-- Loading State -->
+            <div id="audioLoadingState" class="audio-loading hidden">
+              <div class="audio-loading-wave">
+                <div class="audio-loading-bar"></div>
+                <div class="audio-loading-bar"></div>
+                <div class="audio-loading-bar"></div>
+                <div class="audio-loading-bar"></div>
+                <div class="audio-loading-bar"></div>
+              </div>
+              <div class="audio-loading-text" id="audioLoadingText">Generating your podcast...</div>
+              <div class="audio-loading-subtext" id="audioLoadingSubtext">This may take a few moments</div>
+              <div class="audio-loading-progress">
+                <div class="audio-loading-progress-bar"></div>
+              </div>
             </div>
-            <div class="mt-5 flex flex-wrap gap-3">
-              <button id="playBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Play</button>
-              <a id="downloadLink" href="#" class="pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400">Download MP3</a>
-              <button id="copyScriptBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Copy Script</button>
-              <button id="regenerateBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Regenerate</button>
-              <button id="clearBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</button>
+            
+            <!-- How to Use - Initial State -->
+            <div id="howToUseState" class="rounded-2xl border-2 border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="text-xl font-bold text-ink">How to use</h3>
+              </div>
+              <div class="space-y-4">
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">1</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Enter article URL or text</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Paste a blog URL or article text</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">2</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Choose mode & voices</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Select solo or multi-speaker podcast style</p>
+                  </div>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center">
+                    <span class="text-sm font-bold text-brand">3</span>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">Generate & convert</h4>
+                    <p class="text-sm text-slate-600 mt-1 hidden sm:block">Create script then convert to audio</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </aside>
+
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a id="downloadLink" href="#" class="pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400">Download MP3</a>
+            <button id="copyScriptBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Copy Script</button>
+            <button id="regenerateBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60" disabled>Regenerate</button>
+            <button id="clearBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Clear</button>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
 
-    <section id="historySection" class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+    <section id="historySection" class="mx-auto w-full max-w-[98%] px-2 py-10 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-3xl border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)]">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-tealbright">Recent history</p>
-            <h2 class="mt-2 text-2xl font-bold tracking-tight text-ink">Last 3 conversions on this device</h2>
+            <h2 class="text-2xl font-semibold text-ink">Recent conversions</h2>
+            <p class="text-sm text-slate-600">Your last 3 podcast conversions are stored in this browser for quick replay.</p>
           </div>
           <button id="clearHistoryBtn" type="button" class="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear history</button>
         </div>
@@ -306,29 +866,31 @@
       </div>
     </section>
 
-    <section id="faq" class="mx-auto max-w-4xl px-4 py-4 pb-16 sm:px-6">
-      <h2 class="text-3xl font-bold tracking-tight text-ink">FAQ</h2>
-      <div class="mt-8 space-y-4">
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
-          <p class="mt-2 text-slate-600">Yes. The workflow is available directly in the browser for fast podcast-style scripting and audio narration.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <h3 class="text-lg font-semibold text-ink">Can I paste any blog URL?</h3>
-          <p class="mt-2 text-slate-600">You can paste public article URLs that allow standard page fetching. Some sites may block bots or hide content behind scripts or paywalls.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <h3 class="text-lg font-semibold text-ink">Is content stored?</h3>
-          <p class="mt-2 text-slate-600">The page does not require signup, and only the latest local history entries are kept in your browser for convenience. Generated audio files are stored on the server output path for delivery.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
-          <p class="mt-2 text-slate-600">Yes. Once narration is ready, you can play it in the browser and download the MP3 file.</p>
-        </article>
-        <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
-          <h3 class="text-lg font-semibold text-ink">How long does it take?</h3>
-          <p class="mt-2 text-slate-600">Script generation usually finishes within a few seconds. Audio timing depends on article length, selected voices, and TTS queue speed.</p>
-        </article>
+    <section id="faq" class="mx-auto w-full max-w-[98%] px-2 py-16 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-3xl border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-8">
+        <h2 class="text-3xl font-bold tracking-tight text-ink">Frequently asked questions</h2>
+        <div class="mt-8 space-y-4">
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Is this tool free?</h3>
+            <p class="mt-2 text-slate-600">Yes. The workflow is available directly in the browser for fast podcast-style scripting and audio narration.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Can I paste any blog URL?</h3>
+            <p class="mt-2 text-slate-600">You can paste public article URLs that allow standard page fetching. Some sites may block bots or hide content behind scripts or paywalls.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Is content stored?</h3>
+            <p class="mt-2 text-slate-600">The page does not require signup, and only the latest local history entries are kept in your browser for convenience. Generated audio files are stored on the server output path for delivery.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">Can I download audio?</h3>
+            <p class="mt-2 text-slate-600">Yes. Once narration is ready, you can play it in the browser and download the MP3 file.</p>
+          </article>
+          <article class="rounded-3xl border border-slate-200 bg-white p-6">
+            <h3 class="text-lg font-semibold text-ink">How long does it take?</h3>
+            <p class="mt-2 text-slate-600">Script generation usually finishes within a few seconds. Audio timing depends on article length, selected voices, and TTS queue speed.</p>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -399,6 +961,19 @@
     const audioPlayer = document.getElementById("audioPlayer");
     const audioMeta = document.getElementById("audioMeta");
     const audioStatus = document.getElementById("audioStatus");
+    const customPlayBtn = document.getElementById("customPlayBtn");
+    const playIcon = document.getElementById("playIcon");
+    const pauseIcon = document.getElementById("pauseIcon");
+    const audioProgressContainer = document.getElementById("audioProgressContainer");
+    const audioProgressBar = document.getElementById("audioProgressBar");
+    const currentTimeEl = document.getElementById("currentTime");
+    const durationEl = document.getElementById("duration");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const audioLoadingState = document.getElementById("audioLoadingState");
+    const audioPlayerState = document.getElementById("audioPlayerState");
+    const howToUseState = document.getElementById("howToUseState");
+    const audioLoadingText = document.getElementById("audioLoadingText");
+    const audioLoadingSubtext = document.getElementById("audioLoadingSubtext");
     const speedSelect = document.getElementById("speedSelect");
     const playBtn = document.getElementById("playBtn");
     const downloadLink = document.getElementById("downloadLink");
@@ -414,6 +989,86 @@
     let currentPodcast = null;
     let currentAudio = null;
     let currentSourceText = "";
+
+    // Custom Audio Player Functions
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateProgress() {
+      const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      audioProgressBar.style.width = `${progress}%`;
+      currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+    }
+
+    function togglePlayPause() {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+      } else {
+        audioPlayer.pause();
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+      }
+    }
+
+    function showLoadingState(text = "Generating your podcast...", subtext = "This may take a few moments") {
+      audioLoadingText.textContent = text;
+      audioLoadingSubtext.textContent = subtext;
+      howToUseState.classList.add('hidden');
+      audioLoadingState.classList.remove('hidden');
+      audioPlayerState.classList.add('hidden');
+    }
+
+    function showPlayerState() {
+      howToUseState.classList.add('hidden');
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.remove('hidden');
+      audioPlayerState.classList.add('fade-in');
+    }
+
+    function hideAllAudioStates() {
+      howToUseState.classList.remove('hidden');
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.add('hidden');
+    }
+
+    // Audio Player Event Listeners
+    if (customPlayBtn) {
+      customPlayBtn.addEventListener('click', togglePlayPause);
+    }
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audioPlayer.duration);
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    audioPlayer.addEventListener('timeupdate', updateProgress);
+
+    audioPlayer.addEventListener('ended', () => {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    if (audioProgressContainer) {
+      audioProgressContainer.addEventListener('click', (e) => {
+        const rect = audioProgressContainer.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        audioPlayer.currentTime = percent * audioPlayer.duration;
+      });
+    }
+
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', (e) => {
+        audioPlayer.volume = e.target.value / 100;
+      });
+    }
 
     function escapeHtml(value) {
       return String(value || "")
@@ -692,12 +1347,16 @@
       audioPlayer.pause();
       audioPlayer.removeAttribute("src");
       audioPlayer.load();
-      audioPlayer.classList.add("hidden");
-      playBtn.disabled = true;
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = '0:00';
+      durationEl.textContent = '0:00';
       downloadLink.href = "#";
       downloadLink.className = "pointer-events-none rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400";
       audioMeta.textContent = "Generate a script first, then convert it to audio.";
       audioStatus.textContent = "Waiting";
+      hideAllAudioStates();
     }
 
     function getScriptText() {
@@ -857,13 +1516,23 @@
         const replayBtn = card.querySelector("button");
         replayBtn.addEventListener("click", () => {
           audioPlayer.src = item.audioUrl;
-          audioPlayer.classList.remove("hidden");
           audioPlayer.playbackRate = Number(speedSelect.value);
           audioMeta.textContent = `${item.title || "Podcast"} loaded from local history.`;
           audioStatus.textContent = "History";
-          playBtn.disabled = false;
           downloadLink.href = item.downloadUrl || item.audioUrl;
           downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
+          
+          // Show player and auto-play
+          showPlayerState();
+          setTimeout(() => {
+            audioPlayer.play().then(() => {
+              playIcon.classList.add('hidden');
+              pauseIcon.classList.remove('hidden');
+            }).catch(err => {
+              console.log("Auto-play failed", err);
+            });
+          }, 300);
+          
           setMessage("info", `Loaded "${item.title || "podcast"}" from local history.`);
         });
         historyList.appendChild(card);
@@ -887,6 +1556,7 @@
       const statusMeta = mode === "solo"
         ? `Sending narration to ${voices.speaker_1}.`
         : "Generating voices for each speaker and combining the final MP3.";
+      showLoadingState("Generating voices...", statusMeta);
       setBusy(true, "Generating voices...", statusMeta);
 
       try {
@@ -912,18 +1582,26 @@
           throw new Error(data.detail || "Unable to convert the podcast to audio.");
         }
 
-        progressLabel.textContent = "Combining audio...";
-        progressMeta.textContent = "Finalizing the continuous MP3 output.";
+        showLoadingState("Combining audio...", "Finalizing the continuous MP3 output.");
 
         currentAudio = data;
         audioPlayer.src = data.audio_url;
-        audioPlayer.classList.remove("hidden");
         audioPlayer.playbackRate = Number(speedSelect.value);
-        playBtn.disabled = false;
         downloadLink.href = `${TOOL_BASE_PATH}/download/${encodeURIComponent(data.filename)}`;
         downloadLink.className = "rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50";
         audioMeta.textContent = `${data.extracted_characters.toLocaleString()} characters voiced across ${data.chunks_processed} audio chunk(s).`;
         audioStatus.textContent = "Ready";
+
+        // Show player and auto-play
+        showPlayerState();
+        setTimeout(() => {
+          audioPlayer.play().then(() => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+          }).catch(err => {
+            console.log("Auto-play failed", err);
+          });
+        }, 300);
 
         addToHistory({
           title: currentPodcast.title,
@@ -935,6 +1613,7 @@
         });
         setMessage("success", `Audio ready. ${MODE_LABELS[mode]} podcast is now available to play or download.`);
       } catch (error) {
+        hideAllAudioStates();
         setMessage("error", error.message || "Audio generation failed.");
       } finally {
         setBusy(false);
@@ -998,17 +1677,10 @@
 
     clearBtn.addEventListener("click", clearAll);
 
-    playBtn.addEventListener("click", () => {
-      if (!audioPlayer.src) {
-        setMessage("error", "No audio is ready yet.");
-        return;
-      }
-      audioPlayer.playbackRate = Number(speedSelect.value);
-      audioPlayer.play();
-    });
-
     speedSelect.addEventListener("change", () => {
-      audioPlayer.playbackRate = Number(speedSelect.value);
+      if (audioPlayer.src) {
+        audioPlayer.playbackRate = Number(speedSelect.value);
+      }
     });
 
     languageSelect.addEventListener("change", () => {
