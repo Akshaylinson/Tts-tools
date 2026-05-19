@@ -89,6 +89,12 @@
     /* Custom Select Dropdown Styling */
     .custom-select-wrapper {
       position: relative;
+      z-index: auto;
+    }
+    
+    .custom-select-wrapper.active {
+      z-index: 9999;
+      position: relative;
     }
     
     .custom-select-trigger {
@@ -130,7 +136,7 @@
       box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
       max-height: 450px;
       overflow: hidden;
-      z-index: 50;
+      z-index: 99999;
       display: none;
     }
     
@@ -305,8 +311,8 @@
 
     <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <div class="rounded-[2rem] border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-8 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-10 lg:p-12">
-        <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]">
+        <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]" style="position: relative;">
+          <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 1;">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 class="text-2xl font-semibold text-ink">Text to Audio</h2>
@@ -383,7 +389,7 @@
           </div>
         </div>
 
-        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]">
+        <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 0;">
           <div class="flex items-center justify-between gap-3">
             <div>
               <h2 class="text-2xl font-semibold text-ink">Audio output</h2>
@@ -643,12 +649,14 @@
       if (!isActive && !trigger.classList.contains("custom-select-trigger") || !trigger.hasAttribute("disabled")) {
         dropdown.classList.add("active");
         trigger.classList.add("active");
+        trigger.closest(".custom-select-wrapper").classList.add("active");
       }
     }
 
     function closeAllDropdowns() {
       document.querySelectorAll(".custom-dropdown").forEach(d => d.classList.remove("active"));
       document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".custom-select-wrapper").forEach(w => w.classList.remove("active"));
     }
 
     function renderLanguageDropdown(searchTerm = "") {
