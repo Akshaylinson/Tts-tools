@@ -360,7 +360,7 @@
       top: calc(100% + 0.5rem);
       left: 0;
       right: 0;
-      min-width: 400px;
+      width: 100%;
       background: white;
       border: 2px solid #3a6df0;
       border-radius: 1rem;
@@ -369,6 +369,20 @@
       overflow: hidden;
       z-index: 99999;
       display: none;
+    }
+    
+    @media (max-width: 640px) {
+      .custom-dropdown {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: 70vh;
+        border-radius: 1rem;
+        box-shadow: 0 -10px 40px rgba(15, 23, 42, 0.3);
+      }
     }
     
     .custom-dropdown.active {
