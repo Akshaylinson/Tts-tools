@@ -175,6 +175,25 @@
       background: #94a3b8;
     }
     
+    /* Story Preview Scrollbar */
+    #storyPreviewContent::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    #storyPreviewContent::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    
+    #storyPreviewContent::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    
+    #storyPreviewContent::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
     .dropdown-option {
       padding: 0.875rem 1rem;
       cursor: pointer;
@@ -689,9 +708,12 @@
 
           <!-- Story Preview -->
           <details id="storyPreviewCard" class="mt-6 rounded-2xl border-2 border-slate-200 bg-slate-50 p-5 hidden" open>
-            <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Story preview</summary>
+            <summary class="cursor-pointer list-none text-lg font-semibold text-ink flex items-center justify-between">
+              <span>Story preview</span>
+              <button id="editStoryBtn" type="button" class="text-sm font-semibold text-brand hover:text-branddeep transition" onclick="event.stopPropagation();">Edit Story</button>
+            </summary>
             <div id="storyPreviewEmpty" class="mt-4 text-sm text-slate-500">Generate a story to preview the title, intro, main section, ending, and moral.</div>
-            <div id="storyPreviewContent" class="mt-4 hidden space-y-4">
+            <div id="storyPreviewContent" class="mt-4 hidden space-y-4 max-h-[500px] overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9;">
               <section>
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Title</h3>
                 <p id="storyTitle" class="mt-2 text-xl font-semibold text-ink"></p>
@@ -714,6 +736,46 @@
               </section>
             </div>
           </details>
+
+          <!-- Story Edit Modal -->
+          <div id="storyEditModal" class="hidden fixed inset-0 bg-black/50 z-[99999] flex items-center justify-center p-4" style="backdrop-filter: blur(4px);">
+            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+              <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <h3 class="text-2xl font-bold text-ink">Edit Story</h3>
+                <button id="closeEditModal" type="button" class="text-slate-400 hover:text-slate-600 transition">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="flex-1 overflow-y-auto p-6 space-y-5">
+                <div>
+                  <label for="editTitle" class="text-sm font-semibold text-ink">Title</label>
+                  <input id="editTitle" type="text" class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100">
+                </div>
+                <div>
+                  <label for="editIntro" class="text-sm font-semibold text-ink">Intro</label>
+                  <textarea id="editIntro" rows="3" class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100"></textarea>
+                </div>
+                <div>
+                  <label for="editBody" class="text-sm font-semibold text-ink">Story</label>
+                  <textarea id="editBody" rows="8" class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100"></textarea>
+                </div>
+                <div>
+                  <label for="editEnding" class="text-sm font-semibold text-ink">Ending</label>
+                  <textarea id="editEnding" rows="3" class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100"></textarea>
+                </div>
+                <div>
+                  <label for="editMoral" class="text-sm font-semibold text-ink">Moral</label>
+                  <textarea id="editMoral" rows="2" class="mt-2 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-800 outline-none transition focus:border-brand focus:ring-2 focus:ring-teal-100"></textarea>
+                </div>
+              </div>
+              <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-200">
+                <button id="cancelEditBtn" type="button" class="rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">Cancel</button>
+                <button id="saveEditBtn" type="button" class="rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Save Changes</button>
+              </div>
+            </div>
+          </div>
 
           <!-- Audio Generation Loading State -->
           <div id="audioLoadingState" class="audio-loading hidden">
@@ -919,6 +981,16 @@
     const storyLoadingText = document.getElementById("storyLoadingText");
     const storyLoadingSubtext = document.getElementById("storyLoadingSubtext");
     const quickTipsState = document.getElementById("quickTipsState");
+    const editStoryBtn = document.getElementById("editStoryBtn");
+    const storyEditModal = document.getElementById("storyEditModal");
+    const closeEditModal = document.getElementById("closeEditModal");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+    const saveEditBtn = document.getElementById("saveEditBtn");
+    const editTitle = document.getElementById("editTitle");
+    const editIntro = document.getElementById("editIntro");
+    const editBody = document.getElementById("editBody");
+    const editEnding = document.getElementById("editEnding");
+    const editMoral = document.getElementById("editMoral");
     const historyList = document.getElementById("historyList");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
@@ -1239,6 +1311,39 @@
       storyBody.textContent = story.story;
       storyEnding.textContent = story.ending;
       storyMoral.textContent = story.moral;
+    }
+
+    function openEditModal() {
+      if (!currentStory) return;
+      editTitle.value = currentStory.title || '';
+      editIntro.value = currentStory.intro || '';
+      editBody.value = currentStory.story || '';
+      editEnding.value = currentStory.ending || '';
+      editMoral.value = currentStory.moral || '';
+      storyEditModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEditModalFn() {
+      storyEditModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function saveStoryEdits() {
+      if (!currentStory) return;
+      
+      currentStory.title = editTitle.value.trim();
+      currentStory.intro = editIntro.value.trim();
+      currentStory.story = editBody.value.trim();
+      currentStory.ending = editEnding.value.trim();
+      currentStory.moral = editMoral.value.trim();
+      
+      // Update narration text for audio generation
+      currentStory.narration_text = `${currentStory.title}. ${currentStory.intro} ${currentStory.story} ${currentStory.ending} ${currentStory.moral}`;
+      
+      renderStory(currentStory);
+      closeEditModalFn();
+      setMessage("success", "Story updated successfully. You can now generate narration with the edited content.");
     }
 
     function getVoiceLanguageKey(voice) {
@@ -1655,6 +1760,25 @@
     voiceSelect.addEventListener("change", () => {
       renderSelectedVoiceMeta();
       generateAudioBtn.disabled = !currentStory || !voiceSelect.value;
+    });
+
+    editStoryBtn.addEventListener("click", openEditModal);
+    closeEditModal.addEventListener("click", closeEditModalFn);
+    cancelEditBtn.addEventListener("click", closeEditModalFn);
+    saveEditBtn.addEventListener("click", saveStoryEdits);
+    
+    // Close modal on outside click
+    storyEditModal.addEventListener("click", (e) => {
+      if (e.target === storyEditModal) {
+        closeEditModalFn();
+      }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !storyEditModal.classList.contains("hidden")) {
+        closeEditModalFn();
+      }
     });
 
     clearHistoryBtn.addEventListener("click", () => {
