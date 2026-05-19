@@ -614,19 +614,9 @@
 
             <div class="mt-6 flex flex-wrap gap-3">
               <button id="generateStoryBtn" type="submit" class="inline-flex rounded-full bg-brand px-5 py-3 font-semibold text-white transition hover:bg-branddeep">Generate Story</button>
-              <button id="generateAudioBtn" type="button" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50" disabled>Convert to Audio</button>
+              <button id="generateAudioBtn" type="button" class="inline-flex rounded-full border border-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50" disabled>Generate Narration</button>
             </div>
           </form>
-
-          <div id="progressBox" class="mt-6 hidden rounded-2xl border-2 border-teal-100 bg-teal-50 px-4 py-4">
-            <div class="flex items-center gap-3">
-              <div class="h-5 w-5 animate-spin rounded-full border-2 border-teal-200 border-t-brand"></div>
-              <div>
-                <p id="progressLabel" class="font-semibold text-ink">Generating story...</p>
-                <p id="progressMeta" class="text-sm text-slate-600">Please wait a few seconds.</p>
-              </div>
-            </div>
-          </div>
 
           <p id="messageBox" class="mt-4 hidden rounded-xl px-4 py-3 text-sm"></p>
         </div>
@@ -681,6 +671,22 @@
             </div>
           </div>
 
+          <!-- Story Generation Loading State -->
+          <div id="storyLoadingState" class="audio-loading hidden">
+            <div class="audio-loading-wave">
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+            </div>
+            <div class="audio-loading-text" id="storyLoadingText">Generating your story...</div>
+            <div class="audio-loading-subtext" id="storyLoadingSubtext">Creating structured narration</div>
+            <div class="audio-loading-progress">
+              <div class="audio-loading-progress-bar"></div>
+            </div>
+          </div>
+
           <!-- Story Preview -->
           <details id="storyPreviewCard" class="mt-6 rounded-2xl border-2 border-slate-200 bg-slate-50 p-5 hidden" open>
             <summary class="cursor-pointer list-none text-lg font-semibold text-ink">Story preview</summary>
@@ -709,7 +715,7 @@
             </div>
           </details>
 
-          <!-- Loading State -->
+          <!-- Audio Generation Loading State -->
           <div id="audioLoadingState" class="audio-loading hidden">
             <div class="audio-loading-wave">
               <div class="audio-loading-bar"></div>
@@ -765,8 +771,8 @@
             <p id="audioMeta" class="mt-3 text-sm text-slate-500"></p>
           </div>
 
-          <!-- Quick Tips - Always Visible -->
-          <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <!-- Quick Tips - Visible when no story/audio -->
+          <div id="quickTipsState" class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <h3 class="text-lg font-semibold text-ink">Quick tips</h3>
             <ul class="mt-3 space-y-2 text-sm text-slate-600">
               <li>• Keep your idea concise for better story structure.</li>
@@ -909,6 +915,10 @@
     const audioPlayerState = document.getElementById("audioPlayerState");
     const audioLoadingText = document.getElementById("audioLoadingText");
     const audioLoadingSubtext = document.getElementById("audioLoadingSubtext");
+    const storyLoadingState = document.getElementById("storyLoadingState");
+    const storyLoadingText = document.getElementById("storyLoadingText");
+    const storyLoadingSubtext = document.getElementById("storyLoadingSubtext");
+    const quickTipsState = document.getElementById("quickTipsState");
     const historyList = document.getElementById("historyList");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
@@ -1108,16 +1118,40 @@
       audioLoadingSubtext.textContent = subtext;
       howToUseState.classList.add('hidden');
       storyPreviewCard.classList.add('hidden');
+      storyLoadingState.classList.add('hidden');
       audioLoadingState.classList.remove('hidden');
       audioPlayerState.classList.add('hidden');
+      quickTipsState.classList.add('hidden');
+    }
+
+    function showStoryLoadingState(text = "Generating your story...", subtext = "Creating structured narration") {
+      storyLoadingText.textContent = text;
+      storyLoadingSubtext.textContent = subtext;
+      howToUseState.classList.add('hidden');
+      storyPreviewCard.classList.add('hidden');
+      storyLoadingState.classList.remove('hidden');
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.add('hidden');
+      quickTipsState.classList.add('hidden');
+    }
+
+    function showStoryPreview() {
+      howToUseState.classList.add('hidden');
+      storyPreviewCard.classList.remove('hidden');
+      storyLoadingState.classList.add('hidden');
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.add('hidden');
+      quickTipsState.classList.remove('hidden');
     }
 
     function showPlayerState() {
       howToUseState.classList.add('hidden');
       storyPreviewCard.classList.remove('hidden');
+      storyLoadingState.classList.add('hidden');
       audioLoadingState.classList.add('hidden');
       audioPlayerState.classList.remove('hidden');
       audioPlayerState.classList.add('fade-in');
+      quickTipsState.classList.add('hidden');
     }
 
     // Audio Player Event Listeners
@@ -1157,11 +1191,6 @@
     }
 
     function setBusy(isBusy, label = "", meta = "") {
-      progressBox.classList.toggle("hidden", !isBusy);
-      if (isBusy) {
-        progressLabel.textContent = label;
-        progressMeta.textContent = meta;
-      }
       generateStoryBtn.disabled = isBusy;
       generateAudioBtn.disabled = isBusy || !currentStory || !voiceSelect.value;
       regenerateBtn.disabled = isBusy || !ideaInput.value.trim();
@@ -1198,6 +1227,7 @@
       audioStatus.textContent = "Waiting";
       audioPlayerState.classList.add('hidden');
       audioLoadingState.classList.add('hidden');
+      storyLoadingState.classList.add('hidden');
     }
 
     function renderStory(story) {
@@ -1406,8 +1436,23 @@
       }
 
       setMessage("", "");
-      setBusy(true, "Generating story...", "Creating a structured narration from your idea.");
+      showStoryLoadingState("Analyzing your idea...", "Building story structure");
+      setBusy(true);
       resetAudioState();
+
+      const stagedProgress = [
+        ["Creating story outline...", "Structuring narrative elements"],
+        ["Writing your story...", "Generating title, intro, and plot"],
+        ["Finalizing story...", "Adding ending and moral"]
+      ];
+      let progressIndex = 0;
+      const timer = window.setInterval(() => {
+        if (progressIndex < stagedProgress.length) {
+          const [label, subtext] = stagedProgress[progressIndex];
+          showStoryLoadingState(label, subtext);
+          progressIndex += 1;
+        }
+      }, 1800);
 
       try {
         const response = await fetch(`${TOOL_BASE_PATH}/generate-story`, {
@@ -1428,14 +1473,19 @@
 
         currentStory = data.story;
         renderStory(data.story);
+        showStoryPreview();
         generateAudioBtn.disabled = !voiceSelect.value;
         regenerateBtn.disabled = false;
+        audioStatus.textContent = "Story Ready";
         setMessage("success", `Story ready. ${data.story.estimated_word_count.toLocaleString()} words estimated for narration.`);
       } catch (error) {
         currentStory = null;
         generateAudioBtn.disabled = true;
+        howToUseState.classList.remove('hidden');
+        storyLoadingState.classList.add('hidden');
         setMessage("error", error.message || "Story generation failed.");
       } finally {
+        window.clearInterval(timer);
         setBusy(false);
       }
     }
@@ -1522,6 +1572,7 @@
       storyPreviewEmpty.classList.remove("hidden");
       storyPreviewContent.classList.add("hidden");
       howToUseState.classList.remove('hidden');
+      quickTipsState.classList.remove('hidden');
       generateAudioBtn.disabled = true;
       regenerateBtn.disabled = true;
       setMessage("", "");
