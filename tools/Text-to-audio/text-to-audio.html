@@ -86,6 +86,237 @@
       contain-intrinsic-size: 900px;
     }
     
+    /* Custom Audio Player Styling */
+    .custom-audio-player {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .audio-progress-container {
+      position: relative;
+      height: 8px;
+      background: #cbd5e1;
+      border-radius: 9999px;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    
+    .audio-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      transition: width 0.1s linear;
+    }
+    
+    .audio-time {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    
+    .audio-play-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3a6df0 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      box-shadow: 0 4px 12px rgba(58, 109, 240, 0.3);
+    }
+    
+    .audio-play-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(58, 109, 240, 0.4);
+    }
+    
+    .audio-play-btn:active {
+      transform: scale(0.98);
+    }
+    
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .audio-volume-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .audio-volume-slider {
+      width: 80px;
+      height: 4px;
+      border-radius: 9999px;
+      background: #cbd5e1;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+    
+    .audio-volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #3a6df0;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .audio-volume-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #3a6df0;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Loading Animation */
+    .audio-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      gap: 1.5rem;
+    }
+    
+    .audio-loading-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 60px;
+    }
+    
+    .audio-loading-bar {
+      width: 6px;
+      background: linear-gradient(180deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      animation: audioWave 1.2s ease-in-out infinite;
+    }
+    
+    .audio-loading-bar:nth-child(1) {
+      height: 20px;
+      animation-delay: 0s;
+    }
+    
+    .audio-loading-bar:nth-child(2) {
+      height: 35px;
+      animation-delay: 0.1s;
+    }
+    
+    .audio-loading-bar:nth-child(3) {
+      height: 50px;
+      animation-delay: 0.2s;
+    }
+    
+    .audio-loading-bar:nth-child(4) {
+      height: 35px;
+      animation-delay: 0.3s;
+    }
+    
+    .audio-loading-bar:nth-child(5) {
+      height: 20px;
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes audioWave {
+      0%, 100% {
+        transform: scaleY(1);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scaleY(1.5);
+        opacity: 1;
+      }
+    }
+    
+    .audio-loading-text {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1e293b;
+      text-align: center;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 50%, #3a6df0 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 2s linear infinite;
+    }
+    
+    @keyframes shimmer {
+      to {
+        background-position: 200% center;
+      }
+    }
+    
+    .audio-loading-subtext {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .audio-loading-progress {
+      width: 100%;
+      max-width: 300px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .audio-loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #3a6df0 0%, #2563eb 100%);
+      border-radius: 9999px;
+      animation: progressFlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressFlow {
+      0% {
+        width: 20%;
+        transform: translateX(0);
+      }
+      50% {
+        width: 60%;
+        transform: translateX(50%);
+      }
+      100% {
+        width: 20%;
+        transform: translateX(200%);
+      }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.4s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
     /* Custom Select Dropdown Styling */
     .custom-select-wrapper {
       position: relative;
@@ -378,15 +609,6 @@
           </div>
 
           <p id="errorMessage" class="mt-4 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></p>
-          <div id="progressWrap" class="mt-4 hidden">
-            <div class="flex items-center justify-between text-sm text-slate-600">
-              <span id="progressLabel">Preparing your text...</span>
-              <span class="font-medium">Working</span>
-            </div>
-            <div class="mt-2 h-3 overflow-hidden rounded-full bg-slate-200">
-              <div id="progressBar" class="h-full w-1/5 rounded-full bg-coral transition-all duration-300"></div>
-            </div>
-          </div>
         </div>
 
         <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 0;">
@@ -398,15 +620,63 @@
             <span id="voiceStatus" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">Loading voices...</span>
           </div>
 
-          <audio id="audioPlayer" class="mt-6 w-full" controls preload="none"></audio>
-          <div class="mt-4 grid gap-3 sm:grid-cols-2">
-            <button id="playBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Play</button>
-            <a id="downloadBtn" href="#" download class="pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
-            <button id="saveBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Save</button>
-            <button id="resetBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Reset</button>
+          <!-- Loading State -->
+          <div id="audioLoadingState" class="audio-loading hidden">
+            <div class="audio-loading-wave">
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+              <div class="audio-loading-bar"></div>
+            </div>
+            <div class="audio-loading-text" id="audioLoadingText">Generating your audio...</div>
+            <div class="audio-loading-subtext" id="audioLoadingSubtext">This may take a few moments</div>
+            <div class="audio-loading-progress">
+              <div class="audio-loading-progress-bar"></div>
+            </div>
           </div>
-          <p id="successMeta" class="mt-3 text-sm text-slate-500"></p>
 
+          <!-- Audio Player State -->
+          <div id="audioPlayerState" class="hidden">
+            <!-- Custom Audio Player -->
+            <div class="custom-audio-player mt-6">
+              <div class="audio-controls mb-4">
+                <button id="customPlayBtn" class="audio-play-btn" type="button">
+                  <svg id="playIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  <svg id="pauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <div class="audio-progress-container" id="audioProgressContainer">
+                    <div class="audio-progress-bar" id="audioProgressBar"></div>
+                  </div>
+                  <div class="flex justify-between mt-2">
+                    <span class="audio-time" id="currentTime">0:00</span>
+                    <span class="audio-time" id="duration">0:00</span>
+                  </div>
+                </div>
+                <div class="audio-volume-control">
+                  <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                  </svg>
+                  <input type="range" id="volumeSlider" class="audio-volume-slider" min="0" max="100" value="100">
+                </div>
+              </div>
+            </div>
+            
+            <audio id="audioPlayer" class="hidden" preload="none"></audio>
+            
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              <a id="downloadBtn" href="#" download class="pointer-events-none rounded-xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-400">Download MP3</a>
+              <button id="saveBtn" type="button" class="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">Save</button>
+            </div>
+            <p id="successMeta" class="mt-3 text-sm text-slate-500"></p>
+          </div>
+
+          <!-- Quick Tips - Always Visible -->
           <div class="mt-8 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <h3 class="text-lg font-semibold text-ink">Quick tips</h3>
             <ul class="mt-3 space-y-2 text-sm text-slate-600">
@@ -419,8 +689,8 @@
       </div>
     </section>
 
-    <section id="historySection" class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-card">
+    <section id="historySection" class="mx-auto w-full max-w-[98%] px-2 py-10 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+      <div class="rounded-3xl border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)]">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-2xl font-semibold text-ink">Recent conversions</h2>
@@ -622,16 +892,23 @@
     const voiceDescription = document.getElementById("voiceDescription");
     const convertBtn = document.getElementById("convertBtn");
     const clearTextBtn = document.getElementById("clearTextBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const playBtn = document.getElementById("playBtn");
+    const customPlayBtn = document.getElementById("customPlayBtn");
+    const playIcon = document.getElementById("playIcon");
+    const pauseIcon = document.getElementById("pauseIcon");
     const downloadBtn = document.getElementById("downloadBtn");
     const saveBtn = document.getElementById("saveBtn");
     const clearHistoryBtn = document.getElementById("clearHistoryBtn");
     const audioPlayer = document.getElementById("audioPlayer");
+    const audioProgressContainer = document.getElementById("audioProgressContainer");
+    const audioProgressBar = document.getElementById("audioProgressBar");
+    const currentTimeEl = document.getElementById("currentTime");
+    const durationEl = document.getElementById("duration");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const audioLoadingState = document.getElementById("audioLoadingState");
+    const audioPlayerState = document.getElementById("audioPlayerState");
+    const audioLoadingText = document.getElementById("audioLoadingText");
+    const audioLoadingSubtext = document.getElementById("audioLoadingSubtext");
     const errorMessage = document.getElementById("errorMessage");
-    const progressWrap = document.getElementById("progressWrap");
-    const progressLabel = document.getElementById("progressLabel");
-    const progressBar = document.getElementById("progressBar");
     const successMeta = document.getElementById("successMeta");
     const historyList = document.getElementById("historyList");
 
@@ -724,6 +1001,72 @@
       });
     }
 
+    // Custom Audio Player Functions
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateProgress() {
+      const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+      audioProgressBar.style.width = `${progress}%`;
+      currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+    }
+
+    function togglePlayPause() {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+      } else {
+        audioPlayer.pause();
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+      }
+    }
+
+    function showLoadingState(text = "Generating your audio...", subtext = "This may take a few moments") {
+      audioLoadingText.textContent = text;
+      audioLoadingSubtext.textContent = subtext;
+      audioLoadingState.classList.remove('hidden');
+      audioPlayerState.classList.add('hidden');
+    }
+
+    function showPlayerState() {
+      audioLoadingState.classList.add('hidden');
+      audioPlayerState.classList.remove('hidden');
+      audioPlayerState.classList.add('fade-in');
+    }
+
+    // Audio Player Event Listeners
+    customPlayBtn.addEventListener('click', togglePlayPause);
+
+    audioPlayer.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audioPlayer.duration);
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    audioPlayer.addEventListener('timeupdate', updateProgress);
+
+    audioPlayer.addEventListener('ended', () => {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = formatTime(0);
+    });
+
+    audioProgressContainer.addEventListener('click', (e) => {
+      const rect = audioProgressContainer.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      audioPlayer.currentTime = percent * audioPlayer.duration;
+    });
+
+    volumeSlider.addEventListener('input', (e) => {
+      audioPlayer.volume = e.target.value / 100;
+    });
+
     function debugLog(message, details) {
       if (details === undefined) {
         console.log(`[text-audio] ${message}`);
@@ -744,12 +1087,6 @@
     function setError(message = "") {
       errorMessage.textContent = message;
       errorMessage.classList.toggle("hidden", !message);
-    }
-
-    function setProgress(active, label = "Preparing your text...", width = "20%") {
-      progressWrap.classList.toggle("hidden", !active);
-      progressLabel.textContent = label;
-      progressBar.style.width = width;
     }
 
     function updateCounter(value) {
@@ -798,8 +1135,12 @@
           </div>
         `;
         card.querySelector(".replay-btn").addEventListener("click", () => {
+          showPlayerState();
           audioPlayer.src = item.audioUrl;
-          audioPlayer.play();
+          audioPlayer.play().then(() => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+          });
           successMeta.textContent = `Loaded from history: ${item.preview}`;
         });
         historyList.appendChild(card);
@@ -936,7 +1277,6 @@
 
     function resetToolState(clearText = false) {
       setError("");
-      setProgress(false);
       successMeta.textContent = "";
       currentResult = null;
       audioPlayer.pause();
@@ -944,6 +1284,13 @@
       audioPlayer.load();
       downloadBtn.href = "#";
       downloadBtn.classList.add("pointer-events-none", "text-slate-400");
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      audioProgressBar.style.width = '0%';
+      currentTimeEl.textContent = '0:00';
+      durationEl.textContent = '0:00';
+      audioPlayerState.classList.add('hidden');
+      audioLoadingState.classList.add('hidden');
       if (clearText) {
         textInput.value = "";
         updateCounter("");
@@ -974,7 +1321,7 @@
       }
 
       setError("");
-      setProgress(true, `Sending text to ${voiceSelect.value}...`, "22%");
+      showLoadingState("Preparing your text...", "Sending to speech engine");
       convertBtn.disabled = true;
       convertBtn.classList.add("opacity-60", "cursor-not-allowed");
       debugLog(`Sending request to ${TOOL_BASE_PATH}/convert-text`, {
@@ -983,15 +1330,15 @@
       });
 
       const stagedProgress = [
-        ["Preparing text for speech...", "44%"],
-        ["Generating audio...", "70%"],
-        ["Finalizing your MP3...", "92%"]
+        ["Analyzing text structure...", "Processing your content"],
+        ["Generating audio...", "Converting to natural speech"],
+        ["Finalizing your MP3...", "Almost ready"]
       ];
       let progressIndex = 0;
       const timer = window.setInterval(() => {
         if (progressIndex < stagedProgress.length) {
-          const [label, width] = stagedProgress[progressIndex];
-          setProgress(true, label, width);
+          const [label, subtext] = stagedProgress[progressIndex];
+          showLoadingState(label, subtext);
           progressIndex += 1;
         }
       }, 2200);
@@ -1019,7 +1366,17 @@
         downloadBtn.href = data.audio_url;
         downloadBtn.classList.remove("pointer-events-none", "text-slate-400");
         successMeta.textContent = `Ready in ${data.voice}. ${data.extracted_characters.toLocaleString()} characters processed across ${data.chunks_processed} audio chunk(s).`;
-        setProgress(true, "Conversion complete", "100%");
+        
+        // Show player and auto-play
+        showPlayerState();
+        setTimeout(() => {
+          audioPlayer.play().then(() => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+          }).catch(err => {
+            debugLog("Auto-play failed", err);
+          });
+        }, 300);
 
         addToHistory({
           preview: value.trim().slice(0, 70) + (value.trim().length > 70 ? "..." : ""),
@@ -1030,7 +1387,7 @@
       } catch (error) {
         debugLog("Conversion failed", error);
         setError(error.message || "Something went wrong while converting the text.");
-        setProgress(false);
+        audioLoadingState.classList.add('hidden');
       } finally {
         window.clearInterval(timer);
         convertBtn.disabled = false;
@@ -1076,14 +1433,6 @@
       textInput.value = "";
       updateCounter("");
       setError("");
-    });
-    resetBtn.addEventListener("click", () => resetToolState(true));
-    playBtn.addEventListener("click", () => {
-      if (!audioPlayer.src) {
-        setError("Convert some text first to play audio.");
-        return;
-      }
-      audioPlayer.play();
     });
     saveBtn.addEventListener("click", () => {
       if (!currentResult || !textInput.value.trim()) {
