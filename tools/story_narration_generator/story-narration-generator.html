@@ -34,6 +34,11 @@
     };
   </script>
   <style>
+    .seo-section {
+      content-visibility: auto;
+      contain-intrinsic-size: 900px;
+    }
+    
     /* Custom Select Dropdown Styling */
     .custom-select-wrapper {
       position: relative;
@@ -525,12 +530,14 @@
                   </svg>
                   <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Story Type</p>
                 </div>
-                <select id="storyTypeSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-brand focus:ring-2 focus:ring-teal-100">
-                  <option value="kids">Kids</option>
-                  <option value="horror">Horror</option>
-                  <option value="motivational">Motivational</option>
-                  <option value="general" selected>General</option>
-                </select>
+                <div class="custom-select-wrapper mt-4">
+                  <div id="storyTypeTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                    <span id="storyTypeSelected">General</span>
+                  </div>
+                  <div id="storyTypeDropdown" class="custom-dropdown">
+                    <div id="storyTypeOptions" class="dropdown-options"></div>
+                  </div>
+                </div>
               </div>
               <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
                 <div class="select-label">
@@ -539,13 +546,27 @@
                   </svg>
                   <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Duration</p>
                 </div>
-                <select id="durationSelect" class="mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all focus:border-brand focus:ring-2 focus:ring-teal-100">
-                  <option value="1 min">1 min</option>
-                  <option value="3 min" selected>3 min</option>
-                  <option value="5 min">5 min</option>
-                </select>
+                <div class="custom-select-wrapper mt-4">
+                  <div id="durationTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                    <span id="durationSelected">3 min</span>
+                  </div>
+                  <div id="durationDropdown" class="custom-dropdown">
+                    <div id="durationOptions" class="dropdown-options"></div>
+                  </div>
+                </div>
               </div>
             </div>
+            <select id="storyTypeSelect" class="hidden">
+              <option value="kids">Kids</option>
+              <option value="horror">Horror</option>
+              <option value="motivational">Motivational</option>
+              <option value="general" selected>General</option>
+            </select>
+            <select id="durationSelect" class="hidden">
+              <option value="1 min">1 min</option>
+              <option value="3 min" selected>3 min</option>
+              <option value="5 min">5 min</option>
+            </select>
 
             <div class="grid gap-4 md:grid-cols-2">
               <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
@@ -775,9 +796,10 @@
       <div class="border-t border-slate-200"></div>
     </div>
 
-    <section class="mx-auto max-w-4xl px-4 py-16 sm:px-6 bg-white">
-      <h2 class="text-3xl font-bold tracking-tight text-ink">What is AI story narration?</h2>
-      <div class="seo-copy mt-6 space-y-5 text-[1.05rem] leading-8 text-slate-700">
+    <section class="seo-section bg-white">
+      <div class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+        <h2 class="text-3xl font-bold tracking-tight text-ink">What is AI story narration?</h2>
+        <div class="seo-copy mt-6 space-y-5 text-[1.05rem] leading-8 text-slate-700">
         <p>An AI story generator with voice helps users turn rough concepts into polished spoken content without building every sentence manually. Instead of starting with a blank page, you can enter a simple idea, choose a story style, and let the tool produce a structured narration with a title, introduction, main story, ending, and moral. That makes the workflow useful for people who want both creative support and a fast path to audio. A story narration generator is especially practical when the final goal is listening, sharing, or testing how a story sounds out loud rather than just reading it silently on a screen.</p>
         <p>One of the strongest use cases is kids storytelling. Parents, teachers, and caregivers often need fresh short stories for bedtime, class activities, or language practice. With an AI story generator with voice, they can start from a small prompt such as a brave rabbit, a lost key, or a magical train ride and quickly receive a complete spoken story. The audio format also helps children stay engaged, because listening can feel lighter and more playful than reading a long paragraph block. For educators, the same workflow can support pronunciation, comprehension, and guided listening exercises.</p>
         <p>Content creators can also benefit from a story narration generator when drafting scripts for videos, shorts, reels, or podcasts. A rough premise can become a more coherent arc in seconds, which saves time during ideation. Once the script is ready, a text to speech story tool makes it possible to hear pacing, transitions, and emotional flow before recording a final human version. That is valuable for script editing because weak sections often become obvious when heard aloud. Creators can iterate faster, compare tones, and test different languages or voices from one browser-based workflow.</p>
@@ -833,6 +855,14 @@
     const ideaInput = document.getElementById("ideaInput");
     const storyTypeSelect = document.getElementById("storyTypeSelect");
     const durationSelect = document.getElementById("durationSelect");
+    const storyTypeTrigger = document.getElementById("storyTypeTrigger");
+    const durationTrigger = document.getElementById("durationTrigger");
+    const storyTypeDropdown = document.getElementById("storyTypeDropdown");
+    const durationDropdown = document.getElementById("durationDropdown");
+    const storyTypeOptions = document.getElementById("storyTypeOptions");
+    const durationOptions = document.getElementById("durationOptions");
+    const storyTypeSelected = document.getElementById("storyTypeSelected");
+    const durationSelected = document.getElementById("durationSelected");
     const languageSelect = document.getElementById("languageSelect");
     const voiceSelect = document.getElementById("voiceSelect");
     const languageTrigger = document.getElementById("languageTrigger");
@@ -889,6 +919,21 @@
     let allLanguages = [];
     let selectedLanguageKey = "";
     let selectedVoiceId = "";
+    let selectedStoryType = "general";
+    let selectedDuration = "3 min";
+
+    const storyTypes = [
+      { value: "kids", label: "Kids" },
+      { value: "horror", label: "Horror" },
+      { value: "motivational", label: "Motivational" },
+      { value: "general", label: "General" }
+    ];
+
+    const durations = [
+      { value: "1 min", label: "1 min" },
+      { value: "3 min", label: "3 min" },
+      { value: "5 min", label: "5 min" }
+    ];
 
     // Custom Dropdown Functions
     function toggleDropdown(dropdown, trigger) {
@@ -968,6 +1013,66 @@
           voiceSelect.value = selectedVoiceId;
           closeAllDropdowns();
           renderSelectedVoiceMeta();
+        });
+      });
+    }
+
+    function renderStoryTypeDropdown() {
+      storyTypeOptions.innerHTML = storyTypes.map(type => {
+        let iconSvg = '';
+        if (type.value === 'kids') {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        } else if (type.value === 'horror') {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>';
+        } else if (type.value === 'motivational') {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>';
+        } else {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>';
+        }
+        return `
+          <div class="dropdown-option ${type.value === selectedStoryType ? 'selected' : ''}" data-value="${escapeHtml(type.value)}">
+            ${iconSvg}
+            <span class="dropdown-option-text">${escapeHtml(type.label)}</span>
+          </div>
+        `;
+      }).join("");
+
+      storyTypeOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedStoryType = option.dataset.value;
+          const type = storyTypes.find(t => t.value === selectedStoryType);
+          storyTypeSelected.textContent = type.label;
+          storyTypeSelect.value = selectedStoryType;
+          closeAllDropdowns();
+        });
+      });
+    }
+
+    function renderDurationDropdown() {
+      durationOptions.innerHTML = durations.map(duration => {
+        let iconSvg = '';
+        if (duration.value === '1 min') {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>';
+        } else if (duration.value === '3 min') {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        } else {
+          iconSvg = '<svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        }
+        return `
+          <div class="dropdown-option ${duration.value === selectedDuration ? 'selected' : ''}" data-value="${escapeHtml(duration.value)}">
+            ${iconSvg}
+            <span class="dropdown-option-text">${escapeHtml(duration.label)}</span>
+          </div>
+        `;
+      }).join("");
+
+      durationOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedDuration = option.dataset.value;
+          const duration = durations.find(d => d.value === selectedDuration);
+          durationSelected.textContent = duration.label;
+          durationSelect.value = selectedDuration;
+          closeAllDropdowns();
         });
       });
     }
@@ -1432,6 +1537,8 @@
     }
 
     // Dropdown event listeners
+    storyTypeTrigger.addEventListener("click", () => toggleDropdown(storyTypeDropdown, storyTypeTrigger));
+    durationTrigger.addEventListener("click", () => toggleDropdown(durationDropdown, durationTrigger));
     languageTrigger.addEventListener("click", () => toggleDropdown(languageDropdown, languageTrigger));
     voiceTrigger.addEventListener("click", () => toggleDropdown(voiceDropdown, voiceTrigger));
     
@@ -1446,6 +1553,20 @@
     document.addEventListener("click", (e) => {
       if (!e.target.closest(".custom-select-wrapper")) {
         closeAllDropdowns();
+      }
+    });
+    
+    storyTypeTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(storyTypeDropdown, storyTypeTrigger);
+      }
+    });
+    
+    durationTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(durationDropdown, durationTrigger);
       }
     });
     
@@ -1491,6 +1612,9 @@
       setMessage("info", "Local history cleared on this device.");
     });
 
+    // Initialize dropdowns
+    renderStoryTypeDropdown();
+    renderDurationDropdown();
     renderHistory();
     loadVoices();
   </script>
