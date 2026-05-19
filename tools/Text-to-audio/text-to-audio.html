@@ -295,7 +295,7 @@
 
   <main>
     <section class="bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_34%),linear-gradient(135deg,_#0f172a,_#134e4a_52%,_#1f2937)] text-white">
-      <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+      <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-24 lg:py-32">
         <div class="mx-auto max-w-3xl text-center">
           <p class="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-sm text-amber-100">100% Free AI Speech Generator</p>
           <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Free Text to Audio Converter AI — Generate Speech Instantly</h1>
@@ -309,7 +309,7 @@
       </div>
     </section>
 
-    <section class="mx-auto w-full max-w-[98%] px-2 py-10 sm:px-3 lg:max-w-[96%] xl:max-w-[94%]">
+    <section class="mx-auto w-full max-w-[98%] px-2 py-16 sm:px-3 sm:py-20 lg:max-w-[96%] xl:max-w-[94%]">
       <div class="rounded-[2rem] border-2 border-slate-200/80 bg-gradient-to-br from-white via-slate-50/30 to-white p-6 shadow-[0_20px_70px_rgba(15,23,42,0.15)] sm:p-8 lg:p-10 xl:p-12">
         <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]" style="position: relative;">
           <div class="rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-[0_8px_30px_rgba(15,23,42,0.12)] transition-all duration-300 hover:shadow-[0_12px_40px_rgba(15,23,42,0.16)]" style="position: relative; z-index: 1;">
@@ -863,7 +863,7 @@
       // Update visible UI
       voiceSelected.textContent = preferredVoice.label;
       voiceTrigger.removeAttribute("disabled");
-      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} in this language`;
+      voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"}`;
       
       // Update hidden select for form submission
       voiceSelect.innerHTML = filteredVoices.map(voice => 
