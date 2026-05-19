@@ -13,6 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -86,29 +87,178 @@
     }
     
     /* Custom Select Dropdown Styling */
-    .custom-select {
+    .custom-select-wrapper {
+      position: relative;
+    }
+    
+    .custom-select-trigger {
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230f766e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 0.75rem center;
       background-size: 1.25rem;
       padding-right: 2.75rem;
+      cursor: pointer;
+      min-height: 3.5rem;
     }
     
-    .custom-select:hover {
+    .custom-select-trigger:hover {
       border-color: #0f766e;
       box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
     }
     
-    .custom-select:focus {
+    .custom-select-trigger.active {
       border-color: #0f766e;
       box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.15);
     }
     
-    .custom-select:disabled {
+    .custom-select-trigger:disabled {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    
+    .custom-dropdown {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #0f766e;
+      border-radius: 1rem;
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+      max-height: 400px;
+      overflow: hidden;
+      z-index: 50;
+      display: none;
+    }
+    
+    .custom-dropdown.active {
+      display: block;
+      animation: dropdownSlide 0.2s ease-out;
+    }
+    
+    @keyframes dropdownSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .dropdown-search {
+      padding: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    .dropdown-search input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cpath d='m21 21-4.35-4.35'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.75rem center;
+      background-size: 1.125rem;
+    }
+    
+    .dropdown-search input:focus {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    }
+    
+    .dropdown-options {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+    
+    .dropdown-options::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    
+    .dropdown-options::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .dropdown-option {
+      padding: 0.875rem 1rem;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #334155;
+    }
+    
+    .dropdown-option:hover {
+      background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+      color: #0f766e;
+      transform: translateX(4px);
+    }
+    
+    .dropdown-option.selected {
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      color: white;
+      font-weight: 600;
+    }
+    
+    .dropdown-option.selected:hover {
+      transform: translateX(0);
+    }
+    
+    .dropdown-option-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      flex-shrink: 0;
+    }
+    
+    .dropdown-option-text {
+      flex: 1;
+    }
+    
+    .dropdown-option-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      background: #e2e8f0;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+    
+    .dropdown-option.selected .dropdown-option-badge {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    .no-results {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
     }
     
     .select-label {
@@ -179,9 +329,17 @@
                 </svg>
                 <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Language</p>
               </div>
-              <select id="languageSelect" class="custom-select mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" disabled>
-                <option>Loading languages...</option>
-              </select>
+              <div class="custom-select-wrapper mt-4">
+                <div id="languageTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                  <span id="languageSelected">Loading languages...</span>
+                </div>
+                <div id="languageDropdown" class="custom-dropdown">
+                  <div class="dropdown-search">
+                    <input type="text" id="languageSearch" placeholder="Search languages..." autocomplete="off">
+                  </div>
+                  <div id="languageOptions" class="dropdown-options"></div>
+                </div>
+              </div>
             </div>
             <div class="rounded-2xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50/50 p-5 transition-all duration-300 hover:border-brand/40 hover:shadow-lg">
               <div class="select-label">
@@ -190,11 +348,21 @@
                 </svg>
                 <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-600">Voice</p>
               </div>
-              <select id="voiceSelect" class="custom-select mt-4 w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" disabled>
-                <option>Loading voices...</option>
-              </select>
+              <div class="custom-select-wrapper mt-4">
+                <div id="voiceTrigger" class="custom-select-trigger w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3.5 text-sm font-semibold text-slate-800 outline-none transition-all" tabindex="0">
+                  <span id="voiceSelected">Loading voices...</span>
+                </div>
+                <div id="voiceDropdown" class="custom-dropdown">
+                  <div class="dropdown-search">
+                    <input type="text" id="voiceSearch" placeholder="Search voices..." autocomplete="off">
+                  </div>
+                  <div id="voiceOptions" class="dropdown-options"></div>
+                </div>
+              </div>
             </div>
           </div>
+          <select id="languageSelect" class="hidden"></select>
+          <select id="voiceSelect" class="hidden"></select>
           <p id="voiceDescription" class="mt-3 text-sm text-slate-500">Fetching available voices...</p>
 
           <div class="mt-6 flex flex-wrap gap-3">
@@ -433,6 +601,16 @@
     const charCounter = document.getElementById("charCounter");
     const languageSelect = document.getElementById("languageSelect");
     const voiceSelect = document.getElementById("voiceSelect");
+    const languageTrigger = document.getElementById("languageTrigger");
+    const voiceTrigger = document.getElementById("voiceTrigger");
+    const languageDropdown = document.getElementById("languageDropdown");
+    const voiceDropdown = document.getElementById("voiceDropdown");
+    const languageSearch = document.getElementById("languageSearch");
+    const voiceSearch = document.getElementById("voiceSearch");
+    const languageOptions = document.getElementById("languageOptions");
+    const voiceOptions = document.getElementById("voiceOptions");
+    const languageSelected = document.getElementById("languageSelected");
+    const voiceSelected = document.getElementById("voiceSelected");
     const voiceStatus = document.getElementById("voiceStatus");
     const voiceDescription = document.getElementById("voiceDescription");
     const convertBtn = document.getElementById("convertBtn");
@@ -453,6 +631,89 @@
     let availableVoices = [];
     let filteredVoices = [];
     let currentResult = null;
+    let allLanguages = [];
+    let selectedLanguageKey = "";
+    let selectedVoiceId = "";
+
+    // Custom Dropdown Functions
+    function toggleDropdown(dropdown, trigger) {
+      const isActive = dropdown.classList.contains("active");
+      closeAllDropdowns();
+      if (!isActive && !trigger.classList.contains("custom-select-trigger") || !trigger.hasAttribute("disabled")) {
+        dropdown.classList.add("active");
+        trigger.classList.add("active");
+      }
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll(".custom-dropdown").forEach(d => d.classList.remove("active"));
+      document.querySelectorAll(".custom-select-trigger").forEach(t => t.classList.remove("active"));
+    }
+
+    function renderLanguageDropdown(searchTerm = "") {
+      const filtered = allLanguages.filter(lang => 
+        lang.label.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      if (!filtered.length) {
+        languageOptions.innerHTML = '<div class="no-results">No languages found</div>';
+        return;
+      }
+
+      languageOptions.innerHTML = filtered.map(lang => `
+        <div class="dropdown-option ${lang.key === selectedLanguageKey ? 'selected' : ''}" data-value="${escapeHtml(lang.key)}">
+          <svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+          </svg>
+          <span class="dropdown-option-text">${escapeHtml(lang.label)}</span>
+        </div>
+      `).join("");
+
+      languageOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedLanguageKey = option.dataset.value;
+          const lang = allLanguages.find(l => l.key === selectedLanguageKey);
+          languageSelected.textContent = lang.label;
+          languageSelect.value = selectedLanguageKey;
+          closeAllDropdowns();
+          renderFilteredVoices();
+          setError("");
+        });
+      });
+    }
+
+    function renderVoiceOptions(searchTerm = "") {
+      const filtered = filteredVoices.filter(voice => 
+        voice.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (voice.gender && voice.gender.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+
+      if (!filtered.length) {
+        voiceOptions.innerHTML = '<div class="no-results">No voices found</div>';
+        return;
+      }
+
+      voiceOptions.innerHTML = filtered.map(voice => `
+        <div class="dropdown-option ${voice.id === selectedVoiceId ? 'selected' : ''}" data-value="${escapeHtml(voice.id)}">
+          <svg class="dropdown-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+          </svg>
+          <span class="dropdown-option-text">${escapeHtml(voice.label)}</span>
+          ${voice.gender ? `<span class="dropdown-option-badge">${escapeHtml(voice.gender)}</span>` : ''}
+        </div>
+      `).join("");
+
+      voiceOptions.querySelectorAll(".dropdown-option").forEach(option => {
+        option.addEventListener("click", () => {
+          selectedVoiceId = option.dataset.value;
+          const voice = filteredVoices.find(v => v.id === selectedVoiceId);
+          voiceSelected.textContent = voice.label;
+          voiceSelect.value = selectedVoiceId;
+          closeAllDropdowns();
+          renderSelectedVoiceMeta();
+        });
+      });
+    }
 
     function debugLog(message, details) {
       if (details === undefined) {
@@ -575,28 +836,33 @@
     }
 
     function renderFilteredVoices(preferredVoiceId = "") {
-      const selectedLanguage = languageSelect.value;
       filteredVoices = availableVoices
-        .filter((voice) => getVoiceLanguageKey(voice) === selectedLanguage)
-        .slice(0, 5);
+        .filter((voice) => getVoiceLanguageKey(voice) === selectedLanguageKey)
+        .slice(0, 10);
 
       if (!filteredVoices.length) {
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
-        voiceSelect.disabled = true;
+        voiceSelected.textContent = "No voices available";
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "No voices";
         voiceDescription.textContent = "No voice models are currently available for this language.";
         return;
       }
 
-      voiceSelect.innerHTML = filteredVoices.map((voice) => {
-        const meta = [voice.gender, voice.quality].filter(Boolean).join(" - ");
-        return `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}${meta ? ` - ${escapeHtml(meta)}` : ""}</option>`;
-      }).join("");
-
       const preferredVoice = filteredVoices.find((voice) => voice.id === preferredVoiceId) || filteredVoices[0];
-      voiceSelect.value = preferredVoice.id;
-      voiceSelect.disabled = false;
+      selectedVoiceId = preferredVoice.id;
+      
+      // Update visible UI
+      voiceSelected.textContent = preferredVoice.label;
+      voiceTrigger.removeAttribute("disabled");
       voiceStatus.textContent = `${filteredVoices.length} voice${filteredVoices.length === 1 ? "" : "s"} in this language`;
+      
+      // Update hidden select for form submission
+      voiceSelect.innerHTML = filteredVoices.map(voice => 
+        `<option value="${escapeHtml(voice.id)}">${escapeHtml(voice.label)}</option>`
+      ).join("");
+      voiceSelect.value = preferredVoice.id;
+      
+      renderVoiceOptions();
       renderSelectedVoiceMeta();
     }
 
@@ -604,30 +870,40 @@
       availableVoices = Array.isArray(payload.voices) ? payload.voices : [];
 
       if (!availableVoices.length) {
-        languageSelect.innerHTML = '<option value="">No languages available</option>';
-        voiceSelect.innerHTML = '<option value="">No voices available</option>';
-        languageSelect.disabled = true;
-        voiceSelect.disabled = true;
+        languageSelected.textContent = "No languages available";
+        voiceSelected.textContent = "No voices available";
+        languageTrigger.setAttribute("disabled", "true");
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "Voices unavailable";
         voiceDescription.textContent = "CodeVoice did not return any usable voices.";
         return;
       }
 
-      const languages = getAvailableLanguages(availableVoices);
-      languageSelect.innerHTML = languages.map((language) => (
-        `<option value="${escapeHtml(language.key)}">${escapeHtml(language.label)} (${language.count})</option>`
-      )).join("");
-
+      allLanguages = getAvailableLanguages(availableVoices);
       const defaultVoice = availableVoices.find((voice) => voice.id === payload.default_voice) || availableVoices[0];
-      languageSelect.value = getVoiceLanguageKey(defaultVoice);
-      languageSelect.disabled = false;
+      selectedLanguageKey = getVoiceLanguageKey(defaultVoice);
+      const selectedLang = allLanguages.find(l => l.key === selectedLanguageKey);
+      
+      // Update visible UI
+      languageSelected.textContent = selectedLang.label;
+      languageTrigger.removeAttribute("disabled");
+      
+      // Update hidden select for form submission
+      languageSelect.innerHTML = allLanguages.map(lang => 
+        `<option value="${escapeHtml(lang.key)}">${escapeHtml(lang.label)}</option>`
+      ).join("");
+      languageSelect.value = selectedLanguageKey;
+      
+      renderLanguageDropdown();
       renderFilteredVoices(defaultVoice.id);
       debugLog("Loaded voice options", payload);
     }
 
     async function loadVoices() {
-      languageSelect.disabled = true;
-      voiceSelect.disabled = true;
+      languageTrigger.setAttribute("disabled", "true");
+      voiceTrigger.setAttribute("disabled", "true");
+      languageSelected.textContent = "Loading languages...";
+      voiceSelected.textContent = "Loading voices...";
       voiceStatus.textContent = "Loading voices...";
       voiceDescription.textContent = "Fetching available languages and voices...";
 
@@ -640,10 +916,10 @@
         renderLanguageOptions(data);
       } catch (error) {
         debugLog("Voice loading failed", error);
-        languageSelect.innerHTML = '<option value="">Language loading failed</option>';
-        voiceSelect.innerHTML = '<option value="">Voice loading failed</option>';
-        languageSelect.disabled = true;
-        voiceSelect.disabled = true;
+        languageSelected.textContent = "Language loading failed";
+        voiceSelected.textContent = "Voice loading failed";
+        languageTrigger.setAttribute("disabled", "true");
+        voiceTrigger.setAttribute("disabled", "true");
         voiceStatus.textContent = "Voice error";
         voiceDescription.textContent = error.message || "Unable to load voices right now.";
       }
@@ -753,6 +1029,38 @@
       }
     }
 
+    // Dropdown event listeners
+    languageTrigger.addEventListener("click", () => toggleDropdown(languageDropdown, languageTrigger));
+    voiceTrigger.addEventListener("click", () => toggleDropdown(voiceDropdown, voiceTrigger));
+    
+    languageSearch.addEventListener("input", (e) => {
+      renderLanguageDropdown(e.target.value);
+    });
+    
+    voiceSearch.addEventListener("input", (e) => {
+      renderVoiceOptions(e.target.value);
+    });
+    
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".custom-select-wrapper")) {
+        closeAllDropdowns();
+      }
+    });
+    
+    languageTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(languageDropdown, languageTrigger);
+      }
+    });
+    
+    voiceTrigger.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleDropdown(voiceDropdown, voiceTrigger);
+      }
+    });
+
     textInput.addEventListener("input", () => updateCounter(textInput.value));
     convertBtn.addEventListener("click", convertText);
     clearTextBtn.addEventListener("click", () => {
@@ -785,11 +1093,6 @@
       localStorage.removeItem(HISTORY_KEY);
       renderHistory();
     });
-    languageSelect.addEventListener("change", () => {
-      renderFilteredVoices();
-      setError("");
-    });
-    voiceSelect.addEventListener("change", renderSelectedVoiceMeta);
 
     renderHistory();
     updateCounter("");
